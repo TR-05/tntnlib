@@ -4,8 +4,8 @@
 		"json": 2
 	},
 	"project": {
-		"name": "TrogLib",
-		"description": "TrogLib 1.0",
+		"name": "TNTNLib",
+		"description": "TNTNLib 1.0",
 		"creationDate": "10/12/2023, 2:25:47 PM",
 		"platform": "V5",
 		"language": "cpp",

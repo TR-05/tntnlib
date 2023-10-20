@@ -1,6 +1,6 @@
 /**
- * @file include/lemlib/chassis/chassis.hpp
- * @author LemLib Team
+ * @file include/tntnlib/chassis/chassis.hpp
+ * @author tntnlib Team
  * @brief Chassis class declarations
  * @version 0.4.5
  * @date 2023-01-23
@@ -22,31 +22,34 @@
 #include "tntnlib/chassis/structs.h"
 #include "tntnlib/chassis/odom.h"
 
-namespace tntnlib {
-/**
- * @brief Function pointer type for drive curve functions.
- * @param input The control input in the range [-127, 127].
- * @param scale The scaling factor, which can be optionally ignored.
- * @return The new value to be used.
- */
-typedef std::function<float(float, float)> DriveCurveFunction_t;
+namespace tntnlib
+{
+    /**
+     * @brief Function pointer type for drive curve functions.
+     * @param input The control input in the range [-127, 127].
+     * @param scale The scaling factor, which can be optionally ignored.
+     * @return The new value to be used.
+     */
+    typedef std::function<float(float, float)> DriveCurveFunction_t;
 
-/**
- * @brief  Default drive curve. Modifies  the input with an exponential curve. If the input is 127, the function
- * will always output 127, no matter the value of scale, likewise for -127. This curve was inspired by team 5225, the
- * Pilons. A Desmos graph of this curve can be found here: https://www.desmos.com/calculator/rcfjjg83zx
- * @param input value from -127 to 127
- * @param scale how steep the curve should be.
- * @return The new value to be used.
- */
-float defaultDriveCurve(float input, float scale);
+    /**
+     * @brief  Default drive curve. Modifies  the input with an exponential curve. If the input is 127, the function
+     * will always output 127, no matter the value of scale, likewise for -127. This curve was inspired by team 5225, the
+     * Pilons. A Desmos graph of this curve can be found here: https://www.desmos.com/calculator/rcfjjg83zx
+     * @param input value from -127 to 127
+     * @param scale how steep the curve should be.
+     * @return The new value to be used.
+     */
+    float defaultDriveCurve(float input, float scale);
 
-/**
- * @brief Chassis class
- *
- */
-class Chassis {
+    /**
+     * @brief Chassis class
+     *
+     */
+    class Chassis
+    {
         friend class Odometry;
+
     public:
         /**
          * @brief Construct a new Chassis
@@ -71,7 +74,7 @@ class Chassis {
          *
          * @param calibrateIMU whether to calibrate the IMU. True by default
          */
-        void initialize(bool calibrateIMU = true);
+        void initialize(bool calibrateIMU, float x, float y, float theta);
 
         /**
          * @brief Set the pose of the chassis
@@ -209,6 +212,7 @@ class Chassis {
          */
         void curvature(int throttle, int turn, float cureGain = 0.0);
         void update();
+
     private:
         /**
          * @brief Chassis update function. Updates chassis motion and odometry
@@ -216,7 +220,7 @@ class Chassis {
          */
 
         float prevDist = 0; // the previous distance travelled by the movement
-
+        int loop();
         Odometry odom;
         std::unique_ptr<Movement> movement;
         std::unique_ptr<vex::task> task;
@@ -226,5 +230,6 @@ class Chassis {
         Drivetrain_t drivetrain;
         OdomSensors_t sensors;
         DriveCurveFunction_t driveCurve;
-};
-} // namespace lemlib
+    };
+} // namespace tntnlib
+extern tntnlib::Chassis chassis;

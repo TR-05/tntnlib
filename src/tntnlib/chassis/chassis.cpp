@@ -17,8 +17,15 @@
 #include "tntnlib/movements/turn.h"
 #include "tntnlib/chassis/chassis.h"
 #include "tntnlib/chassis/odom.h"
+#include <functional>
 
 using namespace tntnlib;
+
+/**
+ * Initialize the chassis
+ *
+ * Calibrates sensors and starts the chassis task
+ */
 
 // make_unique c++11 implementation
 template <class T, class... Args>
@@ -27,24 +34,32 @@ std::unique_ptr<T> make_unique(Args &&...args)
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
-/**
- * Initialize the chassis
- *
- * Calibrates sensors and starts the chassis task
- */
+int odomLoop()
+{
+    while (1)
+    {
+        chassis.update();
+        vex::wait(10, vex::msec);
+    }
+    return 0;
+}
 
-void Chassis::initialize(bool calibrateIMU)
+void Chassis::initialize(bool calibrateIMU, float x, float y, float theta)
 {
     // calibrate odom
     odom.calibrate(calibrateIMU);
+    Pose newPose(x,y,theta);
+    Chassis::setPose(newPose);
     // start the chassis task if it doesn't exist
-  /*  if (task == nullptr) 
-            task = make_unique<vex::task>([&]() {
-            while (true) {
-                update();
-                vex::wait(10, vex::msec);
-            }
-        });*/
+    if (task == nullptr)
+    {
+        task = make_unique<vex::task>(odomLoop);
+        printf("new chassis thead\n");
+    }
+    else
+    {
+        printf("thread already exists\n");
+    }
 }
 
 /**
@@ -68,7 +83,7 @@ void Chassis::setPose(Pose pose, bool radians)
 {
     if (!radians)
         pose.theta = degToRad(pose.theta);
-    pose.theta = M_PI_2 - pose.theta;
+    //pose.theta = M_PI_2 - pose.theta;
     odom.setPose(pose);
 }
 
@@ -81,7 +96,7 @@ void Chassis::setPose(Pose pose, bool radians)
 Pose Chassis::getPose(bool radians)
 {
     Pose pose = odom.getPose();
-    pose.theta = M_PI_2 - pose.theta;
+    //pose.theta = M_PI_2 - pose.theta;
     if (!radians)
         pose.theta = radToDeg(pose.theta);
     return pose;
@@ -207,7 +222,7 @@ void Chassis::moveTo(float x, float y, float theta, int timeout, bool forwards, 
     if (chasePower == 0)
         chasePower = drivetrain.chasePower;
     // create the movement
-    // movement = make_unique<Boomerang>(linearPID, angularPID, target, forwards, chasePower, lead, maxSpeed);
+    //movement = make_unique<Boomerang>(linearPID, angularPID, target, forwards, chasePower, lead, maxSpeed);
 }
 
 /**

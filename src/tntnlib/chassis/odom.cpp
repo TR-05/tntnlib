@@ -60,15 +60,21 @@ void Odometry::calibrate(bool calibrateIMU)
             Controller.rumble("---");
         }
     }
-    // substitute tracking wheels with a side of the drivetrain if needed
+    /*
+    // substitute tracking wheels with a side of the drivetrain if needed (I dont like this)
     if (sensors.vertical1 == nullptr)
         sensors.vertical1 =
             new TrackingWheel(drive.leftMotors, drive.wheelDiameter, -(drive.trackWidth / 2), drive.cartridgeRPM, drive.rpm);
     if (sensors.vertical2 == nullptr)
-        sensors.vertical2 = new TrackingWheel(drive.rightMotors, drive.wheelDiameter, drive.trackWidth / 2, drive.cartridgeRPM, drive.rpm);
+       sensors.vertical2 = new TrackingWheel(drive.rightMotors, drive.wheelDiameter, drive.trackWidth / 2, drive.cartridgeRPM, drive.rpm);
+    */
+
     // calibrate the tracking wheels
-    sensors.vertical1->reset();
-    sensors.vertical2->reset();
+    if (sensors.vertical1 != nullptr)
+        sensors.vertical1->reset();
+    if (sensors.vertical2 != nullptr)
+        sensors.vertical2->reset();
+
     if (sensors.horizontal1 != nullptr)
         sensors.horizontal1->reset();
     if (sensors.horizontal2 != nullptr)
@@ -137,6 +143,7 @@ void Odometry::update()
     // 1. IMU
     // 2. Horizontal tracking wheels
     // 3. Vertical tracking wheels
+
     float heading = pose.theta;
     // calculate heading with inertial sensor if it exists
     if (sensors.imu != nullptr)
@@ -159,6 +166,7 @@ void Odometry::update()
         horizontalWheel = sensors.horizontal1;
     if (sensors.horizontal2 != nullptr)
         horizontalWheel = sensors.horizontal2;
+
     // get raw values
     float rawVertical = 0;
     float rawHorizontal = 0;
