@@ -5,35 +5,22 @@
 #include "tntnlib/pose.h"
 #include "tntnlib/movements/turn.h"
 #include "vex.h"
-/**
- * Turn constructor
- *
- * Some members of the class need to be explicitly initialized
- * But, some members need to be configured further in the body
- *
- * Here we just store the arguments in member variables, and store the
- * initial competition state.
- */
-float clamp(float input, float min, float max) {
+
+float clamp(float input, float min, float max)
+{
     float output;
     if (input > max)
-    output = max;
+        output = max;
     else if (input < min)
-    output = min;
-    else {
+        output = min;
+    else
+    {
         output = input;
     }
     return output;
 }
 
-tntnlib::Turn::Turn(FAPID angularPID, float target, int maxSpeed)
-    : angularPID(angularPID),
-      targetHeading(target),
-      maxSpeed(maxSpeed) {
-    // get the current competition state. If this changes, the movement will stop
-    //compState = pros::competition::get_status();
-}
-
+using namespace tntnlib;
 /**
  * Turn constructor
  *
@@ -43,22 +30,50 @@ tntnlib::Turn::Turn(FAPID angularPID, float target, int maxSpeed)
  * Here we just store the arguments in member variables, and store the
  * initial competition state.
  */
+
+
+void Turn::params(FAPID TurnPID, float target, bool reversed, float maxSpeed)
+{
+    turnPID = TurnPID;
+    targetHeading = target;
+    Turn::reversed = reversed;
+    Turn::maxSpeed = maxSpeed;
+}
+
+/*
+tntnlib::Turn::Turn(FAPID angularPID, float target, int maxSpeed)
+    : angularPID(angularPID),
+      targetHeading(target),
+      maxSpeed(maxSpeed) {
+}
+*/
+/**
+ * Turn constructor
+ *
+ * Some members of the class need to be explicitly initialized
+ * But, some members need to be configured further in the body
+ *
+ * Here we just store the arguments in member variables, and store the
+ * initial competition state.
+ */
+
+
+void Turn::params(FAPID TurnPID, Pose target, bool reversed, float maxSpeed)
+{
+    turnPID = TurnPID;
+    targetPose = target;
+    Turn::reversed = reversed;
+    Turn::maxSpeed = maxSpeed;
+}
+
+/*
+
 tntnlib::Turn::Turn(FAPID angularPID, Pose target, bool reversed, int maxSpeed)
     : angularPID(angularPID),
       targetPose(target),
       reversed(reversed),
       maxSpeed(maxSpeed) {
-    // get the current competition state. If this changes, the movement will stop
-    //compState = ;
 }
-
-/**
- * Get the distance travelled during the movement
- *
- * This is useful if you want to wait until the robot has travelled a certain distance.
- * For example, you want the robot to engage a mechanism when it has travelled 10 inches.
- */
-float tntnlib::Turn::getDist() { return dist; }
 
 /**
  * The turning algorithm uses field-relative position of the robot to face a target heading
@@ -71,30 +86,46 @@ float tntnlib::Turn::getDist() { return dist; }
  *
  * This algorithm only uses 1 PID to turn the chassis.
  */
-std::pair<int, int> tntnlib::Turn::update(Pose pose) {
+std::pair<float, float> tntnlib::Turn::update(Pose pose)
+{
+    float t = targetHeading;
+
     // set state to 1 if the pid has settled
-    if (angularPID.settled()) state = 1;
+    if (turnPID.settled())
+        //state = 1;
     // exit if movement is in state 1 (settled)
-    if (state == 1) return {128, 128};
+    if (state == 1)
+        return {13, 0};
 
     // reverse heading if doing movement in reverse
-    if (reversed) pose.theta = fmod(pose.theta - M_PI, 2 * M_PI);
+    if (reversed)
+    {
+        pose.theta = fmod(pose.theta - M_PI, 2 * M_PI);
+        t = fmod(degToRad(t) - M_PI, 2 * M_PI);
+    }
+    else
+    {
+        t = fmod(degToRad(t), 2 * M_PI);
+    }
 
     // update completion vars
-    if (dist == 0) { // if dist is 0, this is the first time update() has been called
+    if (dist == 0)
+    { // if dist is 0, this is the first time update() has been called
         dist = 0.0001;
         startPose = pose;
     }
-    dist = fabs(radToDeg(angleError(pose.theta, startPose.theta)));
-
-    targetHeading = pose.angle(targetPose);
 
     // calculate error
-    float error = angleError(targetHeading, pose.theta);
+    float error = angleError(t, pose.theta);
+    printf("E:%.2f  TH:%.2f  BH:%.2f", radToDeg(error), radToDeg(t), radToDeg(pose.theta));
+    // calculate distance travelled
+    dist = fabs(error);
 
     // calculate the speed
     // converts error to degrees to make PID tuning easier
-    float output = angularPID.update(0, radToDeg(error));
+    float output = -turnPID.update(radToDeg(error), 0);
+    printf(" O:%.2f\n", output);
+
     // cap the speed
     output = clamp(int(std::round(output)), -maxSpeed, maxSpeed);
     // return output

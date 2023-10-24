@@ -126,9 +126,9 @@ namespace tntnlib
          * @param y y location
          * @param timeout longest time the robot can spend moving
          * @param reversed whether the robot should turn to face the point with the back of the robot. false by default
-         * @param maxSpeed the maximum speed the robot can turn at. Default is 127
+         * @param maxSpeed the maximum speed the robot can turn at. Default is 12
          */
-        void turnToPose(float x, float y, int timeout, bool reversed = false, int maxSpeed = 127);
+        void turnToPose(float x, float y, int timeout, bool reversed, float maxSpeed = 12);
 
         /**
          * @brief Turn the chassis so it is facing a heading
@@ -137,9 +137,9 @@ namespace tntnlib
          *
          * @param heading the heading the robot should face. Units are in degrees
          * @param timeout longest time the robot can spend moving
-         * @param maxSpeed the maximum speed the robot can turn at. Default is 127
+         * @param maxSpeed the maximum speed the robot can turn at. Default is 12
          */
-        void turnToHeading(float heading, int timeout, int maxSpeed = 127);
+        void turnToHeading(float heading, int timeout, bool reversed, float maxSpeed = 12);
 
         /**
          * @brief Move the chassis towards the target pose
@@ -155,17 +155,17 @@ namespace tntnlib
          * @param lead the lead parameter. Determines how curved the robot will move. 0.6 by default (0 < lead < 1)
          * @param chasePower higher values make the robot move faster but causes more overshoot on turns. 0 makes it
          * default to global value
-         * @param maxSpeed the maximum speed the robot can move at. 127 at default
+         * @param maxSpeed the maximum speed the robot can move at. 12 at default
          */
         void moveTo(float x, float y, float theta, int timeout, bool forwards = true, float chasePower = 0,
-                    float lead = 0.6, int maxSpeed = 127);
+                    float lead = 0.6, int maxSpeed = 12);
 
         /**
          * @brief Move the chassis using a custom motion algorithm
          *
          * @param movement shared pointer to the custom movement
          */
-        void moveCustom(std::unique_ptr<Movement> movement);
+        //void moveCustom(std::unique_ptr<Movement> movement);
 
         /**
          * @brief Move the chassis along a path
@@ -177,13 +177,13 @@ namespace tntnlib
          * @param forwards whether the robot should follow the path going forwards. true by default
          * @param maxSpeed the maximum speed the robot can move at
          */
-        void follow(float path, float lookahead, int timeout, bool forwards = true, int maxSpeed = 127);
+        void follow(float path, float lookahead, int timeout, bool forwards = true, int maxSpeed = 12);
 
         /**
          * @brief Control the robot during the driver control period using the tank drive control scheme. In this
          * control scheme one joystick axis controls one half of the robot, and another joystick axis controls another.
-         * @param left speed of the left side of the drivetrain. Takes an input from -127 to 127.
-         * @param right speed of the right side of the drivetrain. Takes an input from -127 to 127.
+         * @param left speed of the left side of the drivetrain. Takes an input from -100 to 100.
+         * @param right speed of the right side of the drivetrain. Takes an input from -100 to 100.
          * @param curveGain control how steep the drive curve is. The larger the number, the steeper the curve. A value
          * of 0 disables the curve entirely.
          */
@@ -193,8 +193,8 @@ namespace tntnlib
          * @brief Control the robot during the driver using the arcade drive control scheme. In this control scheme one
          * joystick axis controls the forwards and backwards movement of the robot, while the other joystick axis
          * controls  the robot's turning
-         * @param throttle speed to move forward or backward. Takes an input from -127 to 127.
-         * @param turn speed to turn. Takes an input from -127 to 127.
+         * @param throttle speed to move forward or backward. Takes an input from -100 to 100.
+         * @param turn speed to turn. Takes an input from -100 to 100.
          * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
          * curve, refer to the `defaultDriveCurve` documentation.
          */
@@ -205,24 +205,30 @@ namespace tntnlib
          * very similar to arcade drive, except the second joystick axis controls the radius of the curve that the
          * drivetrain makes, rather than the speed. This means that the driver can accelerate in a turn without changing
          * the radius of that turn. This control scheme defaults to arcade when forward is zero.
-         * @param throttle speed to move forward or backward. Takes an input from -127 to 127.
-         * @param turn speed to turn. Takes an input from -127 to 127.
+         * @param throttle speed to move forward or backward. Takes an input from -100 to 100.
+         * @param turn speed to turn. Takes an input from -100 to 100.
          * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
          * curve, refer to the `defaultDriveCurve` documentation.
          */
         void curvature(int throttle, int turn, float cureGain = 0.0);
         void update();
+        void stateMachineOn();
+        void stateMachineOff();
+        enum moveState {disabledMode, turnMode, moveToMode, followMode};
+        moveState autoChassis = turnMode;
+        std::pair<float, float> stateMachine();
+
 
     private:
         /**
          * @brief Chassis update function. Updates chassis motion and odometry
          *
          */
+        bool StateMachineEnabled = false;
 
         float prevDist = 0; // the previous distance travelled by the movement
-        int loop();
         Odometry odom;
-        std::unique_ptr<Movement> movement;
+        //std::unique_ptr<Movement> movement;
         std::unique_ptr<vex::task> task;
 
         ChassisController_t lateralSettings;

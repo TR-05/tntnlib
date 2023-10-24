@@ -21,6 +21,8 @@
 
 using namespace tntnlib;
 
+tntnlib::Turn turn_calc;
+
 /**
  * Initialize the chassis
  *
@@ -48,7 +50,7 @@ void Chassis::initialize(bool calibrateIMU, float x, float y, float theta)
 {
     // calibrate odom
     odom.calibrate(calibrateIMU);
-    Pose newPose(x,y,theta);
+    Pose newPose(x, y, theta);
     Chassis::setPose(newPose);
     // start the chassis task if it doesn't exist
     if (task == nullptr)
@@ -61,6 +63,8 @@ void Chassis::initialize(bool calibrateIMU, float x, float y, float theta)
         printf("thread already exists\n");
     }
 }
+
+
 
 /**
  * Set the pose of the chassis
@@ -83,7 +87,7 @@ void Chassis::setPose(Pose pose, bool radians)
 {
     if (!radians)
         pose.theta = degToRad(pose.theta);
-    //pose.theta = M_PI_2 - pose.theta;
+    // pose.theta = M_PI_2 - pose.theta;
     odom.setPose(pose);
 }
 
@@ -96,11 +100,14 @@ void Chassis::setPose(Pose pose, bool radians)
 Pose Chassis::getPose(bool radians)
 {
     Pose pose = odom.getPose();
-    //pose.theta = M_PI_2 - pose.theta;
+    // pose.theta = M_PI_2 - pose.theta;
     if (!radians)
         pose.theta = radToDeg(pose.theta);
     return pose;
 }
+
+
+
 
 /**
  * Wait until the robot has traveled a certain distance, or angle
@@ -115,11 +122,11 @@ void Chassis::waitUntilDist(float dist)
     // give the movement time to start
     vex::wait(10, vex::msec);
     // wait until the robot has travelled a certain distance
-    while (movement != nullptr && movement->getDist() < dist && movement->getDist() >= prevDist)
+    /*while (movement != nullptr && movement->getDist() < dist && movement->getDist() >= prevDist)
     {
         prevDist = movement->getDist(); // update previous distance
         vex::wait(10, vex::msec);
-    }
+    }*/
     // set prevDist to 0
     prevDist = 0;
 }
@@ -132,11 +139,11 @@ void Chassis::waitUntilDone()
     // give the movement time to start
     vex::wait(10, vex::msec);
     // wait until the movement is done
-    while (movement != nullptr && movement->getDist() >= prevDist)
+    /*while (movement != nullptr && movement->getDist() >= prevDist)
     {
         prevDist = movement->getDist(); // update previous distance
         vex::wait(10, vex::msec);
-    }
+    }*/
     // set prevDist to 0
     prevDist = 0;
 }
@@ -153,17 +160,18 @@ void Chassis::waitUntilDone()
  * done then is to pass the parameters to a new instance of Turn, and set the movement
  * pointer.
  */
-void Chassis::turnToPose(float x, float y, int timeout, bool reversed, int maxSpeed)
+void Chassis::turnToPose(float x, float y, int timeout, bool reversed, float maxSpeed)
 {
     // if a movement is already running, wait until it is done
-    if (movement != nullptr)
-        waitUntilDone();
+    //if (movement != nullptr)
+    //    waitUntilDone();
     // set up the PID
-    FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
+    /*FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
     angularPID.setExit(angularSettings.largeError, angularSettings.smallError, angularSettings.largeErrorTimeout,
                        angularSettings.smallErrorTimeout, timeout);
     // create the movement
-    movement = make_unique<Turn>(angularPID, Pose(x, y), reversed, maxSpeed);
+    autoChassis = turnMode;*/
+    // movement = make_unique<Turn>(angularPID, Pose(x, y), reversed, maxSpeed);
 }
 
 /**
@@ -178,19 +186,17 @@ void Chassis::turnToPose(float x, float y, int timeout, bool reversed, int maxSp
  * done then is to pass the parameters to a new instance of Turn, and set the movement
  * pointer.
  */
-void Chassis::turnToHeading(float heading, int timeout, int maxSpeed)
+void Chassis::turnToHeading(float heading, int timeout, bool reversed, float maxSpeed)
 {
-    // if a movement is already running, wait until it is done
-    if (movement != nullptr)
-        waitUntilDone();
-    // convert heading to radians and standard form
-    float newHeading = M_PI_2 - degToRad(heading);
-    // set up the PID
     FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
+    turn_calc.params(angularPID, heading, false, maxSpeed);
+    //  set up the PID
+    /*FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
     angularPID.setExit(angularSettings.largeError, angularSettings.smallError, angularSettings.largeErrorTimeout,
-                       angularSettings.smallErrorTimeout, timeout);
+                       angularSettings.smallErrorTimeout, timeout);*/
     // create the movement
-    movement = make_unique<Turn>(angularPID, newHeading, maxSpeed);
+    autoChassis = turnMode;
+    // movement = make_unique<Turn>(angularPID, newHeading, maxSpeed);
 }
 
 /**
@@ -209,33 +215,34 @@ void Chassis::moveTo(float x, float y, float theta, int timeout, bool forwards, 
                      int maxSpeed)
 {
     // if a movement is already running, wait until it is done
-    if (movement != nullptr)
-        waitUntilDone();
+    //if (movement != nullptr)
+    //    waitUntilDone();
     // convert target theta to radians and standard form
     Pose target = Pose(x, y, M_PI_2 - degToRad(theta));
     // set up PIDs
-    FAPID linearPID(0, 0, lateralSettings.kP, 0, lateralSettings.kD);
+    /*FAPID linearPID(0, 0, lateralSettings.kP, 0, lateralSettings.kD);
     linearPID.setExit(lateralSettings.largeError, lateralSettings.smallError, lateralSettings.largeErrorTimeout,
                       lateralSettings.smallErrorTimeout, timeout);
-    FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
+    FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);*/
     // if chasePower is 0, is the value defined in the drivetrain struct
     if (chasePower == 0)
         chasePower = drivetrain.chasePower;
     // create the movement
-    //movement = make_unique<Boomerang>(linearPID, angularPID, target, forwards, chasePower, lead, maxSpeed);
+    autoChassis = moveToMode;
+    // movement = make_unique<Boomerang>(linearPID, angularPID, target, forwards, chasePower, lead, maxSpeed);
 }
 
 /**
  * Move the robot with a custom motion algorithm
  */
-void Chassis::moveCustom(std::unique_ptr<Movement> movement)
+/*void Chassis::moveCustom(std::unique_ptr<Movement> movement)
 {
     // if a movement is already running, wait until it is done
     if (movement != nullptr)
         waitUntilDone();
     // create the movement
-    this->movement = std::move(movement);
-}
+    // this->movement = std::move(movement);
+}*/
 
 /**
  * This function sets up Pure Pursuit
@@ -246,10 +253,46 @@ void Chassis::moveCustom(std::unique_ptr<Movement> movement)
 void Chassis::follow(float path, float lookahead, int timeout, bool forwards, int maxSpeed)
 {
     // if a movement is already running, wait until it is done
-    if (movement != nullptr)
-        waitUntilDone();
+    //if (movement != nullptr)
+    //    waitUntilDone();
     // create the movement
     // movement = make_unique<PurePursuit>(drivetrain.trackWidth, path, lookahead, timeout, forwards, maxSpeed);
+}
+
+void Chassis::stateMachineOn()
+{
+    StateMachineEnabled = true;
+}
+
+void Chassis::stateMachineOff()
+{
+    StateMachineEnabled = false;
+}
+
+/**
+ * Chassis statemachine function
+ *
+ * This function is called in a the chassis update task
+ * It updates any motion controller that may be running
+ */
+
+
+std::pair<float, float> Chassis::stateMachine()
+{
+    switch (autoChassis)
+    {
+    case disabledMode:
+        return {0, 0};
+    case turnMode:
+        return turn_calc.update(this->getPose());
+    case moveToMode:
+        return {0, 0};
+    case followMode:
+        return {0, 0};
+
+    default:
+        return {0, 0};
+    }
 }
 
 /**
@@ -264,6 +307,16 @@ void Chassis::update()
 {
     // update odometry
     odom.update();
+
+    if (StateMachineEnabled)
+    {
+        std::pair<float, float> output = stateMachine(); // get output
+        // move the motors
+        drivetrain.leftMotors->spin(vex::fwd, output.first, vex::volt);
+        drivetrain.rightMotors->spin(vex::fwd, output.second, vex::volt);
+        //printf("L:%.2f, R:%.2f\n", output.first, output.second);
+    }
+    /*
     // update the motion controller, if one is running
     if (movement != nullptr)
     {
@@ -278,4 +331,5 @@ void Chassis::update()
         drivetrain.leftMotors->spin(vex::fwd, output.first, vex::volt);
         drivetrain.rightMotors->spin(vex::fwd, output.second, vex::volt);
     }
+    */
 }

@@ -58,6 +58,11 @@ void Odometry::calibrate(bool calibrateIMU)
             sensors.imu = nullptr;
             // rumble controller if imu calibration fails
             Controller.rumble("---");
+            printf("IMU FAILED\n\n");
+        } 
+        else 
+        {
+            printf("IMU success\n\n");
         }
     }
     /*
@@ -209,4 +214,46 @@ void Odometry::update()
     pose.x += localX * -cos(avgHeading);
     pose.y += localX * sin(avgHeading);
     pose.theta = heading;
+
+
+    //Liam V2
+    /*
+    // calculate heading
+float theta = pose.theta;
+if (gyros.size() > 0) {
+    std::vector<float> angles;
+    for (const auto& gyro : gyros) angles.push_back(gyro->getRotationDelta());
+    theta += avg(angles);
+} else if (horizontals.size() > 1) {
+    theta += (horizontals.at(0).getDistanceDelta() - horizontals.at(1).getDistanceDelta()) /
+             (horizontals.at(0).getOffset() - horizontals.at(1).getOffset());
+} else if (verticals.size() > 1) {
+    theta += (verticals.at(0).getDistanceDelta() - verticals.at(1).getDistanceDelta()) /
+             (verticals.at(0).getOffset() - verticals.at(1).getOffset());
+} else {
+    infoSink()->error("Odom calculation failure! Not enough sensors to calculate heading");
+    return;
+}
+const float deltaTheta = theta - pose.theta;
+const float avgTheta = pose.theta + deltaTheta / 2;
+
+// calculate local change in position
+Pose local(0, 0, deltaTheta);
+const float sinDTheta2 = (deltaTheta == 0) ? 1 : 2 * std::sin(deltaTheta / 2);
+for (auto& tracker : horizontals) {
+    const float radius = (deltaTheta == 0) ? tracker.getDistanceDelta()
+                                           : tracker.getDistanceDelta() / deltaTheta + tracker.getOffset();
+    local.x += sinDTheta2 * radius / horizontals.size();
+}
+for (auto& tracker : verticals) {
+    const float radius = (deltaTheta == 0) ? tracker.getDistanceDelta()
+                                           : tracker.getDistanceDelta() / deltaTheta + tracker.getOffset();
+    local.y += sinDTheta2 * radius / horizontals.size();
+}
+if (verticals.empty()) infoSink()->warn("No vertical tracking wheels! Assuming movement is 0");
+
+// calculate new position
+pose += local.rotate(avgTheta);
+    
+    */
 }

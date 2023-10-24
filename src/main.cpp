@@ -18,34 +18,18 @@ tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_2
 inertial imu = inertial(PORT1);
 
 tntnlib::Drivetrain_t drivebase{&leftMotors, &rightMotors, 10, tntnlib::Omniwheel::OLD_325, 360, 8};
-tntnlib::ChassisController_t lateralController{1, 3, .1, 100, 3, 500, 20};
-tntnlib::ChassisController_t angularController{.25, 1, .1, 100, 3, 500, 20};
+tntnlib::ChassisController_t lateralController{1, 3, 0, 100, 3, 500, 12};
+tntnlib::ChassisController_t angularController{.25, 1.8, 0, 0, 3, 0, 12};
 tntnlib::OdomSensors_t sensors{&vertical, nullptr, &horizontal, nullptr, &imu};
 // MUST BE NAMED chassis OR GET TREVOR TO ADD IT TO chassis.cpp and chassis.h (odomLoop and bottom of .h)
 tntnlib::Chassis chassis(drivebase, lateralController, angularController, sensors);
-
-int testTask_1()
-{
-  printf("\n\n New Task Created\n\n");
-  chassis.setPose(0, 0, 0);
-  while (1)
-  {
-    chassis.update();
-    tntnlib::Pose current(chassis.getPose());
-    printf("\n\n(%.2f, %.2f, %.2f)\n", sensors.horizontal1->getDistance(), sensors.vertical1->getDistance(), sensors.imu->rotation());
-    printf("(%.2f, %.2f, %.2f)\n", current.x, current.y, current.theta);
-    std::cout << std::flush;
-    vex::wait(10, vex::msec);
-  }
-  return 0;
-}
 
 int logger()
 {
   while (true)
   {
     tntnlib::Pose current(chassis.getPose(false));
-    printf("\n\nSX:%.2f, SR:%.2f, IMU:%.2f ", sensors.horizontal1->getDistance(), sensors.vertical1->getDistance(), sensors.imu->rotation());
+    //printf("\n\nSX:%.2f, SR:%.2f, IMU:%.2f ", sensors.horizontal1->getDistance(), sensors.vertical1->getDistance(), sensors.imu->rotation());
     printf("X:%.2f, Y:%.2f, H:%.2f\n", current.x, current.y, current.theta);
     wait(50, msec);
   }
@@ -67,8 +51,11 @@ void pre_auton(void)
 void autonomous(void)
 {
   printf("Entered Auto\n");
-  chassis.initialize(false, 0,0,0);
-  //chassis.turnToHeading(90, 2500, 6);
+  //chassis.initialize(false, 0,0,0);
+  chassis.stateMachineOn();
+  chassis.turnToHeading(90, 2000, false, 2);
+  wait(100, vex::sec);
+  //chassis.turnToHeading(180, 2000, 12);
 }
 
 void usercontrol(void)

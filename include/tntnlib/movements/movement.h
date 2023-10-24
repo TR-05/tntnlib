@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 
 #include <utility>
 #include "tntnlib/pose.h"
@@ -7,19 +7,22 @@ namespace tntnlib {
 /**
  * @brief Abstract class for a movement
  */
+
+/*
+
 class Movement {
     public:
         /**
          * @brief Construct a new Movement object
          */
-        Movement() {}
+//        Movement() {}
 
         /**
          * @brief Get the distance travelled during the movement
          *
          * @return float
          */
-        virtual float getDist() = 0;
+//        virtual float getDist() = 0;
 
         /**
          * @brief Update the movement
@@ -31,6 +34,6 @@ class Movement {
          *
          * @return std::pair<int, int> left and right motor power respectively. 128 means ignore
          */
-        virtual std::pair<int, int> update(Pose pose) = 0;
-};
-} // namespace lemlib
+//        virtual std::pair<float, float> update(Pose pose) = 0;
+//};
+//} // namespace tntnlib
