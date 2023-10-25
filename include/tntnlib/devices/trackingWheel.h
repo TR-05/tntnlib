@@ -13,7 +13,7 @@
 #include <memory>
 #include <cstdint>
 #include "vex.h"
-#include "tntnlib\devices\encoder\encoder.h"
+#include "tntnlib/devices/encoder/encoder.h"
 
 namespace tntnlib {
 
