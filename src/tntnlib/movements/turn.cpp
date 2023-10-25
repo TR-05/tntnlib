@@ -92,7 +92,7 @@ std::pair<float, float> tntnlib::Turn::update(Pose pose)
 
     // set state to 1 if the pid has settled
     if (turnPID.settled())
-        //state = 1;
+        ;//state = 1;
     // exit if movement is in state 1 (settled)
     if (state == 1)
         return {13, 0};
@@ -117,13 +117,13 @@ std::pair<float, float> tntnlib::Turn::update(Pose pose)
 
     // calculate error
     float error = angleError(t, pose.theta);
-    printf("E:%.2f  TH:%.2f  BH:%.2f", radToDeg(error), radToDeg(t), radToDeg(pose.theta));
+   // printf("E:%.2f  TH:%.2f  BH:%.2f", radToDeg(error), radToDeg(t), radToDeg(pose.theta));
     // calculate distance travelled
     dist = fabs(error);
 
     // calculate the speed
     // converts error to degrees to make PID tuning easier
-    float output = -turnPID.update(radToDeg(error), 0);
+    float output = turnPID.update(radToDeg(error), 0);
     printf(" O:%.2f\n", output);
 
     // cap the speed

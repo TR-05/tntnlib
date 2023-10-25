@@ -17,7 +17,7 @@ tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW
 tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, -0.0164235, 1);
 inertial imu = inertial(PORT1);
 
-tntnlib::Drivetrain_t drivebase{&leftMotors, &rightMotors, 10, tntnlib::Omniwheel::OLD_325, 360, 8};
+tntnlib::Drivetrain_t drivebase{&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8};
 tntnlib::ChassisController_t lateralController{1, 3, 0, 100, 3, 500, 12};
 tntnlib::ChassisController_t angularController{.25, 1.8, 0, 0, 3, 0, 12};
 tntnlib::OdomSensors_t sensors{&vertical, nullptr, &horizontal, nullptr, &imu};
