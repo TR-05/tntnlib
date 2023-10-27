@@ -18,7 +18,7 @@ class Turn {
          * @param target the target heading. Radians, 0 is right, increases counterclockwise
          * @param maxSpeed the maximum speed the robot can turn at
          */
-        void params(FAPID TurnPID, float target, bool reversed, float maxSpeed);
+        void params(FAPID &TurnPID, float target, bool reversed, float maxSpeed);
         //Turn(FAPID angularPID, float target, int maxSpeed);
 
         /**
@@ -29,7 +29,7 @@ class Turn {
          * @param reversed whether the robot should face the point with its back or front
          * @param maxSpeed the maximum speed the robot can turn at
          */
-        void params(FAPID TurnPID, Pose target, bool reversed, float maxSpeed);
+        void params(FAPID &TurnPID, Pose target, bool reversed, float maxSpeed);
         //Turn(FAPID angularPID, Pose target, bool reversed, int maxSpeed);
         /**
          * @brief Update the movement
@@ -55,7 +55,7 @@ class Turn {
         float targetHeading = 0;
         bool reversed = false;
         
-        int maxSpeed;
+        float maxSpeed;
         int state = 0; // 0 = in progress, 1 = done
         float dist = 0; 
 };

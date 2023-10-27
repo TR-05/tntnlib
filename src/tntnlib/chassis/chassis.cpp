@@ -188,15 +188,26 @@ void Chassis::turnToPose(float x, float y, int timeout, bool reversed, float max
  */
 void Chassis::turnToHeading(float heading, int timeout, bool reversed, float maxSpeed)
 {
-    FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
-    turn_calc.params(angularPID, heading, false, maxSpeed);
     //  set up the PID
-    /*FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
+    FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
+    angularPID.reset();
     angularPID.setExit(angularSettings.largeError, angularSettings.smallError, angularSettings.largeErrorTimeout,
-                       angularSettings.smallErrorTimeout, timeout);*/
-    // create the movement
+                       angularSettings.smallErrorTimeout, timeout);
+    turn_calc.params(angularPID, heading, false, maxSpeed);
+
+    // setup the statemachine
     autoChassis = turnMode;
-    // movement = make_unique<Turn>(angularPID, newHeading, maxSpeed);
+    //while (!angularPID.settled()) {
+    printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
+    wait(50, vex::msec);
+    printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
+    do {
+    wait(10, vex::msec);
+    printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
+    } while (fabs(angularPID.prevError) > angularSettings.largeError);
+
+
+
 }
 
 /**

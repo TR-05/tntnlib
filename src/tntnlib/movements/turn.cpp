@@ -31,8 +31,7 @@ using namespace tntnlib;
  * initial competition state.
  */
 
-
-void Turn::params(FAPID TurnPID, float target, bool reversed, float maxSpeed)
+void Turn::params(FAPID &TurnPID, float target, bool reversed, float maxSpeed)
 {
     turnPID = TurnPID;
     targetHeading = target;
@@ -40,13 +39,6 @@ void Turn::params(FAPID TurnPID, float target, bool reversed, float maxSpeed)
     Turn::maxSpeed = maxSpeed;
 }
 
-/*
-tntnlib::Turn::Turn(FAPID angularPID, float target, int maxSpeed)
-    : angularPID(angularPID),
-      targetHeading(target),
-      maxSpeed(maxSpeed) {
-}
-*/
 /**
  * Turn constructor
  *
@@ -57,8 +49,7 @@ tntnlib::Turn::Turn(FAPID angularPID, float target, int maxSpeed)
  * initial competition state.
  */
 
-
-void Turn::params(FAPID TurnPID, Pose target, bool reversed, float maxSpeed)
+void Turn::params(FAPID &TurnPID, Pose target, bool reversed, float maxSpeed)
 {
     turnPID = TurnPID;
     targetPose = target;
@@ -66,14 +57,6 @@ void Turn::params(FAPID TurnPID, Pose target, bool reversed, float maxSpeed)
     Turn::maxSpeed = maxSpeed;
 }
 
-/*
-
-tntnlib::Turn::Turn(FAPID angularPID, Pose target, bool reversed, int maxSpeed)
-    : angularPID(angularPID),
-      targetPose(target),
-      reversed(reversed),
-      maxSpeed(maxSpeed) {
-}
 
 /**
  * The turning algorithm uses field-relative position of the robot to face a target heading
@@ -89,23 +72,12 @@ tntnlib::Turn::Turn(FAPID angularPID, Pose target, bool reversed, int maxSpeed)
 std::pair<float, float> tntnlib::Turn::update(Pose pose)
 {
     float t = targetHeading;
-
-    // set state to 1 if the pid has settled
-    if (turnPID.settled())
-        ;//state = 1;
-    // exit if movement is in state 1 (settled)
-    if (state == 1)
-        return {13, 0};
+    t = fmod(t, 360);
 
     // reverse heading if doing movement in reverse
     if (reversed)
     {
-        pose.theta = fmod(pose.theta - M_PI, 2 * M_PI);
-        t = fmod(degToRad(t) - M_PI, 2 * M_PI);
-    }
-    else
-    {
-        t = fmod(degToRad(t), 2 * M_PI);
+        pose.theta = fmod(pose.theta - 180, 360);
     }
 
     // update completion vars
@@ -116,18 +88,18 @@ std::pair<float, float> tntnlib::Turn::update(Pose pose)
     }
 
     // calculate error
-    float error = angleError(t, pose.theta);
-   // printf("E:%.2f  TH:%.2f  BH:%.2f", radToDeg(error), radToDeg(t), radToDeg(pose.theta));
+    float error = angleError(t, pose.theta, false);
     // calculate distance travelled
     dist = fabs(error);
 
     // calculate the speed
     // converts error to degrees to make PID tuning easier
-    float output = turnPID.update(radToDeg(error), 0);
-    printf(" O:%.2f\n", output);
+    float output = turnPID.update(error, 0);
+    // printf("H: %.2f, TH:%.2f, E:%.2f", pose.theta, t, error);
+    // printf(" O:%.2f\n", output);
 
     // cap the speed
-    output = clamp(int(std::round(output)), -maxSpeed, maxSpeed);
+    output = clamp(output, -maxSpeed, maxSpeed);
     // return output
     return {output, -output};
 }

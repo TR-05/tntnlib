@@ -79,6 +79,8 @@ namespace tntnlib
          */
         bool settled();
 
+        float prevError = 0;
+
     private:
         float kF;
         float kA;
@@ -96,7 +98,6 @@ namespace tntnlib
         int smallTimeCounter = 0;
         int startTime = 0;
 
-        float prevError = 0;
         float totalError = 0;
         float prevOutput = 0;
     };
