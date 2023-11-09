@@ -102,4 +102,8 @@ namespace tntnlib
         float prevOutput = 0;
     };
 
+
+inline FAPID angularPID = FAPID(0,0,0,0,0);
+inline FAPID lateralPID = FAPID(0,0,0,0,0);
 } // namespace tntnlib
+

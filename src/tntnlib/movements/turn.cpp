@@ -31,12 +31,11 @@ using namespace tntnlib;
  * initial competition state.
  */
 
-void Turn::params(FAPID &TurnPID, float target, bool reversed, float maxSpeed)
+void Turn::params(float target, bool reversed, float maxSpeed)
 {
-    turnPID = TurnPID;
-    targetHeading = target;
-    Turn::reversed = reversed;
-    Turn::maxSpeed = maxSpeed;
+    turnSettings.targetHeading = target;
+    turnSettings.reversed = reversed;
+    turnSettings.maxSpeed = maxSpeed;
 }
 
 /**
@@ -49,12 +48,11 @@ void Turn::params(FAPID &TurnPID, float target, bool reversed, float maxSpeed)
  * initial competition state.
  */
 
-void Turn::params(FAPID &TurnPID, Pose target, bool reversed, float maxSpeed)
+void Turn::params(Pose target, bool reversed, float maxSpeed)
 {
-    turnPID = TurnPID;
-    targetPose = target;
-    Turn::reversed = reversed;
-    Turn::maxSpeed = maxSpeed;
+    turnSettings.targetPose = target;
+    turnSettings.reversed = reversed;
+    turnSettings.maxSpeed = maxSpeed;
 }
 
 
@@ -71,35 +69,37 @@ void Turn::params(FAPID &TurnPID, Pose target, bool reversed, float maxSpeed)
  */
 std::pair<float, float> tntnlib::Turn::update(Pose pose)
 {
-    float t = targetHeading;
+    float t = turnSettings.targetHeading;
     t = fmod(t, 360);
 
     // reverse heading if doing movement in reverse
-    if (reversed)
+    if (turnSettings.reversed)
     {
         pose.theta = fmod(pose.theta - 180, 360);
     }
 
     // update completion vars
-    if (dist == 0)
+    if (turnSettings.dist == 0)
     { // if dist is 0, this is the first time update() has been called
-        dist = 0.0001;
-        startPose = pose;
+        turnSettings.dist = 0.0001;
+        turnSettings.startPose = pose;
     }
 
     // calculate error
     float error = angleError(t, pose.theta, false);
     // calculate distance travelled
-    dist = fabs(error);
+    turnSettings.dist = fabs(error);
 
     // calculate the speed
     // converts error to degrees to make PID tuning easier
-    float output = turnPID.update(error, 0);
-    // printf("H: %.2f, TH:%.2f, E:%.2f", pose.theta, t, error);
-    // printf(" O:%.2f\n", output);
-
+    float output = angularPID.update(error, 0);
     // cap the speed
-    output = clamp(output, -maxSpeed, maxSpeed);
+    output = clamp(output, -turnSettings.maxSpeed, turnSettings.maxSpeed);
+    
+     printf("H: %.2f, TH:%.2f, E:%.2f", pose.theta, t, error);
+     printf(" O:%.2f\n", output);
+
+
     // return output
     return {output, -output};
 }

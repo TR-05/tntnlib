@@ -19,7 +19,7 @@ inertial imu = inertial(PORT1);
 
 tntnlib::Drivetrain_t drivebase{&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8};
 tntnlib::ChassisController_t lateralController{1, 3, 0, 100, 3, 500, 12};
-tntnlib::ChassisController_t angularController{.25, 1.8, .5, 1, 3, 500, 12};
+tntnlib::ChassisController_t angularController{.25, 2.2, .5, 1, 3, 500, 12};
 tntnlib::OdomSensors_t sensors{&vertical, nullptr, &horizontal, nullptr, &imu};
 // MUST BE NAMED chassis OR GET TREVOR TO ADD IT TO chassis.cpp and chassis.h (odomLoop and bottom of .h)
 tntnlib::Chassis chassis(drivebase, lateralController, angularController, sensors);
@@ -54,14 +54,24 @@ void autonomous(void)
   //chassis.initialize(false, 0,0,0);
   chassis.stateMachineOn();
   chassis.turnToHeading(90, 5000, false, 12);
-  //wait(2000, vex::msec);
+  wait(200, vex::msec);
   chassis.turnToHeading(0, 5000, false, 12);
+  wait(200, vex::msec);
+  chassis.turnToHeading(180, 5000, false, 12);
+  wait(200, vex::msec);
+  chassis.turnToHeading(0, 5000, false, 12);
+  wait(200, vex::msec);
+  chassis.turnToHeading(135, 5000, false, 12);
+  wait(200, vex::msec);
+  chassis.turnToHeading(0, 5000, false, 12);
+  wait(200, vex::msec);
 
   //chassis.turnToHeading(180, 2000, 12);
 }
 
 void usercontrol(void)
 {
+  chassis.stateMachineOff();
   printf("Entered Driver\n");
   chassis.initialize(false, 0,0,0);
   chassis.stateMachineOff();

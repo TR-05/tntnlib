@@ -20,9 +20,6 @@
 #include <functional>
 
 using namespace tntnlib;
-
-tntnlib::Turn turn_calc;
-
 /**
  * Initialize the chassis
  *
@@ -64,8 +61,6 @@ void Chassis::initialize(bool calibrateIMU, float x, float y, float theta)
     }
 }
 
-
-
 /**
  * Set the pose of the chassis
  *
@@ -105,9 +100,6 @@ Pose Chassis::getPose(bool radians)
         pose.theta = radToDeg(pose.theta);
     return pose;
 }
-
-
-
 
 /**
  * Wait until the robot has traveled a certain distance, or angle
@@ -163,7 +155,7 @@ void Chassis::waitUntilDone()
 void Chassis::turnToPose(float x, float y, int timeout, bool reversed, float maxSpeed)
 {
     // if a movement is already running, wait until it is done
-    //if (movement != nullptr)
+    // if (movement != nullptr)
     //    waitUntilDone();
     // set up the PID
     /*FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
@@ -186,28 +178,27 @@ void Chassis::turnToPose(float x, float y, int timeout, bool reversed, float max
  * done then is to pass the parameters to a new instance of Turn, and set the movement
  * pointer.
  */
+
 void Chassis::turnToHeading(float heading, int timeout, bool reversed, float maxSpeed)
 {
     //  set up the PID
-    FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
+    angularPID.setGains(0, 0, this->angularSettings.kP, 0, this->angularSettings.kD);
+    angularPID.setExit(this->angularSettings.largeError, this->angularSettings.smallError, this->angularSettings.largeErrorTimeout,
+                       this->angularSettings.smallErrorTimeout, timeout);
     angularPID.reset();
-    angularPID.setExit(angularSettings.largeError, angularSettings.smallError, angularSettings.largeErrorTimeout,
-                       angularSettings.smallErrorTimeout, timeout);
-    turn_calc.params(angularPID, heading, false, maxSpeed);
+    Turn::params(heading, false, maxSpeed);
 
     // setup the statemachine
     autoChassis = turnMode;
-    //while (!angularPID.settled()) {
-    printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
+    // while (!angularPID.settled()) {
+    // printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
     wait(50, vex::msec);
-    printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
-    do {
-    wait(10, vex::msec);
-    printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
+    // printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
+    do
+    {
+        wait(10, vex::msec);
+        // printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
     } while (fabs(angularPID.prevError) > angularSettings.largeError);
-
-
-
 }
 
 /**
@@ -226,7 +217,7 @@ void Chassis::moveTo(float x, float y, float theta, int timeout, bool forwards, 
                      int maxSpeed)
 {
     // if a movement is already running, wait until it is done
-    //if (movement != nullptr)
+    // if (movement != nullptr)
     //    waitUntilDone();
     // convert target theta to radians and standard form
     Pose target = Pose(x, y, M_PI_2 - degToRad(theta));
@@ -264,7 +255,7 @@ void Chassis::moveTo(float x, float y, float theta, int timeout, bool forwards, 
 void Chassis::follow(float path, float lookahead, int timeout, bool forwards, int maxSpeed)
 {
     // if a movement is already running, wait until it is done
-    //if (movement != nullptr)
+    // if (movement != nullptr)
     //    waitUntilDone();
     // create the movement
     // movement = make_unique<PurePursuit>(drivetrain.trackWidth, path, lookahead, timeout, forwards, maxSpeed);
@@ -287,7 +278,6 @@ void Chassis::stateMachineOff()
  * It updates any motion controller that may be running
  */
 
-
 std::pair<float, float> Chassis::stateMachine()
 {
     switch (autoChassis)
@@ -295,7 +285,7 @@ std::pair<float, float> Chassis::stateMachine()
     case disabledMode:
         return {0, 0};
     case turnMode:
-        return turn_calc.update(this->getPose());
+        return Turn::update(this->getPose());
     case moveToMode:
         return {0, 0};
     case followMode:
@@ -325,22 +315,6 @@ void Chassis::update()
         // move the motors
         drivetrain.leftMotors->spin(vex::fwd, output.first, vex::volt);
         drivetrain.rightMotors->spin(vex::fwd, output.second, vex::volt);
-        //printf("L:%.2f, R:%.2f\n", output.first, output.second);
+        // printf("L:%.2f, R:%.2f\n", output.first, output.second);
     }
-    /*
-    // update the motion controller, if one is running
-    if (movement != nullptr)
-    {
-        std::pair<int, int> output = movement->update(odom.getPose()); // get output
-        if (output.first == 128 && output.second == 128)
-        {                       // if the movement is done
-            movement = nullptr; // stop movement
-            output.first = 0;
-            output.second = 0;
-        }
-        // move the motors
-        drivetrain.leftMotors->spin(vex::fwd, output.first, vex::volt);
-        drivetrain.rightMotors->spin(vex::fwd, output.second, vex::volt);
-    }
-    */
 }
