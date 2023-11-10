@@ -61,7 +61,6 @@ void usercontrol(void)
 {
   chassis.stateMachineOff();
   printf("Entered Driver\n");
-  chassis.initialize(false, 0, 0, 0);
   chassis.stateMachineOff();
 
   while (1)

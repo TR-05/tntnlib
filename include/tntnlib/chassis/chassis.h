@@ -17,7 +17,6 @@
 #include "vex.h"
 
 #include "tntnlib/pose.h"
-#include "tntnlib/movements/movement.h"
 #include "tntnlib/devices/trackingWheel.h"
 #include "tntnlib/chassis/structs.h"
 #include "tntnlib/chassis/odom.h"

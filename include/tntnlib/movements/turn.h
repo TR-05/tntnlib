@@ -3,7 +3,6 @@
 #include <utility>
 #include "tntnlib/pose.h"
 #include "tntnlib/pid.h"
-#include "tntnlib/movements/movement.h"
 
 namespace tntnlib
 {
@@ -49,8 +48,6 @@ namespace tntnlib
                  *
                  * @return float
                  */
-
-
 
                 struct turnSettings_t
                 {
