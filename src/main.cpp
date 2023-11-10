@@ -29,7 +29,7 @@ int logger()
   while (true)
   {
     tntnlib::Pose current(chassis.getPose(false));
-    printf("\n\nSX:%.2f, SR:%.2f, IMU:%.2f ", sensors.horizontal1->getDistance(), sensors.vertical1->getDistance(), sensors.imu->rotation());
+    //printf("\n\nSX:%.2f, SR:%.2f, IMU:%.2f ", sensors.horizontal1->getDistance(), sensors.vertical1->getDistance(), sensors.imu->rotation());
     printf("X:%.2f, Y:%.2f, H:%.2f\n", current.x, current.y, current.theta);
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%.2f, Y:%.2f, H:%.2f", current.x, current.y, current.theta);
@@ -42,50 +42,26 @@ int logger()
 void pre_auton(void)
 {
   task log(logger);
-  // task testTask(testTask_1);
   printf("Entered pre_auton\n");
-  chassis.initialize(true, 0,0,0);
-  //tntnlib::Pose test(0, 0, 0);
-  // std::cout << "\n"
-  //          << test.x << ", " << test.y << ", " << test.theta << std::flush;
+  chassis.initialize(true, 0, 0, 0);
 }
 
 void autonomous(void)
 {
   printf("Entered Auto\n");
-  //chassis.initialize(false, 0,0,0);
+  // chassis.initialize(false, 0,0,0);
   chassis.stateMachineOn();
   float kp = angularController.kP;
   float ki = angularController.kI;
   float kd = angularController.kD;
 
-  chassis.turnToPose(-20, 0, false, 12, kp, ki, kd, 2);
-  wait(500000, vex::msec);
-  chassis.SwingOnLeftToPose(20, 0, false, 12, kp, ki, kd, 2);
-  chassis.SwingOnLeftToHeading(0, false, 12, kp, ki, kd, 2);
-  chassis.SwingOnRightToPose(20, 0, false, 12, kp, ki, kd, 2);
-  chassis.SwingOnRightToHeading(0, false, 12, kp, ki, kd, 2);
-
-  wait(500, vex::msec);
-  chassis.turnToHeading(90, false, 12, kp, ki, kd, 2);
-  wait(500, vex::msec);
-  chassis.turnToHeading(90, false, 12, kp, ki, kd, 2);
-  wait(500, vex::msec);
-  chassis.turnToHeading(180, false, 12, kp, ki, kd, 2);
-  wait(500, vex::msec);
-  chassis.turnToHeading(0, false, 12, kp, ki, kd, 2);
-  wait(500, vex::msec);
-  chassis.turnToHeading(135, false, 12, kp, ki, kd, 2);
-  wait(500, vex::msec);
-  chassis.turnToHeading(0, false, 12, kp, ki, kd, 2);
-  wait(500, vex::msec);
 }
 
 void usercontrol(void)
 {
   chassis.stateMachineOff();
   printf("Entered Driver\n");
-  chassis.initialize(false, 0,0,0);
+  chassis.initialize(false, 0, 0, 0);
   chassis.stateMachineOff();
 
   while (1)
