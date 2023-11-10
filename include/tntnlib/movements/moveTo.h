@@ -11,15 +11,6 @@ namespace tntnlib
      */
     namespace MoveTo
     {
-        /**
-         * @brief Construct a new Turn movement
-         *
-         * @param angularPID the angular PID to use
-         * @param target the target heading. Radians, 0 is right, increases counterclockwise
-         * @param maxSpeed the maximum speed the robot can turn at
-         */
-        void params(float target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight);
-        // Turn(FAPID angularPID, float target, int maxSpeed);
 
         /**
          * @brief Construct a new Turn movement
@@ -29,7 +20,7 @@ namespace tntnlib
          * @param reversed whether the robot should face the point with its back or front
          * @param maxSpeed the maximum speed the robot can turn at
          */
-        void params(Pose target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight);
+        void params(Pose target, bool reversed, float lmaxSpeed, float amaxSpeed, float lead, float chasePower);
         // Turn(FAPID angularPID, Pose target, bool reversed, int maxSpeed);
         /**
          * @brief Update the movement
@@ -49,19 +40,17 @@ namespace tntnlib
          * @return float
          */
 
-        struct moveSettings_t
-        {
-            Pose startPose = Pose(0, 0, 0);
-            Pose targetPose = Pose(0, 0, 0);
-            float targetHeading = 0;
-            bool reversed = false;
+        inline Pose startPose = Pose(0, 0, 0);
+        inline Pose targetPose = Pose(0, 0, 0);
+        inline Pose prevPose = Pose(0, 0, 0);
 
-            float maxSpeed;
-            int state = 0; // 0 = in progress, 1 = done
-            float dist = 0;
-            bool useHeading = true;
-            bool swingOnRight = false;
-            bool swingOnLeft = false;
-        } static moveSettings;
+        inline float targetHeading = 0;
+        inline bool reversed = false;
+        inline float lmaxSpeed;
+        inline float amaxSpeed;
+        inline int state = 0; // 0 = in progress, 1 = done
+        inline float dist = 0;
+        inline float lead = 0;
+        inline float chasePower = 0;
     };
 }; // namespace tntnlib

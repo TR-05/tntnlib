@@ -6,20 +6,6 @@
 #include "tntnlib/movements/turn.h"
 #include "vex.h"
 
-float clamp(float input, float min, float max)
-{
-    float output;
-    if (input > max)
-        output = max;
-    else if (input < min)
-        output = min;
-    else
-    {
-        output = input;
-    }
-    return output;
-}
-
 using namespace tntnlib;
 /**
  * Turn constructor

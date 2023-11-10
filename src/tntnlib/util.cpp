@@ -120,6 +120,20 @@ float tntnlib::ema(float current, float previous, float smooth)
     return (current * smooth) + (previous * (1 - smooth));
 }
 
+float tntnlib::clamp(float input, float min, float max)
+{
+    float output;
+    if (input > max)
+        output = max;
+    else if (input < min)
+        output = min;
+    else
+    {
+        output = input;
+    }
+    return output;
+}
+
 float tntnlib::time(bool millis)
 {
     float t = Brain.timer(vex::msec);

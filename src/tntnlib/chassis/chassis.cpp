@@ -12,7 +12,7 @@
 #include "vex.h"
 #include "tntnlib/util.h"
 #include "tntnlib/pid.h"
-// #include "tntnlib/movements/boomerang.h"
+ #include "tntnlib/movements/moveTo.h"
 #include "tntnlib/movements/purepursuit.h"
 #include "tntnlib/movements/turn.h"
 #include "tntnlib/chassis/chassis.h"
@@ -162,10 +162,21 @@ void Chassis::turnSettings(float kp, float ki, float kd)
 {
     //  set up the PID
     angularPID.setGains(0, 0, kp, ki, kd);
-    angularPID.setExit(this->angularSettings.largeError, this->angularSettings.smallError, this->angularSettings.largeErrorTimeout,
-                       this->angularSettings.smallErrorTimeout, 0);
     angularPID.reset();
     angularPID.setIntegral(angularSettings.kIStart, angularSettings.kIMax);
+    // setup the statemachine
+    autoChassis = turnMode;
+}
+
+void Chassis::boomerangSettings(float akp, float aki, float akd, float lkp, float lki, float lkd)
+{
+    //  set up the PIDs
+    angularPID.setGains(0, 0, akp, aki, akd);
+    linearPID.setGains(0, 0, lkp, lki, lkd);
+    angularPID.reset();
+    linearPID.reset();
+    angularPID.setIntegral(angularSettings.kIStart, angularSettings.kIMax);
+    linearPID.setIntegral(linearSettings.kIStart, linearSettings.kIMax);
     // setup the statemachine
     autoChassis = turnMode;
 }
@@ -254,22 +265,14 @@ void Chassis::SwingOnRightToHeading(float heading, bool reversed, float maxSpeed
  * It also needs to decide what the chasePower should be. Usually this will be the value set in
  * the drivetrain struct, but it can be overridden by the user if needed.
  */
-void Chassis::moveTo(float x, float y, float theta, int timeout, bool forwards, float chasePower, float lead,
-                     int maxSpeed)
+void Chassis::moveTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float breakDist)
 {
-
     Pose target = Pose(x, y, theta);
-    // set up PIDs
-    /*FAPID linearPID(0, 0, lateralSettings.kP, 0, lateralSettings.kD);
-    linearPID.setExit(lateralSettings.largeError, lateralSettings.smallError, lateralSettings.largeErrorTimeout,
-                      lateralSettings.smallErrorTimeout, timeout);
-    FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);*/
-    // if chasePower is 0, is the value defined in the drivetrain struct
-    if (chasePower == 0)
-        chasePower = drivetrain.chasePower;
-    // create the movement
+    boomerangSettings(akp, aki, akd, lkp, lki, lkd);
+    MoveTo::params(target, reversed, lmaxSpeed, amaxSpeed, lead, chasePower);
+    MoveTo::state = 0;
+    waitUntilError(linearPID.prevError, breakDist);
     autoChassis = moveToMode;
-    // movement = make_unique<Boomerang>(linearPID, angularPID, target, forwards, chasePower, lead, maxSpeed);
 }
 
 /**
@@ -313,7 +316,7 @@ std::pair<float, float> Chassis::stateMachine()
     case turnMode:
         return Turn::update(this->getPose());
     case moveToMode:
-        return {0, 0};
+        return MoveTo::update(this->getPose());
     case followMode:
         return {0, 0};
 

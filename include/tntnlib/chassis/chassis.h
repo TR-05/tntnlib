@@ -62,7 +62,7 @@ namespace tntnlib
         Chassis(Drivetrain_t drivetrain, ChassisController_t lateralSettings, ChassisController_t angularSettings,
                 OdomSensors_t sensors, DriveCurveFunction_t driveCurve = 0)
             : drivetrain(drivetrain),
-              lateralSettings(lateralSettings),
+              linearSettings(lateralSettings),
               angularSettings(angularSettings),
               sensors(sensors),
               driveCurve(driveCurve),
@@ -127,6 +127,8 @@ namespace tntnlib
          */
         void waitUntilError(float &error, float margin);
 
+        void boomerangSettings(float akp, float aki, float akd, float lkp, float lki, float lkd);
+
         /**
          * @brief Prepare the angular pid for a turn movement
          *
@@ -187,8 +189,7 @@ namespace tntnlib
          * default to global value
          * @param maxSpeed the maximum speed the robot can move at. 12 at default
          */
-        void moveTo(float x, float y, float theta, int timeout, bool forwards = true, float chasePower = 0,
-                    float lead = 0.6, int maxSpeed = 12);
+        void moveTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float breakDist);
 
         /**
          * @brief Move the chassis using a custom motion algorithm
@@ -267,7 +268,7 @@ namespace tntnlib
         // std::unique_ptr<Movement> movement;
         std::unique_ptr<vex::task> task;
 
-        ChassisController_t lateralSettings;
+        ChassisController_t linearSettings;
         ChassisController_t angularSettings;
         Drivetrain_t drivetrain;
         OdomSensors_t sensors;

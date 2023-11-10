@@ -83,6 +83,7 @@ float avg(std::vector<float> values);
  */
 float ema(float current, float previous, float smooth);
 
+float clamp(float input, float min, float max);
 /**
  * @brief Return the current program time
  *
