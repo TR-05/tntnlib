@@ -140,11 +140,16 @@ void Chassis::waitUntilDone()
     prevDist = 0;
 }
 
+void Chassis::waitUntilError(float &error, float margin)
+{
+    do
+    {
+        wait(10, vex::msec);
+    } while (fabs(error) > margin);
+}
+
 /**
  * This function sets up the Turn controller
- *
- * Like all chassis movement functions, it sets a member pointer to a new movement.
- * the movement is a derived class of the Movement class
  *
  * There are some things that need to be done before instantiating the movement however.
  * It needs to set up a PID which the movement will use to turn the robot. We also need
@@ -152,25 +157,29 @@ void Chassis::waitUntilDone()
  * done then is to pass the parameters to a new instance of Turn, and set the movement
  * pointer.
  */
-void Chassis::turnToPose(float x, float y, int timeout, bool reversed, float maxSpeed)
+
+void Chassis::turnSettings(float kp, float ki, float kd)
 {
-    // if a movement is already running, wait until it is done
-    // if (movement != nullptr)
-    //    waitUntilDone();
-    // set up the PID
-    /*FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD);
-    angularPID.setExit(angularSettings.largeError, angularSettings.smallError, angularSettings.largeErrorTimeout,
-                       angularSettings.smallErrorTimeout, timeout);
-    // create the movement
-    autoChassis = turnMode;*/
-    // movement = make_unique<Turn>(angularPID, Pose(x, y), reversed, maxSpeed);
+    //  set up the PID
+    angularPID.setGains(0, 0, kp, ki, kd);
+    angularPID.setExit(this->angularSettings.largeError, this->angularSettings.smallError, this->angularSettings.largeErrorTimeout,
+                       this->angularSettings.smallErrorTimeout, 0);
+    angularPID.reset();
+    angularPID.setIntegral(angularSettings.kIStart, angularSettings.kIMax);
+    // setup the statemachine
+    autoChassis = turnMode;
+}
+
+void Chassis::turnToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
+{
+    turnSettings(kp, ki, kd);
+    Pose target(x, y, 0);
+    Turn::params(target, reversed, maxSpeed);
+    waitUntilError(angularPID.prevError, breakAngle);
 }
 
 /**
  * This function sets up the Turn controller
- *
- * Like all chassis movement functions, it sets a member pointer to a new movement.
- * the movement is a derived class of the Movement class
  *
  * There are some things that need to be done before instantiating the movement however.
  * It needs to set up a PID which the movement will use to turn the robot. We also need to
@@ -179,26 +188,11 @@ void Chassis::turnToPose(float x, float y, int timeout, bool reversed, float max
  * pointer.
  */
 
-void Chassis::turnToHeading(float heading, int timeout, bool reversed, float maxSpeed)
+void Chassis::turnToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
 {
-    //  set up the PID
-    angularPID.setGains(0, 0, this->angularSettings.kP, 0, this->angularSettings.kD);
-    angularPID.setExit(this->angularSettings.largeError, this->angularSettings.smallError, this->angularSettings.largeErrorTimeout,
-                       this->angularSettings.smallErrorTimeout, timeout);
-    angularPID.reset();
-    Turn::params(heading, false, maxSpeed);
-
-    // setup the statemachine
-    autoChassis = turnMode;
-    // while (!angularPID.settled()) {
-    // printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
-    wait(50, vex::msec);
-    // printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
-    do
-    {
-        wait(10, vex::msec);
-        // printf("E:%.2f, Threshold:%.2f\n", angularPID.prevError, angularSettings.largeError);
-    } while (fabs(angularPID.prevError) > angularSettings.largeError);
+    turnSettings(kp, ki, kd);
+    Turn::params(heading, reversed, maxSpeed);
+    waitUntilError(angularPID.prevError, breakAngle);
 }
 
 /**
@@ -216,11 +210,8 @@ void Chassis::turnToHeading(float heading, int timeout, bool reversed, float max
 void Chassis::moveTo(float x, float y, float theta, int timeout, bool forwards, float chasePower, float lead,
                      int maxSpeed)
 {
-    // if a movement is already running, wait until it is done
-    // if (movement != nullptr)
-    //    waitUntilDone();
-    // convert target theta to radians and standard form
-    Pose target = Pose(x, y, M_PI_2 - degToRad(theta));
+
+    Pose target = Pose(x, y, theta);
     // set up PIDs
     /*FAPID linearPID(0, 0, lateralSettings.kP, 0, lateralSettings.kD);
     linearPID.setExit(lateralSettings.largeError, lateralSettings.smallError, lateralSettings.largeErrorTimeout,
@@ -233,18 +224,6 @@ void Chassis::moveTo(float x, float y, float theta, int timeout, bool forwards, 
     autoChassis = moveToMode;
     // movement = make_unique<Boomerang>(linearPID, angularPID, target, forwards, chasePower, lead, maxSpeed);
 }
-
-/**
- * Move the robot with a custom motion algorithm
- */
-/*void Chassis::moveCustom(std::unique_ptr<Movement> movement)
-{
-    // if a movement is already running, wait until it is done
-    if (movement != nullptr)
-        waitUntilDone();
-    // create the movement
-    // this->movement = std::move(movement);
-}*/
 
 /**
  * This function sets up Pure Pursuit

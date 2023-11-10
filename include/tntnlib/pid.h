@@ -55,6 +55,8 @@ namespace tntnlib
          * @param maxTime
          */
         void setExit(float largeError, float smallError, int largeTime, int smallTime, int maxTime);
+
+        void setIntegral(float kIStart, float kIMax);
         /**
          * @brief Update the FAPID
          *
@@ -87,7 +89,8 @@ namespace tntnlib
         float kP;
         float kI;
         float kD;
-
+        float kIStart;
+        float kIMax;
         float largeError;
         float smallError;
         int largeTime = 0;

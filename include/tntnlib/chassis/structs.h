@@ -41,7 +41,10 @@ typedef struct {
  */
 typedef struct {
         float kP;
+        float kI;
         float kD;
+        float kIStart;
+        float kIMax;
         float smallError;
         float smallErrorTimeout;
         float largeError;

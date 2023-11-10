@@ -18,8 +18,8 @@ tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_2
 inertial imu = inertial(PORT1);
 
 tntnlib::Drivetrain_t drivebase{&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8};
-tntnlib::ChassisController_t lateralController{1, 3, 0, 100, 3, 500, 12};
-tntnlib::ChassisController_t angularController{.25, 2.2, .5, 1, 3, 500, 12};
+tntnlib::ChassisController_t lateralController{1, 0, 3, 0, 0, 0, 100, 3, 500, 12};
+tntnlib::ChassisController_t angularController{.25, 0.009, 2.0, 10, 2, .5, 1, 3, 500, 12};
 tntnlib::OdomSensors_t sensors{&vertical, nullptr, &horizontal, nullptr, &imu};
 // MUST BE NAMED chassis OR GET TREVOR TO ADD IT TO chassis.cpp and chassis.h (odomLoop and bottom of .h)
 tntnlib::Chassis chassis(drivebase, lateralController, angularController, sensors);
@@ -53,20 +53,24 @@ void autonomous(void)
   printf("Entered Auto\n");
   //chassis.initialize(false, 0,0,0);
   chassis.stateMachineOn();
-  chassis.turnToHeading(90, 5000, false, 12);
-  wait(200, vex::msec);
-  chassis.turnToHeading(0, 5000, false, 12);
-  wait(200, vex::msec);
-  chassis.turnToHeading(180, 5000, false, 12);
-  wait(200, vex::msec);
-  chassis.turnToHeading(0, 5000, false, 12);
-  wait(200, vex::msec);
-  chassis.turnToHeading(135, 5000, false, 12);
-  wait(200, vex::msec);
-  chassis.turnToHeading(0, 5000, false, 12);
-  wait(200, vex::msec);
+  float kp = angularController.kP;
+  float ki = angularController.kI;
+  float kd = angularController.kD;
 
-  //chassis.turnToHeading(180, 2000, 12);
+  chassis.turnToPose(-20, 0, false, 12, kp, ki, kd, 2);
+  wait(500, vex::msec);
+  chassis.turnToHeading(90, false, 12, kp, ki, kd, 2);
+  wait(500, vex::msec);
+  chassis.turnToHeading(90, false, 12, kp, ki, kd, 2);
+  wait(500, vex::msec);
+  chassis.turnToHeading(180, false, 12, kp, ki, kd, 2);
+  wait(500, vex::msec);
+  chassis.turnToHeading(0, false, 12, kp, ki, kd, 2);
+  wait(500, vex::msec);
+  chassis.turnToHeading(135, false, 12, kp, ki, kd, 2);
+  wait(500, vex::msec);
+  chassis.turnToHeading(0, false, 12, kp, ki, kd, 2);
+  wait(500, vex::msec);
 }
 
 void usercontrol(void)

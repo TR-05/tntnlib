@@ -49,6 +49,9 @@ namespace tntnlib
                  *
                  * @return float
                  */
+
+                inline bool useHeading = true;
+
                 struct turnSettings_t
                 {
                         Pose startPose = Pose(0, 0, 0);

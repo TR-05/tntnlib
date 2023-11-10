@@ -118,17 +118,40 @@ namespace tntnlib
         void waitUntilDone();
 
         /**
+         * @brief Wait until the robot has an error less than a threshold
+         *
+         * @note Units of error and margin must match
+         *
+         * @param error the changing variable that you are measuring
+         *
+         * @param margin the static margin
+         */
+        void waitUntilError(float &error, float margin);
+
+        /**
+         * @brief Prepare the angular pid for a turn movement
+         *
+         * The PID logging id is "angularPID"
+         *
+         */
+        void turnSettings(float kp, float ki, float kd);
+
+        /**
          * @brief Turn the chassis so it is facing a point
          *
          * The PID logging id is "angularPID"
          *
          * @param x x location
          * @param y y location
-         * @param timeout longest time the robot can spend moving
          * @param reversed whether the robot should turn to face the point with the back of the robot. false by default
-         * @param maxSpeed the maximum speed the robot can turn at. Default is 12
+         * @param maxSpeed the maximum speed the robot can turn at
+         * @param kp the turn kp value
+         * @param ki the turn ki value
+         * @param kd the turn kd value
+         * @param breakAngle the error value to break out of the movement at
+
          */
-        void turnToPose(float x, float y, int timeout, bool reversed, float maxSpeed = 12);
+        void turnToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
 
         /**
          * @brief Turn the chassis so it is facing a heading
@@ -136,10 +159,14 @@ namespace tntnlib
          * The PID logging id is "angularPID"
          *
          * @param heading the heading the robot should face. Units are in degrees
-         * @param timeout longest time the robot can spend moving
-         * @param maxSpeed the maximum speed the robot can turn at. Default is 12
+         * @param reversed whether the robot should turn to face the point with the back of the robot. false by default
+         * @param maxSpeed the maximum speed the robot can turn at
+         * @param kp the turn kp value
+         * @param ki the turn ki value
+         * @param kd the turn kd value
+         * @param breakAngle the error value to break out of the movement at
          */
-        void turnToHeading(float heading, int timeout, bool reversed, float maxSpeed = 12);
+        void turnToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
 
         /**
          * @brief Move the chassis towards the target pose
@@ -165,7 +192,7 @@ namespace tntnlib
          *
          * @param movement shared pointer to the custom movement
          */
-        //void moveCustom(std::unique_ptr<Movement> movement);
+        // void moveCustom(std::unique_ptr<Movement> movement);
 
         /**
          * @brief Move the chassis along a path
@@ -210,15 +237,20 @@ namespace tntnlib
          * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
          * curve, refer to the `defaultDriveCurve` documentation.
          */
+
         void curvature(int throttle, int turn, float cureGain = 0.0);
         void update();
         void stateMachineOn();
         void stateMachineOff();
-        enum moveState {disabledMode, turnMode, moveToMode, followMode};
+        enum moveState
+        {
+            disabledMode,
+            turnMode,
+            moveToMode,
+            followMode
+        };
         moveState autoChassis = turnMode;
         std::pair<float, float> stateMachine();
-
-
 
     private:
         /**
@@ -229,7 +261,7 @@ namespace tntnlib
 
         float prevDist = 0; // the previous distance travelled by the movement
         Odometry odom;
-        //std::unique_ptr<Movement> movement;
+        // std::unique_ptr<Movement> movement;
         std::unique_ptr<vex::task> task;
 
         ChassisController_t lateralSettings;

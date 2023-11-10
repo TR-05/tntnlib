@@ -16,7 +16,6 @@
 #include "tntnlib/util.h"
 #include "tntnlib/devices/defaultDevices.h"
 
-
 /**
  * @brief Slew rate limiter
  *
@@ -25,11 +24,15 @@
  * @param maxChange maximum change. No maximum if set to 0
  * @return float - the limited value
  */
-float tntnlib::slew(float target, float current, float maxChange) {
+float tntnlib::slew(float target, float current, float maxChange)
+{
     float change = target - current;
-    if (maxChange == 0) return target;
-    if (change > maxChange) change = maxChange;
-    else if (change < -maxChange) change = -maxChange;
+    if (maxChange == 0)
+        return target;
+    if (change > maxChange)
+        change = maxChange;
+    else if (change < -maxChange)
+        change = -maxChange;
     return current + change;
 }
 
@@ -49,6 +52,9 @@ float tntnlib::radToDeg(float rad) { return rad * 180 / M_PI; }
  */
 float tntnlib::degToRad(float deg) { return deg * M_PI / 180; }
 
+float tntnlib::degToStandardFormRad(float deg) { return M_PI_2 - (deg * M_PI / 180); }
+float tntnlib::StandardFormRadToDeg(float rad) { return (M_PI_2 - rad) * 180 / M_PI; }
+
 /**
  * @brief Calculate the error between 2 angles. Useful when calculating the error between 2 headings
  *
@@ -57,14 +63,17 @@ float tntnlib::degToRad(float deg) { return deg * M_PI / 180; }
  * @param radians true if angle is in radians, false if not. False by default
  * @return float wrapped angle
  */
-float tntnlib::angleError(float angle1, float angle2, bool radians) {
+float tntnlib::angleError(float angle1, float angle2, bool radians)
+{
     float max = radians ? 2 * M_PI : 360;
     float half = radians ? M_PI : 180;
     angle1 = fmod(angle1, max);
     angle2 = fmod(angle2, max);
     float error = angle1 - angle2;
-    if (error > half) error -= max;
-    else if (error < -half) error += max;
+    if (error > half)
+        error -= max;
+    else if (error < -half)
+        error += max;
     return error;
 }
 
@@ -74,9 +83,12 @@ float tntnlib::angleError(float angle1, float angle2, bool radians) {
  * @param x the number to get the sign of
  * @return int - -1 if negative, 1 if positive
  */
-int tntnlib::sgn(float x) {
-    if (x < 0) return -1;
-    else return 1;
+int tntnlib::sgn(float x)
+{
+    if (x < 0)
+        return -1;
+    else
+        return 1;
 }
 
 /**
@@ -85,9 +97,13 @@ int tntnlib::sgn(float x) {
  * @param values
  * @return float
  */
-float tntnlib::avg(std::vector<float> values) {
+float tntnlib::avg(std::vector<float> values)
+{
     float sum = 0;
-    for (float value : values) { sum += value; }
+    for (float value : values)
+    {
+        sum += value;
+    }
     return sum / values.size();
 }
 
@@ -99,11 +115,13 @@ float tntnlib::avg(std::vector<float> values) {
  * @param smooth smoothing factor (0-1). 1 means no smoothing, 0 means no change
  * @return float - the smoothed output
  */
-float tntnlib::ema(float current, float previous, float smooth) {
+float tntnlib::ema(float current, float previous, float smooth)
+{
     return (current * smooth) + (previous * (1 - smooth));
 }
 
-float tntnlib::time(bool millis) {
+float tntnlib::time(bool millis)
+{
     float t = Brain.timer(vex::msec);
     return millis ? t : t / 1000.0;
 }
@@ -112,7 +130,8 @@ float tntnlib::time(bool millis) {
  *
  * Inspired by: https://www.chiefdelphi.com/t/paper-implementation-of-the-adaptive-pure-pursuit-controller/166552
  */
-float tntnlib::getCurvature(Pose p1, Pose p2) {
+float tntnlib::getCurvature(Pose p1, Pose p2)
+{
     // calculate whether the pose is on the left or right side of the circle
     float side = sgn(sin(p1.theta) * (p2.x - p1.x) - cos(p1.theta) * (p2.y - p1.y));
     // calculate center point and radius
@@ -134,14 +153,17 @@ float tntnlib::getCurvature(Pose p1, Pose p2) {
  * The function only calculates the square of the distance, because the exact distance is not needed.
  * It only needs to know what waypoint is closest.
  */
-tntnlib::Waypoint tntnlib::closestWaypoint(const std::vector<Waypoint>& waypoints, const Pose& target) {
+tntnlib::Waypoint tntnlib::closestWaypoint(const std::vector<Waypoint> &waypoints, const Pose &target)
+{
     Waypoint closest = waypoints[0];
     float dist = pow(target.x - closest.x, 2) + pow(target.y - closest.y, 2);
 
     // loop through all path points
-    for (const Waypoint& wp : waypoints) {
+    for (const Waypoint &wp : waypoints)
+    {
         const float dist2 = pow(target.x - wp.x, 2) + pow(target.y - wp.y, 2);
-        if (dist2 < dist) {
+        if (dist2 < dist)
+        {
             closest = wp;
             dist = dist2;
         }
@@ -159,7 +181,8 @@ tntnlib::Waypoint tntnlib::closestWaypoint(const std::vector<Waypoint>& waypoint
  * If there are no intersections, it returns the center of the circle.
  * If there are multiple intersections, it returns the first one.
  */
-tntnlib::Pose tntnlib::circleLineIntersect(Pose p1, Pose p2, Pose center, float radius) {
+tntnlib::Pose tntnlib::circleLineIntersect(Pose p1, Pose p2, Pose center, float radius)
+{
     // uses the quadratic formula to calculate intersection points
     tntnlib::Pose d = p2 - p1;
     tntnlib::Pose f = p1 - center;
@@ -169,16 +192,20 @@ tntnlib::Pose tntnlib::circleLineIntersect(Pose p1, Pose p2, Pose center, float 
     float discriminant = pow(b, 2) - 4 * a * c;
 
     // if a possible intersection was found
-    if (discriminant >= 0) {
+    if (discriminant >= 0)
+    {
         discriminant = sqrt(discriminant);
         float t1 = (-b - discriminant) / (2 * a);
         float t2 = (-b + discriminant) / (2 * a);
 
         // prioritize first intersection
         float t = -1;
-        if (t2 >= 0 && t2 <= 1) t = t2;
-        if (t1 >= 0 && t1 <= 1) t = t1;
-        if (t == -1) return center;
+        if (t2 >= 0 && t2 <= 1)
+            t = t2;
+        if (t1 >= 0 && t1 <= 1)
+            t = t1;
+        if (t == -1)
+            return center;
 
         // calculate x and y values of intersection point
         return p1.lerp(p2, t);

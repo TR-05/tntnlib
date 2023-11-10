@@ -44,6 +44,9 @@ float radToDeg(float rad);
  */
 float degToRad(float deg);
 
+float degToStandardFormRad(float deg);
+float StandardFormRadToDeg(float Rad);
+
 /**
  * @brief Calculate the error between 2 angles. Useful when calculating the error between 2 headings
  *

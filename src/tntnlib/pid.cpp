@@ -70,6 +70,11 @@ void tntnlib::FAPID::setExit(float largeError, float smallError, int largeTime, 
     this->maxTime = maxTime;
 }
 
+void tntnlib::FAPID::setIntegral(float kIStart, float kIMax) {
+    this->kIStart = kIStart;
+    this->kIMax = kIMax;
+}
+
 /**
  * @brief Update the FAPID
  *
@@ -86,6 +91,14 @@ float tntnlib::FAPID::update(float target, float position, bool log)
     // calculate output
     float error = target - position;
     float deltaError = error - prevError;
+
+    if (sgn(error) != sgn(prevError))
+        totalError = 0;
+    if (fabs(error) > kIStart)
+        totalError = 0;
+    if (fabs(kI * totalError) > kIMax)
+        totalError = 0, totalError = sgn(totalError) * kIMax / kI; 
+        std::cout << totalError*kI << "\n";
     float output = kF * target + kP * error + kI * totalError + kD * deltaError;
     if (kA != 0)
         output = tntnlib::slew(output, prevOutput, kA);

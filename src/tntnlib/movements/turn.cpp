@@ -36,6 +36,7 @@ void Turn::params(float target, bool reversed, float maxSpeed)
     turnSettings.targetHeading = target;
     turnSettings.reversed = reversed;
     turnSettings.maxSpeed = maxSpeed;
+    useHeading = true;
 }
 
 /**
@@ -53,8 +54,8 @@ void Turn::params(Pose target, bool reversed, float maxSpeed)
     turnSettings.targetPose = target;
     turnSettings.reversed = reversed;
     turnSettings.maxSpeed = maxSpeed;
+    useHeading = false;
 }
-
 
 /**
  * The turning algorithm uses field-relative position of the robot to face a target heading
@@ -69,7 +70,14 @@ void Turn::params(Pose target, bool reversed, float maxSpeed)
  */
 std::pair<float, float> tntnlib::Turn::update(Pose pose)
 {
-    float t = turnSettings.targetHeading;
+    float t;
+    if (useHeading)
+        t = turnSettings.targetHeading;
+    else
+    {
+        t = StandardFormRadToDeg(pose.angle(turnSettings.targetPose));
+    }
+
     t = fmod(t, 360);
 
     // reverse heading if doing movement in reverse
@@ -95,10 +103,6 @@ std::pair<float, float> tntnlib::Turn::update(Pose pose)
     float output = angularPID.update(error, 0);
     // cap the speed
     output = clamp(output, -turnSettings.maxSpeed, turnSettings.maxSpeed);
-    
-     printf("H: %.2f, TH:%.2f, E:%.2f", pose.theta, t, error);
-     printf(" O:%.2f\n", output);
-
 
     // return output
     return {output, -output};
