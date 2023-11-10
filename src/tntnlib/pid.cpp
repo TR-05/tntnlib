@@ -98,7 +98,7 @@ float tntnlib::FAPID::update(float target, float position, bool log)
         totalError = 0;
     if (fabs(kI * totalError) > kIMax)
         totalError = 0, totalError = sgn(totalError) * kIMax / kI; 
-        std::cout << totalError*kI << "\n";
+        //std::cout << totalError*kI << "\n";
     float output = kF * target + kP * error + kI * totalError + kD * deltaError;
     if (kA != 0)
         output = tntnlib::slew(output, prevOutput, kA);

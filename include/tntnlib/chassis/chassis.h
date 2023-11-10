@@ -152,6 +152,8 @@ namespace tntnlib
 
          */
         void turnToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
+        void SwingOnLeftToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
+        void SwingOnRightToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
 
         /**
          * @brief Turn the chassis so it is facing a heading
@@ -167,6 +169,8 @@ namespace tntnlib
          * @param breakAngle the error value to break out of the movement at
          */
         void turnToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
+        void SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
+        void SwingOnRightToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
 
         /**
          * @brief Move the chassis towards the target pose

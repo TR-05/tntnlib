@@ -31,12 +31,14 @@ using namespace tntnlib;
  * initial competition state.
  */
 
-void Turn::params(float target, bool reversed, float maxSpeed)
+void Turn::params(float target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight)
 {
     turnSettings.targetHeading = target;
     turnSettings.reversed = reversed;
     turnSettings.maxSpeed = maxSpeed;
-    useHeading = true;
+    turnSettings.useHeading = true;
+    turnSettings.swingOnLeft = swingOnLeft;
+    turnSettings.swingOnRight = swingOnRight;
 }
 
 /**
@@ -49,12 +51,14 @@ void Turn::params(float target, bool reversed, float maxSpeed)
  * initial competition state.
  */
 
-void Turn::params(Pose target, bool reversed, float maxSpeed)
+void Turn::params(Pose target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight)
 {
     turnSettings.targetPose = target;
     turnSettings.reversed = reversed;
     turnSettings.maxSpeed = maxSpeed;
-    useHeading = false;
+    turnSettings.useHeading = false;
+    turnSettings.swingOnLeft = swingOnLeft;
+    turnSettings.swingOnRight = swingOnRight;
 }
 
 /**
@@ -71,7 +75,7 @@ void Turn::params(Pose target, bool reversed, float maxSpeed)
 std::pair<float, float> tntnlib::Turn::update(Pose pose)
 {
     float t;
-    if (useHeading)
+    if (turnSettings.useHeading)
         t = turnSettings.targetHeading;
     else
     {
@@ -105,5 +109,9 @@ std::pair<float, float> tntnlib::Turn::update(Pose pose)
     output = clamp(output, -turnSettings.maxSpeed, turnSettings.maxSpeed);
 
     // return output
+    if (turnSettings.swingOnLeft)
+        return {0, -output};
+    if (turnSettings.swingOnRight)
+        return {output, 0};
     return {output, -output};
 }

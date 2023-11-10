@@ -174,8 +174,32 @@ void Chassis::turnToPose(float x, float y, bool reversed, float maxSpeed, float 
 {
     turnSettings(kp, ki, kd);
     Pose target(x, y, 0);
-    Turn::params(target, reversed, maxSpeed);
+    Turn::params(target, reversed, maxSpeed, false, false);
     waitUntilError(angularPID.prevError, breakAngle);
+}
+
+void Chassis::SwingOnLeftToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
+{
+    turnSettings(kp, ki, kd);
+    Pose target(x, y, 0);
+    Turn::params(target, reversed, maxSpeed, true, false);
+    drivetrain.leftMotors->stop(vex::hold);
+    drivetrain.rightMotors->stop(vex::coast);
+    waitUntilError(angularPID.prevError, breakAngle);
+    drivetrain.leftMotors->stop(vex::coast);
+    drivetrain.rightMotors->stop(vex::coast);
+}
+
+void Chassis::SwingOnRightToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
+{
+    turnSettings(kp, ki, kd);
+    Pose target(x, y, 0);
+    Turn::params(target, reversed, maxSpeed, false, true);
+    drivetrain.leftMotors->stop(vex::coast);
+    drivetrain.rightMotors->stop(vex::hold);
+    waitUntilError(angularPID.prevError, breakAngle);
+    drivetrain.leftMotors->stop(vex::coast);
+    drivetrain.rightMotors->stop(vex::coast);
 }
 
 /**
@@ -191,9 +215,32 @@ void Chassis::turnToPose(float x, float y, bool reversed, float maxSpeed, float 
 void Chassis::turnToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
 {
     turnSettings(kp, ki, kd);
-    Turn::params(heading, reversed, maxSpeed);
+    Turn::params(heading, reversed, maxSpeed, false, false);
     waitUntilError(angularPID.prevError, breakAngle);
 }
+
+void Chassis::SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
+{
+    turnSettings(kp, ki, kd);
+    Turn::params(heading, reversed, maxSpeed, true, false);
+    drivetrain.leftMotors->stop(vex::hold);
+    drivetrain.rightMotors->stop(vex::coast);
+    waitUntilError(angularPID.prevError, breakAngle);
+    drivetrain.leftMotors->stop(vex::coast);
+    drivetrain.rightMotors->stop(vex::coast);
+}
+
+void Chassis::SwingOnRightToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
+{
+    turnSettings(kp, ki, kd);
+    Turn::params(heading, reversed, maxSpeed, false, true);
+    drivetrain.leftMotors->stop(vex::coast);
+    drivetrain.rightMotors->stop(vex::hold);
+    waitUntilError(angularPID.prevError, breakAngle);
+    drivetrain.leftMotors->stop(vex::coast);
+    drivetrain.rightMotors->stop(vex::coast);
+}
+
 
 /**
  * This function sets up the Boomerang controller
@@ -294,6 +341,5 @@ void Chassis::update()
         // move the motors
         drivetrain.leftMotors->spin(vex::fwd, output.first, vex::volt);
         drivetrain.rightMotors->spin(vex::fwd, output.second, vex::volt);
-        // printf("L:%.2f, R:%.2f\n", output.first, output.second);
     }
 }

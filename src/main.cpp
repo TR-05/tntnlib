@@ -29,8 +29,10 @@ int logger()
   while (true)
   {
     tntnlib::Pose current(chassis.getPose(false));
-    //printf("\n\nSX:%.2f, SR:%.2f, IMU:%.2f ", sensors.horizontal1->getDistance(), sensors.vertical1->getDistance(), sensors.imu->rotation());
-    //printf("X:%.2f, Y:%.2f, H:%.2f\n", current.x, current.y, current.theta);
+    printf("\n\nSX:%.2f, SR:%.2f, IMU:%.2f ", sensors.horizontal1->getDistance(), sensors.vertical1->getDistance(), sensors.imu->rotation());
+    printf("X:%.2f, Y:%.2f, H:%.2f\n", current.x, current.y, current.theta);
+    Brain.Screen.clearLine();
+    Brain.Screen.print("X:%.2f, Y:%.2f, H:%.2f", current.x, current.y, current.theta);
     wait(50, msec);
   }
 
@@ -58,6 +60,12 @@ void autonomous(void)
   float kd = angularController.kD;
 
   chassis.turnToPose(-20, 0, false, 12, kp, ki, kd, 2);
+  wait(500000, vex::msec);
+  chassis.SwingOnLeftToPose(20, 0, false, 12, kp, ki, kd, 2);
+  chassis.SwingOnLeftToHeading(0, false, 12, kp, ki, kd, 2);
+  chassis.SwingOnRightToPose(20, 0, false, 12, kp, ki, kd, 2);
+  chassis.SwingOnRightToHeading(0, false, 12, kp, ki, kd, 2);
+
   wait(500, vex::msec);
   chassis.turnToHeading(90, false, 12, kp, ki, kd, 2);
   wait(500, vex::msec);

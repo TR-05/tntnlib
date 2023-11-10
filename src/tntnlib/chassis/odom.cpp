@@ -211,8 +211,8 @@ void Odometry::update()
     // calculate global x and y
     pose.x += localY * sin(avgHeading);
     pose.y += localY * cos(avgHeading);
-    pose.x += localX * -cos(avgHeading);
-    pose.y += localX * sin(avgHeading);
+    pose.x += localX * cos(avgHeading);
+    pose.y += localX * -sin(avgHeading);
     pose.theta = heading;
 
 
