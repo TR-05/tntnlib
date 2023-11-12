@@ -58,7 +58,11 @@ void autonomous(void)
   float lki = linearController.kI;
   float lkd = linearController.kD;
 
-  chassis.moveTo(20,20,90, false, 1, 1, lkp, lki, lkd, akp, aki, akd, .2, .6, 2);
+  chassis.moveTo(0,20,-90, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .35, .6, 2);
+  wait(1500, msec);
+  chassis.moveTo(20,20,90, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .35, .6, 2);
+  wait(1500, msec);
+  chassis.moveTo(0,0,0, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .35, .6, 2);
   wait(100000, msec);
 }
 

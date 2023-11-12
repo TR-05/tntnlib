@@ -186,7 +186,7 @@ void Chassis::turnToPose(float x, float y, bool reversed, float maxSpeed, float 
     turnSettings(kp, ki, kd);
     Pose target(x, y, 0);
     Turn::params(target, reversed, maxSpeed, false, false);
-    waitUntilError(angularPID.prevError, breakAngle);
+    waitUntilError(Turn::breakOutError, breakAngle);
 }
 
 void Chassis::SwingOnLeftToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
@@ -196,7 +196,7 @@ void Chassis::SwingOnLeftToPose(float x, float y, bool reversed, float maxSpeed,
     Turn::params(target, reversed, maxSpeed, true, false);
     drivetrain.leftMotors->stop(vex::hold);
     drivetrain.rightMotors->stop(vex::coast);
-    waitUntilError(angularPID.prevError, breakAngle);
+    waitUntilError(Turn::breakOutError, breakAngle);
     drivetrain.leftMotors->stop(vex::coast);
     drivetrain.rightMotors->stop(vex::coast);
 }
@@ -208,7 +208,7 @@ void Chassis::SwingOnRightToPose(float x, float y, bool reversed, float maxSpeed
     Turn::params(target, reversed, maxSpeed, false, true);
     drivetrain.leftMotors->stop(vex::coast);
     drivetrain.rightMotors->stop(vex::hold);
-    waitUntilError(angularPID.prevError, breakAngle);
+    waitUntilError(Turn::breakOutError, breakAngle);
     drivetrain.leftMotors->stop(vex::coast);
     drivetrain.rightMotors->stop(vex::coast);
 }
@@ -227,7 +227,7 @@ void Chassis::turnToHeading(float heading, bool reversed, float maxSpeed, float 
 {
     turnSettings(kp, ki, kd);
     Turn::params(heading, reversed, maxSpeed, false, false);
-    waitUntilError(angularPID.prevError, breakAngle);
+    waitUntilError(Turn::breakOutError, breakAngle);
 }
 
 void Chassis::SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
@@ -236,7 +236,7 @@ void Chassis::SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed,
     Turn::params(heading, reversed, maxSpeed, true, false);
     drivetrain.leftMotors->stop(vex::hold);
     drivetrain.rightMotors->stop(vex::coast);
-    waitUntilError(angularPID.prevError, breakAngle);
+    waitUntilError(Turn::breakOutError, breakAngle);
     drivetrain.leftMotors->stop(vex::coast);
     drivetrain.rightMotors->stop(vex::coast);
 }
@@ -247,7 +247,7 @@ void Chassis::SwingOnRightToHeading(float heading, bool reversed, float maxSpeed
     Turn::params(heading, reversed, maxSpeed, false, true);
     drivetrain.leftMotors->stop(vex::coast);
     drivetrain.rightMotors->stop(vex::hold);
-    waitUntilError(angularPID.prevError, breakAngle);
+    waitUntilError(Turn::breakOutError, breakAngle);
     drivetrain.leftMotors->stop(vex::coast);
     drivetrain.rightMotors->stop(vex::coast);
 }
@@ -271,7 +271,7 @@ void Chassis::moveTo(float x, float y, float theta, bool reversed, float lmaxSpe
     boomerangSettings(akp, aki, akd, lkp, lki, lkd);
     MoveTo::params(target, reversed, lmaxSpeed, amaxSpeed, lead, chasePower);
     MoveTo::state = 0;
-    waitUntilError(linearPID.prevError, breakDist);
+    waitUntilError(MoveTo::breakOutError, breakDist);
     autoChassis = moveToMode;
 }
 

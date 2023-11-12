@@ -63,5 +63,6 @@ namespace tntnlib
                         bool swingOnRight = false;
                         bool swingOnLeft = false;
                 } static turnSettings;
+                inline float breakOutError = 0;
         };
 }; // namespace tntnlib

@@ -112,21 +112,19 @@ std::pair<float, float> tntnlib::MoveTo::update(Pose pose)
         carrot = targetPose; // settling behavior
 
     // calculate error
-    float angularError = angleError(pose.angle(carrot), degToRad(pose.theta), true); // angular error
-    float linearError = pose.distance(carrot) * cos(angularError);   // linear error
-    std::cout << "targetPose " << targetPose.x << " " << targetPose.y << " " << targetPose.theta << "\n"
-     << "carrotPose " << carrot.x << " " << carrot.y << " " << carrot.theta << "\n"
-     << "pose " << pose.x << " " << pose.y << " " << pose.theta << "\n";
-    std::cout << "angleError " << radToDeg(angularError) << " " << linearError << "\n" << std::endl;
+    float angularError = radToDeg(-angleError(pose.angle(carrot), currentHeadingRad, true)); // angular error
+    float linearError = distance * cos(degToRad(angularError));                              // linear error
 
     if (state == 1)
-        angularError = angleError(targetPose.theta, currentHeadingRad); // settling behavior
+        angularError = radToDeg(-angleError(targetHeadingRad, currentHeadingRad, true)); // settling behavior
     if (reversed)
         linearError = -linearError;
 
     // get PID outputs
-    float angularPower = angularPID.update(StandardFormRadToDeg(angularError), 0);
+    float angularPower = angularPID.update(angularError, 0);
     float linearPower = linearPID.update(linearError, 0);
+    angularPower = clamp(angularPower, -amaxSpeed, amaxSpeed);
+    linearPower = clamp(linearPower, -lmaxSpeed, lmaxSpeed);
 
     // calculate radius of turn
     float curvature = fabs(getCurvature(pose, carrot));
@@ -149,13 +147,23 @@ std::pair<float, float> tntnlib::MoveTo::update(Pose pose)
     // prioritize turning over moving
     float overturn = fabs(angularPower) + fabs(linearPower) - lmaxSpeed;
     if (overturn > 0)
-        linearPower -= linearPower > 0 ? overturn : -overturn;
+        linearPower -= (linearPower > 0 ? overturn : -overturn);
 
     // calculate motor powers
     float leftPower = linearPower + angularPower;
     float rightPower = linearPower - angularPower;
 
+    /*
+        std::cout << "targetPose " << targetPose.x << " " << targetPose.y << " " << targetPose.theta << "\n"
+         << "carrotPose " << carrot.x << " " << carrot.y << " " << carrot.theta << "\n"
+         << "pose " << pose.x << " " << pose.y << " " << pose.theta << "\n";
+        std::cout << "angleError " << angularError << " linearError " << linearError << "\n" << "\n";
+        std::cout << "LP " << leftPower << " RP " << rightPower << "\n" << std::endl;
+    */
+    std::cout << "(" << carrot.x << "," << carrot.y << ")," << std::endl;
+
     // return motor output
-    //return {leftPower, rightPower};
-    return {0, 0};
+    breakOutError = distance;
+    return {leftPower, rightPower};
+    // return {0, 0};
 }

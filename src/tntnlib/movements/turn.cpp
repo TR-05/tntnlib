@@ -93,7 +93,7 @@ std::pair<float, float> tntnlib::Turn::update(Pose pose)
     float output = angularPID.update(error, 0);
     // cap the speed
     output = clamp(output, -turnSettings.maxSpeed, turnSettings.maxSpeed);
-
+    breakOutError = error;
     // return output
     if (turnSettings.swingOnLeft)
         return {0, -output};

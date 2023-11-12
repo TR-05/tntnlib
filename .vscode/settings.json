@@ -63,6 +63,7 @@
 		"regex": "cpp",
 		"tuple": "cpp",
 		"typeindex": "cpp",
-		"valarray": "cpp"
+		"valarray": "cpp",
+		"iterator": "cpp"
 	}
 }

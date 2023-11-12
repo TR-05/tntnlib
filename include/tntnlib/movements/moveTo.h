@@ -52,5 +52,6 @@ namespace tntnlib
         inline float dist = 0;
         inline float lead = 0;
         inline float chasePower = 0;
+        inline float breakOutError = 0;
     };
 }; // namespace tntnlib
