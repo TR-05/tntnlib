@@ -55,7 +55,6 @@ namespace tntnlib
                         Pose targetPose = Pose(0, 0, 0);
                         float targetHeading = 0;
                         bool reversed = false;
-
                         float maxSpeed;
                         int state = 0; // 0 = in progress, 1 = done
                         float dist = 0;

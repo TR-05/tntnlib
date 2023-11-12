@@ -12,7 +12,7 @@
 #include "vex.h"
 #include "tntnlib/util.h"
 #include "tntnlib/pid.h"
- #include "tntnlib/movements/moveTo.h"
+#include "tntnlib/movements/moveTo.h"
 #include "tntnlib/movements/purepursuit.h"
 #include "tntnlib/movements/turn.h"
 #include "tntnlib/chassis/chassis.h"
@@ -168,7 +168,7 @@ void Chassis::turnSettings(float kp, float ki, float kd)
     autoChassis = turnMode;
 }
 
-void Chassis::boomerangSettings(float akp, float aki, float akd, float lkp, float lki, float lkd)
+void Chassis::moveToSettings(float akp, float aki, float akd, float lkp, float lki, float lkd)
 {
     //  set up the PIDs
     angularPID.setGains(0, 0, akp, aki, akd);
@@ -177,8 +177,8 @@ void Chassis::boomerangSettings(float akp, float aki, float akd, float lkp, floa
     linearPID.reset();
     angularPID.setIntegral(angularSettings.kIStart, angularSettings.kIMax);
     linearPID.setIntegral(linearSettings.kIStart, linearSettings.kIMax);
-    // setup the statemachine
-    autoChassis = turnMode;
+    MoveTo::state = 0;
+    MoveTo::breakOutError = 0;
 }
 
 void Chassis::turnToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
@@ -252,7 +252,6 @@ void Chassis::SwingOnRightToHeading(float heading, bool reversed, float maxSpeed
     drivetrain.rightMotors->stop(vex::coast);
 }
 
-
 /**
  * This function sets up the Boomerang controller
  *
@@ -265,14 +264,26 @@ void Chassis::SwingOnRightToHeading(float heading, bool reversed, float maxSpeed
  * It also needs to decide what the chasePower should be. Usually this will be the value set in
  * the drivetrain struct, but it can be overridden by the user if needed.
  */
-void Chassis::moveTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float breakDist)
+void Chassis::boomerangTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float breakDist)
 {
+    MoveTo::useBoomerang = true;
     Pose target = Pose(x, y, theta);
-    boomerangSettings(akp, aki, akd, lkp, lki, lkd);
     MoveTo::params(target, reversed, lmaxSpeed, amaxSpeed, lead, chasePower);
-    MoveTo::state = 0;
-    waitUntilError(MoveTo::breakOutError, breakDist);
+    moveToSettings(akp, aki, akd, lkp, lki, lkd);
+    // setup the statemachine
     autoChassis = moveToMode;
+    waitUntilError(MoveTo::breakOutError, breakDist);
+}
+
+void Chassis::moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float breakDist)
+{
+    MoveTo::useBoomerang = false;
+    Pose target = Pose(x, y, 0);
+    MoveTo::params(target, reversed, lmaxSpeed, amaxSpeed, 0, chasePower);
+    moveToSettings(akp, aki, akd, lkp, lki, lkd);
+    // setup the statemachine
+    autoChassis = moveToMode;
+    waitUntilError(MoveTo::breakOutError, breakDist);
 }
 
 /**

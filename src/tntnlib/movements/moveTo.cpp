@@ -8,6 +8,8 @@
 
 using namespace tntnlib;
 
+bool MoveTo::useBoomerang = false;
+
 /**
  * Turn constructor
  *
@@ -28,95 +30,42 @@ void MoveTo::params(Pose target, bool reversed, float lmaxSpeed, float amaxSpeed
     MoveTo::chasePower = chasePower;
 }
 
-/**
- * The turning algorithm uses field-relative position of the robot to face a target heading
- * or face a target point.
- *
- * This algorithm is simple. When the robot needs to face a target heading, it simply aligns
- * the robot's heading with the target heading. When the robot is turning to face a point,
- * the algorithm will align the robot's heading with the target point. This is better for
- * repeatability, but is not always necessary.
- *
- * This algorithm only uses 1 PID to turn the chassis.
- */
-/*
-std::pair<float, float> tntnlib::MoveTo::update(Pose pose)
-{
-    float t;
-    if (useHeading)
-        t = targetHeading;
-    else
-    {
-        t = StandardFormRadToDeg(pose.angle(targetPose));
-    }
-
-    t = fmod(t, 360);
-
-    // reverse heading if doing movement in reverse
-    if (reversed)
-    {
-        pose.theta = fmod(pose.theta - 180, 360);
-    }
-
-    // update completion vars
-    if (dist == 0)
-    { // if dist is 0, this is the first time update() has been called
-        dist = 0.0001;
-        startPose = pose;
-    }
-
-    // calculate error
-    float error = angleError(t, pose.theta, false);
-    // calculate distance travelled
-    dist = fabs(error);
-
-    // calculate the speed
-    // converts error to degrees to make PID tuning easier
-    float output = angularPID.update(error, 0);
-    // cap the speed
-    output = clamp(output, -maxSpeed, maxSpeed);
-
-    // return output
-    if (swingOnLeft)
-        return {0, -output};
-    if (swingOnRight)
-        return {output, 0};
-    return {output, -output};
-}
-*/
-std::pair<float, float> tntnlib::MoveTo::update(Pose pose)
+std::pair<float, float> MoveTo::update(Pose pose)
 {
     // set state to 1 if in state 0 and close to the target
-    if (state == 0 && pose.distance(targetPose) < 7.5)
+    if (state == 0 && pose.distance(targetPose) < 4) {
         state = 1;
+        if (!MoveTo::useBoomerang) {
+            targetPose.theta = StandardFormRadToDeg(pose.angle(targetPose));
+        }
+    }
+
 
     // if going in reverse, flip the heading of the pose
     if (reversed)
         pose.theta += 180;
 
-    // update completion vars
-    if (dist == 0)
-    { // if dist is 0, this is the first time update() has been called
-        dist = 0.0001;
-        prevPose = pose;
-    }
-    dist += pose.distance(prevPose);
-    prevPose = pose;
-
     float targetHeadingRad = degToStandardFormRad(targetPose.theta);
-    float currentHeadingRad = degToStandardFormRad(pose.theta);
-    float distance = pose.distance(targetPose);
+    float poseError = pose.distance(targetPose);
     // calculate the carrot point
-    Pose carrot = targetPose - Pose(distance * lead * cos(targetHeadingRad), distance * lead * sin(targetHeadingRad));
-    if (state == 1)
+    Pose carrot = targetPose - Pose(poseError * lead * cos(targetHeadingRad), poseError * lead * sin(targetHeadingRad));
+    if (state == 1 or !MoveTo::useBoomerang)
         carrot = targetPose; // settling behavior
 
     // calculate error
-    float angularError = radToDeg(-angleError(pose.angle(carrot), currentHeadingRad, true)); // angular error
-    float linearError = distance * cos(degToRad(angularError));                              // linear error
+    float angularError = angleError(StandardFormRadToDeg(pose.angle(carrot)), pose.theta, false); // angular error
+    float linearError = poseError * cos(degToRad(angularError));                                  // linear error
 
     if (state == 1)
-        angularError = radToDeg(-angleError(targetHeadingRad, currentHeadingRad, true)); // settling behavior
+    {
+        angularError = angleError(targetPose.theta, pose.theta, false); // settling behavior
+        poseError = poseError * cos(degToRad(angularError));
+    }
+    else
+    {
+        poseError = pose.distance(targetPose);
+    }
+
     if (reversed)
         linearError = -linearError;
 
@@ -153,17 +102,18 @@ std::pair<float, float> tntnlib::MoveTo::update(Pose pose)
     float leftPower = linearPower + angularPower;
     float rightPower = linearPower - angularPower;
 
-    /*
-        std::cout << "targetPose " << targetPose.x << " " << targetPose.y << " " << targetPose.theta << "\n"
-         << "carrotPose " << carrot.x << " " << carrot.y << " " << carrot.theta << "\n"
-         << "pose " << pose.x << " " << pose.y << " " << pose.theta << "\n";
-        std::cout << "angleError " << angularError << " linearError " << linearError << "\n" << "\n";
-        std::cout << "LP " << leftPower << " RP " << rightPower << "\n" << std::endl;
-    */
-    std::cout << "(" << carrot.x << "," << carrot.y << ")," << std::endl;
+    /*std::cout << "targetPose " << targetPose.x << " " << targetPose.y << " " << targetPose.theta << "\n"
+              << "carrotPose " << carrot.x << " " << carrot.y << " " << carrot.theta << "\n"
+              << "pose " << pose.x << " " << pose.y << " " << pose.theta << "\n";
+    std::cout << "angleError " << angularError << " linearError " << linearError << "\n"
+              << "\n";
+    std::cout << "LP " << leftPower << " RP " << rightPower << "\n"
+              << std::endl;
+    std::cout << poseError << std::endl;
+     std::cout << "(" << carrot.x << "," << carrot.y << ")," << std::endl;*/
 
     // return motor output
-    breakOutError = distance;
+    breakOutError = poseError;
     return {leftPower, rightPower};
     // return {0, 0};
 }

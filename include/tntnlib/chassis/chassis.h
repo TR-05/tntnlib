@@ -127,7 +127,7 @@ namespace tntnlib
          */
         void waitUntilError(float &error, float margin);
 
-        void boomerangSettings(float akp, float aki, float akd, float lkp, float lki, float lkd);
+        void moveToSettings(float akp, float aki, float akd, float lkp, float lki, float lkd);
 
         /**
          * @brief Prepare the angular pid for a turn movement
@@ -181,15 +181,30 @@ namespace tntnlib
          * @param x x location
          * @param y y location
          * @param theta theta (in degrees). Target angle
-         * @param timeout longest time the robot can spend moving
-         * @param forwards whether the robot should move forwards or backwards. true for forwards (default), false for
+         * @param reversed whether the robot should move forwards or backwards. true for forwards (default), false for
          * backwards
+         * @param chasePower higher values make the robot move faster but causes more overshoot on turns. 0 makes it
+         * default to global value
          * @param lead the lead parameter. Determines how curved the robot will move. 0.6 by default (0 < lead < 1)
+         *      
+         * @param maxSpeed the maximum speed the robot can move at. 12 at default
+         */
+        void boomerangTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float breakDist);
+
+        /**
+         * @brief Move the chassis towards the target pose
+         *
+         * Uses the moveTo controller
+         *
+         * @param x x location
+         * @param y y location
+         * @param reversed whether the robot should move forwards or backwards. true for forwards (default), false for
+         * backwards
          * @param chasePower higher values make the robot move faster but causes more overshoot on turns. 0 makes it
          * default to global value
          * @param maxSpeed the maximum speed the robot can move at. 12 at default
          */
-        void moveTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float breakDist);
+        void moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float breakDist);
 
         /**
          * @brief Move the chassis using a custom motion algorithm

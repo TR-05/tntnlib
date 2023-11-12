@@ -39,17 +39,14 @@ namespace tntnlib
          *
          * @return float
          */
-
-        inline Pose startPose = Pose(0, 0, 0);
+        extern bool useBoomerang;
         inline Pose targetPose = Pose(0, 0, 0);
-        inline Pose prevPose = Pose(0, 0, 0);
 
         inline float targetHeading = 0;
         inline bool reversed = false;
         inline float lmaxSpeed;
         inline float amaxSpeed;
         inline int state = 0; // 0 = in progress, 1 = done
-        inline float dist = 0;
         inline float lead = 0;
         inline float chasePower = 0;
         inline float breakOutError = 0;

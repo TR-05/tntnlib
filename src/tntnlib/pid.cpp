@@ -49,7 +49,7 @@ void tntnlib::FAPID::setGains(float kF, float kA, float kP, float kI, float kD)
     this->kP = kP;
     this->kI = kI;
     this->kD = kD;
-    std::cout << "\n\n New Gains: KF:" << kF << " KA:" << kA << " KP:" << kP << " KI:" << kI << " KD:" << kD << "\n\n";
+    std::cout << "\n New Gains: KF:" << kF << " KA:" << kA << " KP:" << kP << " KI:" << kI << " KD:" << kD;
 }
 
 /**

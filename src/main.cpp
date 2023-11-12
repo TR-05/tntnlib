@@ -30,7 +30,7 @@ int logger()
   {
     tntnlib::Pose current(chassis.getPose(false));
     //printf("\n\nSX:%.2f, SR:%.2f, IMU:%.2f ", sensors.horizontal1->getDistance(), sensors.vertical1->getDistance(), sensors.imu->rotation());
-    //printf("X:%.2f, Y:%.2f, H:%.2f\n", current.x, current.y, current.theta);
+    printf("X:%.2f, Y:%.2f, H:%.2f\n", current.x, current.y, current.theta);
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%.2f, Y:%.2f, H:%.2f", current.x, current.y, current.theta);
     wait(50, msec);
@@ -58,11 +58,13 @@ void autonomous(void)
   float lki = linearController.kI;
   float lkd = linearController.kD;
 
-  chassis.moveTo(0,20,-90, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .35, .6, 2);
-  wait(1500, msec);
-  chassis.moveTo(20,20,90, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .35, .6, 2);
-  wait(1500, msec);
-  chassis.moveTo(0,0,0, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .35, .6, 2);
+  chassis.moveTo(30,30, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2);
+  wait(200, msec);
+  chassis.boomerangTo(0,20,-90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  wait(200, msec);
+  chassis.boomerangTo(20,20,90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  wait(200, msec);
+  chassis.boomerangTo(0,0,0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
   wait(100000, msec);
 }
 
