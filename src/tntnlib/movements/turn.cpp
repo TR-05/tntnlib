@@ -68,12 +68,10 @@ std::pair<float, float> tntnlib::Turn::update(Pose pose)
         t = StandardFormRadToDeg(pose.angle(turnSettings.targetPose));
     }
 
-    t = fmod(t, 360);
-
     // reverse heading if doing movement in reverse
     if (turnSettings.reversed)
     {
-        pose.theta = fmod(pose.theta - 180, 360);
+        pose.theta = pose.theta - 180;
     }
 
     // update completion vars
