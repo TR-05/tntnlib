@@ -9,7 +9,7 @@
  * to be checked.
  */
 tntnlib::RotationEncoder::RotationEncoder(int port, float ratio)
-    : rotation(vex::rotation(port, (ratio < 0))),
+    : rotation(vex::rotation(port - 1, (ratio < 0))),
       ratio(ratio) {}
 
 /**

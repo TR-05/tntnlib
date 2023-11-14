@@ -355,7 +355,7 @@ Discarded input sections
  .llvm_addrsig  0x00000000        0x0 build/src/tntnlib/devices/gyro.o
  .text          0x00000000        0x0 build/src/tntnlib/devices/rotation.o
  .text._ZN7tntnlib15RotationEncoderC2Eif
-                0x00000000       0x48 build/src/tntnlib/devices/rotation.o
+                0x00000000       0x4c build/src/tntnlib/devices/rotation.o
  .ARM.exidx.text._ZN7tntnlib15RotationEncoderC2Eif
                 0x00000000        0x8 build/src/tntnlib/devices/rotation.o
  .text._ZN7tntnlib15RotationEncoder8getAngleEv
