@@ -6,6 +6,10 @@ using namespace vex;
 competition Competition;
 brain Brain;
 
+
+/* tntnlib robot Config */
+
+/* drive motors */
 motor ls_front = motor(8-1, ratio6_1, true);
 motor ls_back = motor(10-1, ratio6_1, true);
 motor rs_front = motor(PORT18, ratio6_1, false);
@@ -13,11 +17,12 @@ motor rs_back = motor(PORT19, ratio6_1, false);
 motor_group leftMotors = motor_group(ls_front, ls_back);
 motor_group rightMotors = motor_group(rs_front, rs_back);
 
+/* tracking wheels and gyro */
 tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 0.0586285, 1);
 tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, -0.0164235, 1);
-//inertial imu = inertial(PORT1);
 tntnlib::Gyro imu(1, 1);
 
+/* chassis and controllers */
 tntnlib::Drivetrain_t drivebase{&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8};
 tntnlib::ChassisController_t linearController{1, 0, 3, 0, 0, 0, 100, 3, 500, 12};
 tntnlib::ChassisController_t angularController{.25, 0.009, 2.0, 10, 2, .5, 1, 3, 500, 12};
@@ -25,6 +30,11 @@ tntnlib::OdomSensors_t sensors{&vertical, nullptr, &horizontal, nullptr, &imu};
 // MUST BE NAMED chassis OR GET TREVOR TO ADD IT TO chassis.cpp and chassis.h (odomLoop and bottom of .h)
 tntnlib::Chassis chassis(drivebase, linearController, angularController, sensors);
 
+/* End of Robot Config */
+
+
+
+/* data logger idk where to put */
 int logger()
 {
   while (true)
@@ -40,6 +50,8 @@ int logger()
   return 0;
 }
 
+
+/* runs when program first starts */
 void pre_auton(void)
 {
   task log(logger);
@@ -47,6 +59,7 @@ void pre_auton(void)
   chassis.initialize(true, 0, 0, 0);
 }
 
+/* runs on comp switch autonomous */
 void autonomous(void)
 {
   printf("Entered Auto\n");
@@ -78,6 +91,8 @@ void autonomous(void)
   wait(100000, msec);
 }
 
+
+/* runs on comp switch driver */
 void usercontrol(void)
 {
   chassis.stateMachineOff();
@@ -91,6 +106,7 @@ void usercontrol(void)
   }
 }
 
+/* comp switch callbacks */
 int main()
 {
   Competition.autonomous(autonomous);
