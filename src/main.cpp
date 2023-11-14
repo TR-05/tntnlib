@@ -30,7 +30,7 @@ tntnlib::OdomSensors_t sensors{&vertical, nullptr, &horizontal, nullptr, &imu};
 // MUST BE NAMED chassis OR GET TREVOR TO ADD IT TO chassis.cpp and chassis.h (odomLoop and bottom of .h)
 tntnlib::Chassis chassis(drivebase, linearController, angularController, sensors);
 
-/* End of Robot Config */
+/* End of tntnlib Robot Config */
 
 
 
