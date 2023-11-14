@@ -18,6 +18,7 @@
 
 #include "tntnlib/pose.h"
 #include "tntnlib/devices/trackingWheel.h"
+#include "tntnlib/devices/gyro.h"
 #include "tntnlib/chassis/structs.h"
 #include "tntnlib/chassis/odom.h"
 
@@ -170,6 +171,7 @@ namespace tntnlib
          * @param breakAngle the error value to break out of the movement at
          */
         void turnToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
+        void turnToHeadingUnbounded(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
         void SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
         void SwingOnRightToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
 

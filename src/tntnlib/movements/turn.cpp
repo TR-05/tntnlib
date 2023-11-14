@@ -17,7 +17,7 @@ using namespace tntnlib;
  * initial competition state.
  */
 
-void Turn::params(float target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight)
+void Turn::params(float target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight, bool boundto360)
 {
     turnSettings.targetHeading = target;
     turnSettings.reversed = reversed;
@@ -25,6 +25,7 @@ void Turn::params(float target, bool reversed, float maxSpeed, bool swingOnLeft,
     turnSettings.useHeading = true;
     turnSettings.swingOnLeft = swingOnLeft;
     turnSettings.swingOnRight = swingOnRight;
+    turnSettings.boundto360 = boundto360;
 }
 
 /**
@@ -37,7 +38,7 @@ void Turn::params(float target, bool reversed, float maxSpeed, bool swingOnLeft,
  * initial competition state.
  */
 
-void Turn::params(Pose target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight)
+void Turn::params(Pose target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight, bool boundto360)
 {
     turnSettings.targetPose = target;
     turnSettings.reversed = reversed;
@@ -45,6 +46,7 @@ void Turn::params(Pose target, bool reversed, float maxSpeed, bool swingOnLeft, 
     turnSettings.useHeading = false;
     turnSettings.swingOnLeft = swingOnLeft;
     turnSettings.swingOnRight = swingOnRight;
+    turnSettings.boundto360 = boundto360;
 }
 
 /**
@@ -82,7 +84,16 @@ std::pair<float, float> tntnlib::Turn::update(Pose pose)
     }
 
     // calculate error
-    float error = angleError(t, pose.theta, false);
+    float error = t - pose.theta;
+    if (turnSettings.boundto360)
+    {
+        error = fmod(error, 360);
+        if (error > 360)
+            error -= 180;
+        else if (error < -180)
+            error += 360;
+    }
+
     // calculate distance travelled
     turnSettings.dist = fabs(error);
 

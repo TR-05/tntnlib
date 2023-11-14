@@ -2,6 +2,7 @@
 
 #include "vex.h"
 #include "tntnlib/devices/trackingWheel.h"
+#include "tntnlib/devices/gyro.h"
 
 namespace tntnlib {
 /**
@@ -22,7 +23,7 @@ typedef struct {
         TrackingWheel* vertical2;
         TrackingWheel* horizontal1;
         TrackingWheel* horizontal2;
-        vex::inertial* imu;
+        Gyro* imu;
 } OdomSensors_t;
 
 /**

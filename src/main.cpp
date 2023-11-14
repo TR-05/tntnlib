@@ -6,8 +6,8 @@ using namespace vex;
 competition Competition;
 brain Brain;
 
-motor ls_front = motor(PORT8, ratio6_1, true);
-motor ls_back = motor(PORT10, ratio6_1, true);
+motor ls_front = motor(8-1, ratio6_1, true);
+motor ls_back = motor(10-1, ratio6_1, true);
 motor rs_front = motor(PORT18, ratio6_1, false);
 motor rs_back = motor(PORT19, ratio6_1, false);
 motor_group leftMotors = motor_group(ls_front, ls_back);
@@ -15,7 +15,8 @@ motor_group rightMotors = motor_group(rs_front, rs_back);
 
 tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 0.0586285, 1);
 tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, -0.0164235, 1);
-inertial imu = inertial(PORT1);
+//inertial imu = inertial(PORT1);
+tntnlib::Gyro imu(1, 1);
 
 tntnlib::Drivetrain_t drivebase{&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8};
 tntnlib::ChassisController_t linearController{1, 0, 3, 0, 0, 0, 100, 3, 500, 12};
@@ -59,8 +60,8 @@ void autonomous(void)
   float lkd = linearController.kD;
 
 
-  chassis.turnToHeading(360, false, 12, akp, aki, akd, 10);
-  wait(2000, msec);
+  chassis.turnToHeadingUnbounded(3600, false, 5, akp, aki, akd, 2);
+  wait(200000, msec);
 
   chassis.moveTo(30,30, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2);
   wait(200, msec);

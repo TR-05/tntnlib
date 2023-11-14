@@ -185,7 +185,7 @@ void Chassis::turnToPose(float x, float y, bool reversed, float maxSpeed, float 
 {
     turnSettings(kp, ki, kd);
     Pose target(x, y, 0);
-    Turn::params(target, reversed, maxSpeed, false, false);
+    Turn::params(target, reversed, maxSpeed, false, false, true);
     waitUntilError(Turn::breakOutError, breakAngle);
 }
 
@@ -193,7 +193,7 @@ void Chassis::SwingOnLeftToPose(float x, float y, bool reversed, float maxSpeed,
 {
     turnSettings(kp, ki, kd);
     Pose target(x, y, 0);
-    Turn::params(target, reversed, maxSpeed, true, false);
+    Turn::params(target, reversed, maxSpeed, true, false, true);
     drivetrain.leftMotors->stop(vex::hold);
     drivetrain.rightMotors->stop(vex::coast);
     waitUntilError(Turn::breakOutError, breakAngle);
@@ -205,7 +205,7 @@ void Chassis::SwingOnRightToPose(float x, float y, bool reversed, float maxSpeed
 {
     turnSettings(kp, ki, kd);
     Pose target(x, y, 0);
-    Turn::params(target, reversed, maxSpeed, false, true);
+    Turn::params(target, reversed, maxSpeed, false, true, true);
     drivetrain.leftMotors->stop(vex::coast);
     drivetrain.rightMotors->stop(vex::hold);
     waitUntilError(Turn::breakOutError, breakAngle);
@@ -226,14 +226,21 @@ void Chassis::SwingOnRightToPose(float x, float y, bool reversed, float maxSpeed
 void Chassis::turnToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
 {
     turnSettings(kp, ki, kd);
-    Turn::params(heading, reversed, maxSpeed, false, false);
+    Turn::params(heading, reversed, maxSpeed, false, false, true);
+    waitUntilError(Turn::breakOutError, breakAngle);
+}
+
+void Chassis::turnToHeadingUnbounded(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
+{
+    turnSettings(kp, ki, kd);
+    Turn::params(heading, reversed, maxSpeed, false, false, false);
     waitUntilError(Turn::breakOutError, breakAngle);
 }
 
 void Chassis::SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
 {
     turnSettings(kp, ki, kd);
-    Turn::params(heading, reversed, maxSpeed, true, false);
+    Turn::params(heading, reversed, maxSpeed, true, false, true);
     drivetrain.leftMotors->stop(vex::hold);
     drivetrain.rightMotors->stop(vex::coast);
     waitUntilError(Turn::breakOutError, breakAngle);
@@ -244,7 +251,7 @@ void Chassis::SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed,
 void Chassis::SwingOnRightToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
 {
     turnSettings(kp, ki, kd);
-    Turn::params(heading, reversed, maxSpeed, false, true);
+    Turn::params(heading, reversed, maxSpeed, false, true, true);
     drivetrain.leftMotors->stop(vex::coast);
     drivetrain.rightMotors->stop(vex::hold);
     waitUntilError(Turn::breakOutError, breakAngle);

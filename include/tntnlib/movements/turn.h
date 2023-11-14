@@ -18,7 +18,7 @@ namespace tntnlib
                  * @param target the target heading. Radians, 0 is right, increases counterclockwise
                  * @param maxSpeed the maximum speed the robot can turn at
                  */
-                void params(float target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight);
+                void params(float target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight, bool boundto360);
                 // Turn(FAPID angularPID, float target, int maxSpeed);
 
                 /**
@@ -29,7 +29,7 @@ namespace tntnlib
                  * @param reversed whether the robot should face the point with its back or front
                  * @param maxSpeed the maximum speed the robot can turn at
                  */
-                void params(Pose target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight);
+                void params(Pose target, bool reversed, float maxSpeed, bool swingOnLeft, bool swingOnRight, bool boundto360);
                 // Turn(FAPID angularPID, Pose target, bool reversed, int maxSpeed);
                 /**
                  * @brief Update the movement
@@ -61,6 +61,7 @@ namespace tntnlib
                         bool useHeading = true;
                         bool swingOnRight = false;
                         bool swingOnLeft = false;
+                        bool boundto360 = false;
                 } static turnSettings;
                 inline float breakOutError = 0;
         };
