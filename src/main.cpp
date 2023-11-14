@@ -6,12 +6,11 @@ using namespace vex;
 competition Competition;
 brain Brain;
 
-
 /* tntnlib robot Config */
 
 /* drive motors */
-motor ls_front = motor(8-1, ratio6_1, true);
-motor ls_back = motor(10-1, ratio6_1, true);
+motor ls_front = motor(8 - 1, ratio6_1, true);
+motor ls_back = motor(10 - 1, ratio6_1, true);
 motor rs_front = motor(PORT18, ratio6_1, false);
 motor rs_back = motor(PORT19, ratio6_1, false);
 motor_group leftMotors = motor_group(ls_front, ls_back);
@@ -32,8 +31,6 @@ tntnlib::Chassis chassis(drivebase, linearController, angularController, sensors
 
 /* End of tntnlib Robot Config */
 
-
-
 /* data logger idk where to put */
 int logger()
 {
@@ -49,7 +46,6 @@ int logger()
 
   return 0;
 }
-
 
 /* runs when program first starts */
 void pre_auton(void)
@@ -73,24 +69,26 @@ void autonomous(void)
   float lkd = linearController.kD;
 
 
+// make sure to add auto odom + imu calibrate from that one old code
+
+
   chassis.turnToHeadingUnbounded(3600, false, 5, akp, aki, akd, 2);
   wait(200000, msec);
 
-  chassis.moveTo(30,30, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2);
+  chassis.moveTo(30, 30, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2);
   wait(200, msec);
-  chassis.moveTo(0,60, true, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2);
+  chassis.moveTo(0, 60, true, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2);
   wait(200, msec);
 
-  chassis.boomerangTo(0,20,-90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  chassis.boomerangTo(0, 20, -90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
   wait(200, msec);
-  chassis.boomerangTo(20,20,90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  chassis.boomerangTo(20, 20, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
   wait(200, msec);
-  chassis.boomerangTo(0,0,0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  chassis.boomerangTo(0, 0, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
   wait(200, msec);
   chassis.turnToHeading(0, false, 12, akp, aki, akd, 10);
   wait(100000, msec);
 }
-
 
 /* runs on comp switch driver */
 void usercontrol(void)
