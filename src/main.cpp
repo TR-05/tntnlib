@@ -17,9 +17,9 @@ motor_group leftMotors = motor_group(ls_front, ls_back);
 motor_group rightMotors = motor_group(rs_front, rs_back);
 
 /* tracking wheels and gyro */
-tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 0.0586285, 1);
-tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, -0.0164235, 1);
-tntnlib::Gyro imu(1, 1);
+tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 0.002292, 1);
+tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, -0.253611, 1);
+tntnlib::Gyro imu(1, 1.010357);
 
 /* chassis and controllers */
 tntnlib::Drivetrain_t drivebase{&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8};
@@ -69,25 +69,19 @@ void autonomous(void)
   float lkd = linearController.kD;
 
 
-// make sure to add auto odom + imu calibrate from that one old code
-
-
-  chassis.turnToHeadingUnbounded(3600, false, 5, akp, aki, akd, 2);
-  wait(200000, msec);
-
-  chassis.moveTo(30, 30, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2);
+  //chassis.tuneOffsets(3600, akp, aki, akd, 6, 2); //Tunes odom + imu constants: DISABLE TERMINAL PRINT then jig bot to a tile, run auto, once bot stops moving tap and hold brain screen
+  chassis.moveTo(30, 30, false, 12, 12, lkp, lki, lkd, akp, aki, akd*1.25, .3, 2);
   wait(200, msec);
-  chassis.moveTo(0, 60, true, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2);
+  chassis.moveTo(0, 60, true, 12, 12, lkp, lki, lkd, akp, aki, akd*1.25, .3, 2);
   wait(200, msec);
 
-  chassis.boomerangTo(0, 20, -90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  chassis.boomerangTo(0, 20, -90, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
   wait(200, msec);
-  chassis.boomerangTo(20, 20, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  chassis.boomerangTo(20, 20, 90, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
   wait(200, msec);
-  chassis.boomerangTo(0, 0, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  chassis.boomerangTo(0, 0, 0, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
   wait(200, msec);
-  chassis.turnToHeading(0, false, 12, akp, aki, akd, 10);
-  wait(100000, msec);
+  chassis.turnToHeading(0, false, 9, akp, aki, akd, 1);
 }
 
 /* runs on comp switch driver */

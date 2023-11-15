@@ -237,6 +237,26 @@ void Chassis::turnToHeadingUnbounded(float heading, bool reversed, float maxSpee
     waitUntilError(Turn::breakOutError, breakAngle);
 }
 
+void Chassis::tuneOffsets(float ang, float kp, float ki, float kd, float maxSpeed, float breakang)
+{
+    Chassis::turnToHeadingUnbounded(ang, false, maxSpeed, kp, ki, kd, breakang);
+    vex::wait(1000, vex::msec);
+    stateMachineOff();
+    chassis.tank(0, 0, 0);
+        while (!Brain.Screen.pressing())
+            vex::wait(10, vex::msec);
+        vex::wait(500, vex::msec);
+        float temporary_multiplier = ang / chassis.getPose().theta;
+        temporary_multiplier *= sensors.imu->getMultiplier();
+        Brain.Screen.print("M:%f", temporary_multiplier);
+        printf("\n copy this multiplier into data bot constructor in main: M:%f\n\n", temporary_multiplier);
+        float ss = sensors.horizontal1->getDistance() / (2 * M_PI * ang / 360);
+        float sr = sensors.vertical1->getDistance() / (2 * M_PI * ang / 360);
+        Brain.Screen.setCursor(2,0);
+        Brain.Screen.print("\nSS:%f SR%f", ss, sr);
+        printf("\nSS:%f SR%f\n\n", ss, sr);
+}
+
 void Chassis::SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
 {
     turnSettings(kp, ki, kd);

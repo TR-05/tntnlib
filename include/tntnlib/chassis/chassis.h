@@ -21,7 +21,7 @@
 #include "tntnlib/devices/gyro.h"
 #include "tntnlib/chassis/structs.h"
 #include "tntnlib/chassis/odom.h"
-
+#include "tntnlib/devices/defaultDevices.h"
 namespace tntnlib
 {
     /**
@@ -172,6 +172,7 @@ namespace tntnlib
          */
         void turnToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
         void turnToHeadingUnbounded(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
+        void tuneOffsets(float ang, float kp, float ki, float kd, float maxSpeed, float breakang);
         void SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
         void SwingOnRightToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
 
