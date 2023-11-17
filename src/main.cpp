@@ -26,7 +26,7 @@ tntnlib::Drivetrain_t drivebase{&leftMotors, &rightMotors, 10.0, tntnlib::Omniwh
 tntnlib::ChassisController_t linearController{1, 0, 3, 0, 0, 0, 100, 3, 500, 12};
 tntnlib::ChassisController_t angularController{.25, 0.009, 2.0, 10, 2, .5, 1, 3, 500, 12};
 tntnlib::OdomSensors_t sensors{&vertical, nullptr, &horizontal, nullptr, &imu};
-// MUST BE NAMED chassis OR GET TREVOR TO ADD IT TO chassis.cpp and chassis.h (odomLoop and bottom of .h)
+// MUST BE NAMED chassis
 tntnlib::Chassis chassis(drivebase, linearController, angularController, sensors);
 
 /* End of tntnlib Robot Config */
