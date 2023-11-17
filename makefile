@@ -9,6 +9,7 @@ include vex/mkenv.mk
 # location of the project source cpp and c files
 
 SRC_C  = $(wildcard src/*.cpp) 
+SRC_C += $(wildcard src../../tntnlib/src/*.cpp)
 SRC_C += $(wildcard src/*/*.cpp) 
 SRC_C += $(wildcard src/*/*/*.cpp) 
 SRC_C += $(wildcard src/*/*/*/*.cpp) 
