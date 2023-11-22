@@ -1,5 +1,8 @@
 #include "vex.h"
 #include "tntnlib/api.h"
+
+#include "../tntnlib/include/lib.h"
+
 #include <iostream>
 using namespace vex;
 // A global instance of competition
