@@ -25,14 +25,14 @@
 using namespace tntnlib;
 
 /**
- * Calibrate odometry sensors
+ * Calibrate odometry OdomSensors
  *
  * This function should be called before Odometry::update() runs for the first time.
  *
  * First, we attempt to calibrate the imu. IMU calibration failure is common, so we
  * attempt to calibrate it up to 5 times if it fails. If it still fails after this, we
  * rumble the controller to let the user know that the imu failed to calibrate. If it
- * does fail to calibrate, we will use other sensors to calculate the heading of the robot.
+ * does fail to calibrate, we will use other OdomSensors to calculate the heading of the robot.
  *
  * Calibrating the tracking wheels is simpler. If we detect there are less than 2 vertical
  * tracking wheels, we will simply substitute one side of the drivetrain, and then we
@@ -41,21 +41,21 @@ using namespace tntnlib;
 void Odometry::calibrate(bool calibrateIMU)
 {
     // calibrate the imu if it exists
-    if (sensors.imu != nullptr && calibrateIMU)
+    if (OdomSensors.imu != nullptr && calibrateIMU)
     {
         int attempt = 1;
-        sensors.imu->calibrate();
+        OdomSensors.imu->calibrate();
         // calibrate inertial, and if calibration fails, then repeat 5 times or until successful
-        while (sensors.imu->isCalibrating() != 1 && attempt < 5)
+        while (OdomSensors.imu->isCalibrating() != 1 && attempt < 5)
         {
-            sensors.imu->calibrate();
+            OdomSensors.imu->calibrate();
             attempt++;
             vex::wait(50, vex::msec);
         }
         if (attempt == 5)
         {
             // disable IMU
-            sensors.imu = nullptr;
+            OdomSensors.imu = nullptr;
             // rumble controller if imu calibration fails
             Controller.rumble("---");
             printf("IMU FAILED\n\n");
@@ -67,23 +67,23 @@ void Odometry::calibrate(bool calibrateIMU)
     }
     /*
     // substitute tracking wheels with a side of the drivetrain if needed (I dont like this)
-    if (sensors.vertical1 == nullptr)
-        sensors.vertical1 =
+    if (OdomSensors.vertical1 == nullptr)
+        OdomSensors.vertical1 =
             new TrackingWheel(drive.leftMotors, drive.wheelDiameter, -(drive.trackWidth / 2), drive.cartridgeRPM, drive.rpm);
-    if (sensors.vertical2 == nullptr)
-       sensors.vertical2 = new TrackingWheel(drive.rightMotors, drive.wheelDiameter, drive.trackWidth / 2, drive.cartridgeRPM, drive.rpm);
+    if (OdomSensors.vertical2 == nullptr)
+       OdomSensors.vertical2 = new TrackingWheel(drive.rightMotors, drive.wheelDiameter, drive.trackWidth / 2, drive.cartridgeRPM, drive.rpm);
     */
 
     // calibrate the tracking wheels
-    if (sensors.vertical1 != nullptr)
-        sensors.vertical1->reset();
-    if (sensors.vertical2 != nullptr)
-        sensors.vertical2->reset();
+    if (OdomSensors.vertical1 != nullptr)
+        OdomSensors.vertical1->reset();
+    if (OdomSensors.vertical2 != nullptr)
+        OdomSensors.vertical2->reset();
 
-    if (sensors.horizontal1 != nullptr)
-        sensors.horizontal1->reset();
-    if (sensors.horizontal2 != nullptr)
-        sensors.horizontal2->reset();
+    if (OdomSensors.horizontal1 != nullptr)
+        OdomSensors.horizontal1->reset();
+    if (OdomSensors.horizontal2 != nullptr)
+        OdomSensors.horizontal2->reset();
 }
 
 /**
@@ -102,13 +102,13 @@ void Odometry::setPose(Pose pose) { this->pose = pose; }
  * Odometry is what we call position tracking. We use odometry so we can
  * use the position of the robot to correct for errors during autonomous.
  *
- * This function checks which sensors are configured and uses them to calculate
+ * This function checks which OdomSensors are configured and uses them to calculate
  * the position of the robot. This ability means that almost any odometry configuration
- * will work with this library, all the user has to do is pass the sensors.
- * It will also use the best combination of sensors available, so if the user can
- * just pass everything and know the best sensors will be used.
+ * will work with this library, all the user has to do is pass the OdomSensors.
+ * It will also use the best combination of OdomSensors available, so if the user can
+ * just pass everything and know the best OdomSensors will be used.
  *
- * In future, an extended Kalman filter will be used so all the sensors can be used.
+ * In future, an extended Kalman filter will be used so all the OdomSensors can be used.
  */
 void Odometry::update()
 {
@@ -118,16 +118,16 @@ void Odometry::update()
     float horizontal1Raw = 0;
     float horizontal2Raw = 0;
     float imuRaw = 0;
-    if (sensors.vertical1 != nullptr)
-        vertical1Raw = sensors.vertical1->getDistance();
-    if (sensors.vertical2 != nullptr)
-        vertical2Raw = sensors.vertical2->getDistance();
-    if (sensors.horizontal1 != nullptr)
-        horizontal1Raw = sensors.horizontal1->getDistance();
-    if (sensors.horizontal2 != nullptr)
-        horizontal2Raw = sensors.horizontal2->getDistance();
-    if (sensors.imu != nullptr)
-        imuRaw = degToRad(sensors.imu->rotation());
+    if (OdomSensors.vertical1 != nullptr)
+        vertical1Raw = OdomSensors.vertical1->getDistance();
+    if (OdomSensors.vertical2 != nullptr)
+        vertical2Raw = OdomSensors.vertical2->getDistance();
+    if (OdomSensors.horizontal1 != nullptr)
+        horizontal1Raw = OdomSensors.horizontal1->getDistance();
+    if (OdomSensors.horizontal2 != nullptr)
+        horizontal2Raw = OdomSensors.horizontal2->getDistance();
+    if (OdomSensors.imu != nullptr)
+        imuRaw = degToRad(OdomSensors.imu->rotation());
 
     // calculate the change in sensor values
     float deltaVertical1 = vertical1Raw - prevVertical1;
@@ -151,26 +151,26 @@ void Odometry::update()
 
     float heading = pose.theta;
     // calculate heading with inertial sensor if it exists
-    if (sensors.imu != nullptr)
+    if (OdomSensors.imu != nullptr)
         heading += deltaImu;
     // else, use horizontal tracking wheels if they both exist
-    else if (sensors.horizontal1 != nullptr && sensors.horizontal2 != nullptr)
+    else if (OdomSensors.horizontal1 != nullptr && OdomSensors.horizontal2 != nullptr)
         heading += (deltaHorizontal1 - deltaHorizontal2) /
-                   (sensors.horizontal1->getOffset() - sensors.horizontal2->getOffset());
+                   (OdomSensors.horizontal1->getOffset() - OdomSensors.horizontal2->getOffset());
     else
         heading +=
-            (deltaVertical1 - deltaVertical2) / (sensors.vertical1->getOffset() - sensors.vertical2->getOffset());
+            (deltaVertical1 - deltaVertical2) / (OdomSensors.vertical1->getOffset() - OdomSensors.vertical2->getOffset());
     float deltaHeading = heading - pose.theta;
     float avgHeading = pose.theta + deltaHeading / 2;
 
     // choose tracking wheels to use
-    TrackingWheel *verticalWheel = sensors.vertical1;
+    TrackingWheel *verticalWheel = OdomSensors.vertical1;
     TrackingWheel *horizontalWheel = nullptr;
     // horizontal tracking wheels
-    if (sensors.horizontal1 != nullptr)
-        horizontalWheel = sensors.horizontal1;
-    if (sensors.horizontal2 != nullptr)
-        horizontalWheel = sensors.horizontal2;
+    if (OdomSensors.horizontal1 != nullptr)
+        horizontalWheel = OdomSensors.horizontal1;
+    if (OdomSensors.horizontal2 != nullptr)
+        horizontalWheel = OdomSensors.horizontal2;
 
     // get raw values
     float rawVertical = 0;
@@ -231,7 +231,7 @@ if (gyros.size() > 0) {
     theta += (verticals.at(0).getDistanceDelta() - verticals.at(1).getDistanceDelta()) /
              (verticals.at(0).getOffset() - verticals.at(1).getOffset());
 } else {
-    infoSink()->error("Odom calculation failure! Not enough sensors to calculate heading");
+    infoSink()->error("Odom calculation failure! Not enough OdomSensors to calculate heading");
     return;
 }
 const float deltaTheta = theta - pose.theta;

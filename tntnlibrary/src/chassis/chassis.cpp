@@ -163,7 +163,7 @@ void Chassis::turnSettings(float kp, float ki, float kd)
     //  set up the PID
     angularPID.setGains(0, 0, kp, ki, kd);
     angularPID.reset();
-    angularPID.setIntegral(angularSettings.kIStart, angularSettings.kIMax);
+    angularPID.setIntegral(AngularSettings.kIStart, AngularSettings.kIMax);
     // setup the statemachine
     autoChassis = turnMode;
 }
@@ -175,8 +175,8 @@ void Chassis::moveToSettings(float akp, float aki, float akd, float lkp, float l
     linearPID.setGains(0, 0, lkp, lki, lkd);
     angularPID.reset();
     linearPID.reset();
-    angularPID.setIntegral(angularSettings.kIStart, angularSettings.kIMax);
-    linearPID.setIntegral(linearSettings.kIStart, linearSettings.kIMax);
+    angularPID.setIntegral(AngularSettings.kIStart, AngularSettings.kIMax);
+    linearPID.setIntegral(LinearSettings.kIStart, LinearSettings.kIMax);
     MoveTo::state = 0;
     MoveTo::breakOutError = 0;
 }
@@ -194,11 +194,11 @@ void Chassis::SwingOnLeftToPose(float x, float y, bool reversed, float maxSpeed,
     turnSettings(kp, ki, kd);
     Pose target(x, y, 0);
     Turn::params(target, reversed, maxSpeed, true, false, true);
-    drivetrain.leftMotors->stop(vex::hold);
-    drivetrain.rightMotors->stop(vex::coast);
+    DriveTrain.leftMotors->stop(vex::hold);
+    DriveTrain.rightMotors->stop(vex::coast);
     waitUntilError(Turn::breakOutError, breakAngle);
-    drivetrain.leftMotors->stop(vex::coast);
-    drivetrain.rightMotors->stop(vex::coast);
+    DriveTrain.leftMotors->stop(vex::coast);
+    DriveTrain.rightMotors->stop(vex::coast);
 }
 
 void Chassis::SwingOnRightToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
@@ -206,11 +206,11 @@ void Chassis::SwingOnRightToPose(float x, float y, bool reversed, float maxSpeed
     turnSettings(kp, ki, kd);
     Pose target(x, y, 0);
     Turn::params(target, reversed, maxSpeed, false, true, true);
-    drivetrain.leftMotors->stop(vex::coast);
-    drivetrain.rightMotors->stop(vex::hold);
+    DriveTrain.leftMotors->stop(vex::coast);
+    DriveTrain.rightMotors->stop(vex::hold);
     waitUntilError(Turn::breakOutError, breakAngle);
-    drivetrain.leftMotors->stop(vex::coast);
-    drivetrain.rightMotors->stop(vex::coast);
+    DriveTrain.leftMotors->stop(vex::coast);
+    DriveTrain.rightMotors->stop(vex::coast);
 }
 
 /**
@@ -247,11 +247,11 @@ void Chassis::tuneOffsets(float ang, float kp, float ki, float kd, float maxSpee
             vex::wait(10, vex::msec);
         vex::wait(500, vex::msec);
         float temporary_multiplier = ang / chassis.getPose().theta;
-        temporary_multiplier *= sensors.imu->getMultiplier();
+        temporary_multiplier *= OdomSensors.imu->getMultiplier();
         Brain.Screen.print("M:%f", temporary_multiplier);
         printf("\n copy this multiplier into data bot constructor in main: M:%f\n\n", temporary_multiplier);
-        float ss = sensors.horizontal1->getDistance() / (2 * M_PI * ang / 360);
-        float sr = sensors.vertical1->getDistance() / (2 * M_PI * ang / 360);
+        float ss = OdomSensors.horizontal1->getDistance() / (2 * M_PI * ang / 360);
+        float sr = OdomSensors.vertical1->getDistance() / (2 * M_PI * ang / 360);
         Brain.Screen.setCursor(2,0);
         Brain.Screen.print("\nSS:%f SR%f", ss, sr);
         printf("\nSS:%f SR%f\n\n", ss, sr);
@@ -261,22 +261,22 @@ void Chassis::SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed,
 {
     turnSettings(kp, ki, kd);
     Turn::params(heading, reversed, maxSpeed, true, false, true);
-    drivetrain.leftMotors->stop(vex::hold);
-    drivetrain.rightMotors->stop(vex::coast);
+    DriveTrain.leftMotors->stop(vex::hold);
+    DriveTrain.rightMotors->stop(vex::coast);
     waitUntilError(Turn::breakOutError, breakAngle);
-    drivetrain.leftMotors->stop(vex::coast);
-    drivetrain.rightMotors->stop(vex::coast);
+    DriveTrain.leftMotors->stop(vex::coast);
+    DriveTrain.rightMotors->stop(vex::coast);
 }
 
 void Chassis::SwingOnRightToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
 {
     turnSettings(kp, ki, kd);
     Turn::params(heading, reversed, maxSpeed, false, true, true);
-    drivetrain.leftMotors->stop(vex::coast);
-    drivetrain.rightMotors->stop(vex::hold);
+    DriveTrain.leftMotors->stop(vex::coast);
+    DriveTrain.rightMotors->stop(vex::hold);
     waitUntilError(Turn::breakOutError, breakAngle);
-    drivetrain.leftMotors->stop(vex::coast);
-    drivetrain.rightMotors->stop(vex::coast);
+    DriveTrain.leftMotors->stop(vex::coast);
+    DriveTrain.rightMotors->stop(vex::coast);
 }
 
 /**
@@ -289,7 +289,7 @@ void Chassis::SwingOnRightToHeading(float heading, bool reversed, float maxSpeed
  * Two PIDs need to be set up to be passed to the Boomerang constructor, and the target heading
  * needs to be converted to radians and standard form.
  * It also needs to decide what the chasePower should be. Usually this will be the value set in
- * the drivetrain struct, but it can be overridden by the user if needed.
+ * the DriveTrain struct, but it can be overridden by the user if needed.
  */
 void Chassis::boomerangTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float breakDist)
 {
@@ -325,7 +325,7 @@ void Chassis::follow(float path, float lookahead, int timeout, bool forwards, in
     // if (movement != nullptr)
     //    waitUntilDone();
     // create the movement
-    // movement = make_unique<PurePursuit>(drivetrain.trackWidth, path, lookahead, timeout, forwards, maxSpeed);
+    // movement = make_unique<PurePursuit>(DriveTrain.trackWidth, path, lookahead, timeout, forwards, maxSpeed);
 }
 
 void Chassis::stateMachineOn()
@@ -369,7 +369,7 @@ std::pair<float, float> Chassis::stateMachine()
  * This function is called in a loop by the chassis task
  * It updates any motion controller that may be running
  * And it updates the odometry
- * Once implemented, it will also update the drivetrain velocity controllers
+ * Once implemented, it will also update the DriveTrain velocity controllers
  */
 void Chassis::update()
 {
@@ -380,7 +380,7 @@ void Chassis::update()
     {
         std::pair<float, float> output = stateMachine(); // get output
         // move the motors
-        drivetrain.leftMotors->spin(vex::fwd, output.first, vex::volt);
-        drivetrain.rightMotors->spin(vex::fwd, output.second, vex::volt);
+        DriveTrain.leftMotors->spin(vex::fwd, output.first, vex::volt);
+        DriveTrain.rightMotors->spin(vex::fwd, output.second, vex::volt);
     }
 }

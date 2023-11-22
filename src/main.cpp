@@ -24,12 +24,12 @@ tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_2
 tntnlib::Gyro imu(1, 1.010357);
 
 /* chassis and controllers */
-tntnlib::Drivetrain_t drivebase{&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8};
-tntnlib::ChassisController_t linearController{1, 0, 3, 0, 0, 0, 100, 3, 500, 12};
-tntnlib::ChassisController_t angularController{.25, 0.009, 2.0, 10, 2, .5, 1, 3, 500, 12};
-tntnlib::OdomSensors_t sensors{&vertical, nullptr, &horizontal, nullptr, &imu};
+tntnlib::DrivetrainStruct DriveTrain{&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8};
+tntnlib::PIDSettings LinearSettings{1, 0, 3, 0, 0, 0, 100, 3, 500, 12};
+tntnlib::PIDSettings AngularSettings{.25, 0.009, 2.0, 10, 2, .5, 1, 3, 500, 12};
+tntnlib::OdomSensorStruct OdomSensors{&vertical, nullptr, &horizontal, nullptr, &imu};
 // MUST BE NAMED chassis
-tntnlib::Chassis chassis(drivebase, linearController, angularController, sensors);
+tntnlib::Chassis chassis{};
 
 /* End of tntnlib Robot Config */
 
@@ -39,7 +39,7 @@ int logger()
   while (true)
   {
     tntnlib::Pose current(chassis.getPose(false));
-    printf("SX:%.2f, SR:%.2f, IMU:%.2f ", sensors.horizontal1->getDistance(), sensors.vertical1->getDistance(), sensors.imu->rotation());
+    printf("SX:%.2f, SR:%.2f, IMU:%.2f ", OdomSensors.horizontal1->getDistance(), OdomSensors.vertical1->getDistance(), OdomSensors.imu->rotation());
     printf("X:%.2f, Y:%.2f, H:%.2f BH:%.2f\n", current.x, current.y, current.theta, fmod(current.theta, 360));
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%.2f, Y:%.2f, H:%.2f", current.x, current.y, current.theta);

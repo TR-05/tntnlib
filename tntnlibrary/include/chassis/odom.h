@@ -18,14 +18,6 @@
 namespace tntnlib {
 class Odometry {
     public:
-        /**
-         * @brief Construct a new Odometry object
-         *
-         * @param chassis pointer to the chassis object
-         */
-        Odometry(OdomSensors_t& sensors, Drivetrain_t& drive)
-            : sensors(sensors),
-              drive(drive) {}
 
         /**
          * @brief Calibrate sensors used for odometry
@@ -59,8 +51,8 @@ class Odometry {
          */
         void update();
     private:
-        OdomSensors_t sensors;
-        Drivetrain_t drive;
+        //OdomSensors_t sensors;
+        //Drivetrain_t drive;
         Pose pose = Pose(0, 0, 0);
 
         float prevVertical = 0;

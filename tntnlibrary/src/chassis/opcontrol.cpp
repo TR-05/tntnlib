@@ -32,8 +32,8 @@ float defaultDriveCurve(float input, float scale) {
  * curve, refer to the `defaultDriveCurve` documentation.
  */
 void Chassis::tank(int left, int right, float curveGain) {
-    drivetrain.leftMotors->spin(vex::fwd, defaultDriveCurve(left, curveGain), vex::volt);
-    drivetrain.rightMotors->spin(vex::fwd, defaultDriveCurve(right, curveGain), vex::volt);
+    DriveTrain.leftMotors->spin(vex::fwd, defaultDriveCurve(left, curveGain), vex::volt);
+    DriveTrain.rightMotors->spin(vex::fwd, defaultDriveCurve(right, curveGain), vex::volt);
 }
 
 /**
@@ -48,14 +48,14 @@ void Chassis::tank(int left, int right, float curveGain) {
 void Chassis::arcade(int throttle, int turn, float curveGain) {
     int leftPower = defaultDriveCurve(throttle + turn, curveGain);
     int rightPower = defaultDriveCurve(throttle - turn, curveGain);
-    drivetrain.leftMotors->spin(vex::fwd, leftPower, vex::volt);
-    drivetrain.rightMotors->spin(vex::fwd, rightPower, vex::volt);
+    DriveTrain.leftMotors->spin(vex::fwd, leftPower, vex::volt);
+    DriveTrain.rightMotors->spin(vex::fwd, rightPower, vex::volt);
 }
 
 /**
  * @brief Control the robot during the driver using the curvature drive control scheme. This control scheme is
  * very similar to arcade drive, except the second joystick axis controls the radius of the curve that the
- * drivetrain makes, rather than the speed. This means that the driver can accelerate in a turn without changing
+ * DriveTrain makes, rather than the speed. This means that the driver can accelerate in a turn without changing
  * the radius of that turn. This control scheme defaults to arcade when forward is zero.
  * @param throttle speed to move forward or backward. Takes an input from -127 to 127.
  * @param turn speed to turn. Takes an input from -127 to 127.
@@ -75,7 +75,7 @@ void Chassis::curvature(int throttle, int turn, float curveGain) {
     leftPower = defaultDriveCurve(leftPower, curveGain);
     rightPower = defaultDriveCurve(rightPower, curveGain);
 
-    drivetrain.leftMotors->spin(vex::fwd, leftPower, vex::volt);
-    drivetrain.rightMotors->spin(vex::fwd, rightPower, vex::volt);
+    DriveTrain.leftMotors->spin(vex::fwd, leftPower, vex::volt);
+    DriveTrain.rightMotors->spin(vex::fwd, rightPower, vex::volt);
 }
 } // namespace tntnlib

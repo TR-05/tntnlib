@@ -60,14 +60,8 @@ namespace tntnlib
          * @param sensors sensors to be used for odometry
          * @param driveCurve drive curve to be used. defaults to `defaultDriveCurve`
          */
-        Chassis(Drivetrain_t drivetrain, ChassisController_t lateralSettings, ChassisController_t angularSettings,
-                OdomSensors_t sensors, DriveCurveFunction_t driveCurve = 0)
-            : drivetrain(drivetrain),
-              linearSettings(lateralSettings),
-              angularSettings(angularSettings),
-              sensors(sensors),
-              driveCurve(driveCurve),
-              odom(sensors, drivetrain) {}
+        Chassis(DriveCurveFunction_t driveCurve = 0)
+            : driveCurve(driveCurve) {}
 
         /**
          * @brief Initialize the chassis
@@ -285,10 +279,10 @@ namespace tntnlib
         // std::unique_ptr<Movement> movement;
         std::unique_ptr<vex::task> task;
 
-        ChassisController_t linearSettings;
-        ChassisController_t angularSettings;
-        Drivetrain_t drivetrain;
-        OdomSensors_t sensors;
+        //ChassisController_t linearSettings;
+        //ChassisController_t angularSettings;
+        //Drivetrain_t drivetrain;
+        //OdomSensors_t sensors;
         DriveCurveFunction_t driveCurve;
     };
 } // namespace tntnlib

@@ -19,15 +19,23 @@ namespace tntnlib
          * @param horizontal2 pointer to the second horizontal tracking wheel
          * @param imu pointer to the IMU
          */
-        typedef struct
+        struct OdomSensorStruct
         {
                 TrackingWheel *vertical1;
                 TrackingWheel *vertical2;
                 TrackingWheel *horizontal1;
                 TrackingWheel *horizontal2;
                 Gyro *imu;
-        } OdomSensors_t;
-
+                void setUp(TrackingWheel *v1, TrackingWheel *v2, TrackingWheel *h1, TrackingWheel *h2, Gyro *i)
+                {
+                        vertical1 = v1;
+                        vertical2 = v2;
+                        horizontal1 = h1;
+                        horizontal2 = h2;
+                        imu = i;
+                }
+        };
+        inline OdomSensorStruct OdomSensors;
         /**
          * @brief Struct containing constants for a chassis controller
          *
@@ -42,7 +50,7 @@ namespace tntnlib
          * @param largeErrorTimeout the time the chassis controller will wait before switching to a faster control loop
          * @param slew the maximum acceleration of the chassis controller
          */
-        typedef struct
+        struct PIDSettings
         {
                 float kP;
                 float kI;
@@ -54,7 +62,22 @@ namespace tntnlib
                 float largeError;
                 float largeErrorTimeout;
                 float slew;
-        } ChassisController_t;
+                void setUp(float p, float i, float d, float iStart, float iMax, float small, float smallTimeout, float large, float largeTimeout, float s)
+                {
+                        kP = p;
+                        kI = i;
+                        kD = d;
+                        kIStart = iStart;
+                        kIMax = iMax;
+                        smallError = small;
+                        smallErrorTimeout = smallTimeout;
+                        largeError = large;
+                        largeErrorTimeout = largeTimeout;
+                        slew = s;
+                }
+        };
+        inline PIDSettings AngularSettings;
+        inline PIDSettings LinearSettings;
 
         /**
          * @brief Struct containing constants for a drivetrain
@@ -69,7 +92,7 @@ namespace tntnlib
          * @param rpm the rpm of the wheels
          * @param chasePower higher values make the robot move faster but causes more overshoot on turns
          */
-        typedef struct
+        struct DrivetrainStruct
         {
                 vex::motor_group *leftMotors;
                 vex::motor_group *rightMotors;
@@ -78,10 +101,21 @@ namespace tntnlib
                 float cartridgeRPM;
                 float rpm;
                 float chasePower;
-        } Drivetrain_t;
-        //extern tntnlib::OdomSensors_t sensors;
-        //extern ChassisController_t linearController;
-        //extern ChassisController_t angularController;
-        //extern tntnlib::Drivetrain_t drivebase;
+                void setUp(vex::motor_group *leftMotors, vex::motor_group *rightMotors, float t, float w, float c, float r, float p)
+                {
+                        this->leftMotors = leftMotors;
+                        this->rightMotors = rightMotors;
+                        this->trackWidth = t;
+                        this->wheelDiameter = w;
+                        this->cartridgeRPM = c;
+                        this->rpm = r;
+                        this->chasePower = p;
+                }
+        };
+        inline DrivetrainStruct DriveTrain;
+        // extern tntnlib::OdomSensors_t sensors;
+        // extern ChassisController_t linearController;
+        // extern ChassisController_t angularController;
+        // extern tntnlib::Drivetrain_t drivebase;
 
 } // namespace tntnlib
