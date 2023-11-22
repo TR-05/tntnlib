@@ -4953,7 +4953,7 @@ LOAD /Users/trevor/Library/Application Support/Code/User/globalStorage/vexroboti
 LOAD /Users/trevor/Library/Application Support/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20220726_10_00_00/vexv5/gcc/libs/libm.a
 LOAD /Users/trevor/Library/Application Support/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20220726_10_00_00/vexv5/gcc/libs/libgcc.a
 END GROUP
-OUTPUT(build/TNTNLib.elf elf32-littlearm)
+OUTPUT(build/testoftntnlibrary.elf elf32-littlearm)
 
 .comment        0x0000000000000000       0x9d
  .comment       0x0000000000000000       0x2d build/src/main.o

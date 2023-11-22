@@ -7,27 +7,20 @@ VERBOSE = 0
 include vex/mkenv.mk
 
 # location of the project source cpp and c files
-
-SRC_C  = $(wildcard *.cpp) 
-SRC_C += $(wildcard */*.cpp) 
-SRC_C += $(wildcard */*/*.cpp) 
-SRC_C += $(wildcard */*/*/*.cpp) 
-SRC_C += $(wildcard */*/*/*/*.cpp) 
-
-#SRC_C += $(wildcard tntnlib/src/*.cpp)
-#SRC_C += $(wildcard src/*/*.cpp) 
-#SRC_C += $(wildcard src/*/*/*.cpp) 
-#SRC_C += $(wildcard src/*/*/*/*.cpp) 
-#SRC_C += $(wildcard src/*/*/*/*/*.cpp) 
+SRC_C  = $(wildcard src/*.cpp) 
+SRC_C += $(wildcard src/*/*.cpp) 
+SRC_C += $(wildcard src/*/*/*.cpp) 
+SRC_C += $(wildcard src/*/*/*/*.cpp) 
+SRC_C += $(wildcard tntnlibrary/src/*.cpp) 
+SRC_C += $(wildcard tntnlibrary/src/*/*.cpp) 
+SRC_C += $(wildcard tntnlibrary/src/*/*/*.cpp) 
+SRC_C += $(wildcard tntnlibrary/src/*/*/*/*.cpp) 
+SRC_C += $(wildcard tntnlibrary/src/*/*/*/*/*.cpp) 
 
 OBJ = $(addprefix $(BUILD)/, $(addsuffix .o, $(basename $(SRC_C))) )
 
 # location of include files that c and cpp files depend on
-SRC_H  = $(wildcard *.h)
-SRC_H += $(wildcard */*.h)
-SRC_H += $(wildcard */*/*.h)
-SRC_H += $(wildcard */*/*/*.h)
-SRC_H += $(wildcard */*/*/*/*.h)
+SRC_H  = $(wildcard include/*.h)
 
 # additional dependancies
 SRC_A  = makefile

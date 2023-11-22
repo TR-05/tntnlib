@@ -1,7 +1,5 @@
 #include "vex.h"
-#include "tntnlib/api.h"
-
-#include "../tntnlib/include/lib.h"
+#include "../tntnlibrary/include/api.h"
 
 #include <iostream>
 using namespace vex;
