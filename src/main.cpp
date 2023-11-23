@@ -1,12 +1,12 @@
 #include "vex.h"
 #include "../tntnlibrary/include/api.h"
 #include "autos.h"
-
 #include <iostream>
 using namespace vex;
-// A global instance of competition
 competition Competition;
 brain Brain;
+
+
 
 /* tntnlib robot Config */
 
@@ -24,14 +24,13 @@ tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_2
 tntnlib::Gyro imu(1, 1.010357);
 
 /* chassis and controllers */
-tntnlib::DrivetrainStruct DriveTrain{&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8};
-tntnlib::PIDSettings LinearSettings{1, 0, 3, 0, 0, 0, 100, 3, 500, 12};
-tntnlib::PIDSettings AngularSettings{.25, 0.009, 2.0, 10, 2, .5, 1, 3, 500, 12};
-tntnlib::OdomSensorStruct OdomSensors{&vertical, nullptr, &horizontal, nullptr, &imu};
-// MUST BE NAMED chassis
-tntnlib::Chassis chassis{};
-
+tntnlib::ControllerSettings tntnlib::linearSettings(1, 0, 3, 0, 0, 12);
+tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.009, 2.0, 10, 2, 12);
+tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
+tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 /* End of tntnlib Robot Config */
+
+
 
 /* data logger idk where to put */
 int logger()
@@ -39,10 +38,10 @@ int logger()
   while (true)
   {
     tntnlib::Pose current(chassis.getPose(false));
-    printf("SX:%.2f, SR:%.2f, IMU:%.2f ", OdomSensors.horizontal1->getDistance(), OdomSensors.vertical1->getDistance(), OdomSensors.imu->rotation());
-    printf("X:%.2f, Y:%.2f, H:%.2f BH:%.2f\n", current.x, current.y, current.theta, fmod(current.theta, 360));
+    printf("SX:%6.2f, SR:%6.2f, IMU:%6.2f ", tntnlib::sensors.horizontal1->getDistance(), tntnlib::sensors.vertical1->getDistance(), tntnlib::sensors.gyro != nullptr ? tntnlib::sensors.gyro->rotation() : 0);
+    printf("X:%9.2f, Y:%9.2f, H:%9.2f BH:%9.2f\n", current.x, current.y, current.theta, fmod(current.theta, 360));
     Brain.Screen.clearLine();
-    Brain.Screen.print("X:%.2f, Y:%.2f, H:%.2f", current.x, current.y, current.theta);
+    Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
     wait(50, msec);
   }
 
@@ -66,7 +65,6 @@ void autonomous(void)
 /* runs on comp switch driver */
 void usercontrol(void)
 {
-  chassis.stateMachineOff();
   printf("Entered Driver\n");
   chassis.stateMachineOff();
 
