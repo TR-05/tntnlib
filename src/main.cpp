@@ -32,7 +32,7 @@ tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, 
 
 
 
-/* data logger idk where to put */
+/* data logger idk where to put :/ */
 int logger()
 {
   while (true)
@@ -44,12 +44,11 @@ int logger()
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
     wait(50, msec);
   }
-
   return 0;
 }
 
 /* runs when program first starts */
-void pre_auton(void)
+void pre_auton()
 {
   task log(logger);
   printf("Entered pre_auton\n");
@@ -57,20 +56,23 @@ void pre_auton(void)
 }
 
 /* runs on comp switch autonomous */
-void autonomous(void)
+void autonomous()
 {
   programming_skills();
 }
 
 /* runs on comp switch driver */
-void usercontrol(void)
+void usercontrol()
 {
   printf("Entered Driver\n");
   chassis.stateMachineOff();
 
   while (1)
   {
-    chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100);
+    chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); //tank (the best drive style)
+    //chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
+    //chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
+
     wait(10.0, msec);
   }
 }
