@@ -5,28 +5,27 @@ using namespace tntnlib;
 void programming_skills()
 {
   printf("Entered Auto\n");
-  chassis.initialize(false, 0,0,0);
+  chassis.initialize(false, 0, 0, 0);
   chassis.stateMachineOn();
-  
-  float akp = tntnlib::angularSettings.kP;
-  float aki = tntnlib::angularSettings.kI;
-  float akd = tntnlib::angularSettings.kD;
-  float lkp = tntnlib::linearSettings.kP;
-  float lki = tntnlib::linearSettings.kI;
-  float lkd = tntnlib::linearSettings.kD;
 
-  //chassis.tuneOffsets(3600, akp, aki, akd, 6, 2); //Tunes odom + imu constants: DISABLE TERMINAL PRINT then jig bot to a tile, run auto, once bot stops moving tap and hold brain screen
-  chassis.moveTo(30, 30, false, 12, 12, lkp, lki, lkd, akp, aki, akd*1.25, .3, 2);
-  vex::wait(200, vex::msec);
-  chassis.moveTo(0, 60, true, 12, 12, lkp, lki, lkd, akp, aki, akd*1.25, .3, 2);
-  vex::wait(200, vex::msec);
+  float akp = angularSettings.kP;
+  float aki = angularSettings.kI;
+  float akd = angularSettings.kD;
+  float lkp = linearSettings.kP;
+  float lki = linearSettings.kI;
+  float lkd = linearSettings.kD;
 
-  chassis.boomerangTo(0, 20, -90, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  // chassis.tuneOffsets(3600, akp, aki, akd, 6, 2); //Tunes odom + imu constants: DISABLE TERMINAL PRINT then jig bot to a tile, run auto, once bot stops moving tap and hold brain screen
+  chassis.SwingOnLeftToHeading(-45, 0, 12, akp*1.6, aki, akd, 1); 
+  chassis.moveTo(30, 30, false, 12, 12, lkp, lki, lkd, akp, aki, akd * 1.25, .3, 2);
   vex::wait(200, vex::msec);
-  chassis.boomerangTo(20, 20, 90, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  chassis.moveTo(0, 60, true, 12, 12, lkp, lki, lkd, akp, aki, akd * 1.25, .3, 2);
   vex::wait(200, vex::msec);
-  chassis.boomerangTo(0, 0, 0, false, 9, 12, lkp, lki, lkd, akp, aki, akd, .3, .5, 2);
+  chassis.boomerangTo(0, 20, -180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 2);
   vex::wait(200, vex::msec);
-  chassis.turnToHeading(0, false, 9, akp, aki, akd, 1);
-  
+  chassis.boomerangTo(20, 20, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 2);
+  vex::wait(200, vex::msec);
+  chassis.boomerangTo(0, 0, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 2);
+  vex::wait(200, vex::msec);
+  chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
 }

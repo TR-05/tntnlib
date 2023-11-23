@@ -6,8 +6,6 @@ using namespace vex;
 competition Competition;
 brain Brain;
 
-
-
 /* tntnlib robot Config */
 
 /* drive motors */
@@ -25,12 +23,10 @@ tntnlib::Gyro imu(1, 1.010357);
 
 /* chassis and controllers */
 tntnlib::ControllerSettings tntnlib::linearSettings(1, 0, 3, 0, 0, 12);
-tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.009, 2.0, 10, 2, 12);
+tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
 tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
 tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 /* End of tntnlib Robot Config */
-
-
 
 /* data logger idk where to put :/ */
 int logger()
@@ -69,10 +65,9 @@ void usercontrol()
 
   while (1)
   {
-    chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); //tank (the best drive style)
-    //chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
-    //chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
-
+    chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
+    // chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
+    // chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
     wait(10.0, msec);
   }
 }
