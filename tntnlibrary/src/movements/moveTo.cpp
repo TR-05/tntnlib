@@ -28,6 +28,8 @@ void MoveTo::params(Pose target, bool reversed, float lmaxSpeed, float amaxSpeed
     MoveTo::amaxSpeed = amaxSpeed;
     MoveTo::lead = lead;
     MoveTo::chasePower = chasePower;
+    MoveTo::state = 0;
+    MoveTo::breakOutError = 0;
 }
 
 std::pair<float, float> MoveTo::update(Pose pose)

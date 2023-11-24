@@ -20,7 +20,7 @@ namespace tntnlib
          * @param reversed whether the robot should face the point with its back or front
          * @param maxSpeed the maximum speed the robot can turn at
          */
-        void params(bool reversed, float lmaxSpeed, float amaxSpeed);
+        void params(bool reversed, bool holdHeading, bool turnToPoint, float straightDistance, float lmaxSpeed, float amaxSpeed, float targetHeading, Pose targetPose);
         // Turn(FAPID angularPID, Pose target, bool reversed, int maxSpeed);
         /**
          * @brief Update the movement
@@ -34,13 +34,15 @@ namespace tntnlib
          */
         std::pair<float, float> update(Pose pose);
 
+        inline float straightDistance = 0;
+        inline float startingVertical1Dist = 0;
         inline float targetHeading = 0;
         inline bool reversed = false;
-        inline float lmaxSpeed;
-        inline float amaxSpeed;
-        inline int state = 0; // 0 = in progress, 1 = done
-        inline float lead = 0;
-        inline float chasePower = 0;
+        inline bool holdHeading = false;
+        inline bool turnToPoint = false;        
+        inline float lmaxSpeed = 0;
+        inline float amaxSpeed = 0;
         inline float breakOutError = 0;
+        inline Pose targetPose = Pose(0, 0, 0);
     };
 }; // namespace tntnlib

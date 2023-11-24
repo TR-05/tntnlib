@@ -22,7 +22,7 @@ tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_2
 tntnlib::Gyro imu(1, 1.010357);
 
 /* chassis and controllers */
-tntnlib::ControllerSettings tntnlib::linearSettings(1, 0, 3, 0, 0, 12);
+tntnlib::ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
 tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
 tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
 tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);

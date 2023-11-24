@@ -4,79 +4,52 @@
 #include "../tntnlibrary/include/util.h"
 #include "../tntnlibrary/include/pose.h"
 #include "../tntnlibrary/include/movements/straightPid.h"
+#include "../tntnlibrary/include/chassis/chassis.h"
 #include "vex.h"
 
 using namespace tntnlib;
 
 /**
- * Turn constructor
- *
- * Some members of the class need to be explicitly initialized
- * But, some members need to be configured further in the body
- *
- * Here we just store the arguments in member variables, and store the
- * initial competition state.
+ * drive Pid parameters
  */
 
-void straightPid::params(bool reversed, float lmaxSpeed, float amaxSpeed)
+void straightPid::params(bool reversed, bool holdHeading, bool turnToPoint, float straightDistance, float lmaxSpeed, float amaxSpeed, float targetHeading, Pose targetPose)
 {
+    straightPid::startingVertical1Dist = sensors.vertical1->getDistance();
+    straightPid::targetHeading = targetHeading;
+    straightPid::straightDistance = straightDistance;
     straightPid::reversed = reversed;
     straightPid::lmaxSpeed = lmaxSpeed;
     straightPid::amaxSpeed = amaxSpeed;
+    straightPid::holdHeading = holdHeading;
+    straightPid::turnToPoint = turnToPoint;
+    straightPid::targetPose = targetPose;
+    straightPid::breakOutError = 0;
 }
 
 std::pair<float, float> straightPid::update(Pose pose)
 {
-
-
-
     // if going in reverse, flip the heading of the pose
     if (reversed)
         pose.theta += 180;
+    if (turnToPoint) {
+        targetHeading = StandardFormRadToDeg(pose.angle(targetPose));
+        //printf("targetHeading: %.2f\n tx: %.2f ty: %.2f", targetHeading, targetPose.x, targetPose.y);
+    }
 
-    float targetHeadingRad = degToStandardFormRad(targetHeading);
-    float poseError = pose.distance(targetPose);
-    
     // calculate error
-    float angularError = angleError(StandardFormRadToDeg(pose.angle(carrot)), pose.theta, false); // angular error
-    float linearError = poseError * cos(degToRad(angularError));                                  // linear error
-
-    if (state == 1)
-    {
-        angularError = angleError(targetPose.theta, pose.theta, false); // settling behavior
-        poseError = poseError * cos(degToRad(angularError));
-    }
-    else
-    {
-        poseError = pose.distance(targetPose);
-    }
-
-    if (reversed)
-        linearError = -linearError;
+    float angularError = angleError(targetHeading, pose.theta, false); // angular error
+    float error = (straightDistance) - (sensors.vertical1->getDistance() - startingVertical1Dist);
 
     // get PID outputs
     float angularPower = angularPID.update(angularError, 0);
-    float linearPower = linearPID.update(linearError, 0);
-    angularPower = clamp(angularPower, -amaxSpeed, amaxSpeed);
-    linearPower = clamp(linearPower, -lmaxSpeed, lmaxSpeed);
-
-    // calculate radius of turn
-    float curvature = fabs(getCurvature(pose, carrot));
-    if (curvature == 0)
-        curvature = -1;
-    float radius = 1 / curvature;
-
-    // calculate the maximum speed at which the robot can turn
-    // using the formula v = sqrt( u * r * g )
-    if (radius != -1)
-    {
-        float maxTurnSpeed = sqrt(chasePower * radius * 9.8);
-        // the new linear power is the minimum of the linear power and the max turn speed
-        if (linearPower > maxTurnSpeed && state == 0)
-            ;//linearPower = maxTurnSpeed;
-        else if (linearPower < -maxTurnSpeed && state == 0)
-            ;//linearPower = -maxTurnSpeed;
+    float linearPower = linearPID.update(error, 0);
+    if (holdHeading)
+        angularPower = clamp(angularPower, -amaxSpeed, amaxSpeed);
+    else {
+        angularPower = 0;
     }
+    linearPower = clamp(linearPower, -lmaxSpeed, lmaxSpeed);
 
     // prioritize turning over moving
     float overturn = fabs(angularPower) + fabs(linearPower) - lmaxSpeed;
@@ -88,6 +61,6 @@ std::pair<float, float> straightPid::update(Pose pose)
     float rightPower = linearPower - angularPower;
 
     // return motor output
-    breakOutError = poseError;
+    breakOutError = error;
     return {leftPower, rightPower};
 }

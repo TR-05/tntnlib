@@ -91,6 +91,7 @@ namespace tntnlib
         float kD;
         float kIStart;
         float kIMax;
+        float slew;
         float largeError;
         float smallError;
         int largeTime = 0;

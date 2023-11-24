@@ -15,6 +15,7 @@
 #include "../tntnlibrary/include/movements/moveTo.h"
 #include "../tntnlibrary/include/movements/purepursuit.h"
 #include "../tntnlibrary/include/movements/turn.h"
+#include "../tntnlibrary/include/movements/straightPid.h"
 #include "../tntnlibrary/include/chassis/chassis.h"
 #include "../tntnlibrary/include/chassis/odom.h"
 #include <functional>
@@ -170,17 +171,15 @@ void Chassis::turnSettings(float kp, float ki, float kd)
     autoChassis = turnMode;
 }
 
-void Chassis::moveToSettings(float akp, float aki, float akd, float lkp, float lki, float lkd)
+void Chassis::moveToSettings(float akp, float aki, float akd, float lkp, float lki, float lkd, float slew)
 {
     //  set up the PIDs
     angularPID.setGains(0, 0, akp, aki, akd);
-    linearPID.setGains(0, 0, lkp, lki, lkd);
+    linearPID.setGains(0, slew, lkp, lki, lkd);
     angularPID.reset();
     linearPID.reset();
     angularPID.setIntegral(angularSettings.kIStart, angularSettings.kIMax);
     linearPID.setIntegral(linearSettings.kIStart, linearSettings.kIMax);
-    MoveTo::state = 0;
-    MoveTo::breakOutError = 0;
 }
 
 void Chassis::turnToPose(float x, float y, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
@@ -245,18 +244,18 @@ void Chassis::tuneOffsets(float ang, float kp, float ki, float kd, float maxSpee
     vex::wait(1000, vex::msec);
     stateMachineOff();
     chassis.tank(0, 0, 0);
-        while (!Brain.Screen.pressing())
-            vex::wait(10, vex::msec);
-        vex::wait(500, vex::msec);
-        float temporary_multiplier = ang / chassis.getPose().theta;
-        temporary_multiplier *= sensors.gyro->getMultiplier();
-        Brain.Screen.print("M:%f", temporary_multiplier);
-        printf("\n copy this multiplier into data bot constructor in main: M:%f\n\n", temporary_multiplier);
-        float ss = sensors.horizontal1->getDistance() / (2 * M_PI * ang / 360);
-        float sr = sensors.vertical1->getDistance() / (2 * M_PI * ang / 360);
-        Brain.Screen.setCursor(2,0);
-        Brain.Screen.print("\nSS:%f SR%f", ss, sr);
-        printf("\nSS:%f SR%f\n\n", ss, sr);
+    while (!Brain.Screen.pressing())
+        vex::wait(10, vex::msec);
+    vex::wait(500, vex::msec);
+    float temporary_multiplier = ang / chassis.getPose().theta;
+    temporary_multiplier *= sensors.gyro->getMultiplier();
+    Brain.Screen.print("M:%f", temporary_multiplier);
+    printf("\n copy this multiplier into data bot constructor in main: M:%f\n\n", temporary_multiplier);
+    float ss = sensors.horizontal1->getDistance() / (2 * M_PI * ang / 360);
+    float sr = sensors.vertical1->getDistance() / (2 * M_PI * ang / 360);
+    Brain.Screen.setCursor(2, 0);
+    Brain.Screen.print("\nSS:%f SR%f", ss, sr);
+    printf("\nSS:%f SR%f\n\n", ss, sr);
 }
 
 void Chassis::SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle)
@@ -281,6 +280,26 @@ void Chassis::SwingOnRightToHeading(float heading, bool reversed, float maxSpeed
     drivetrain.rightMotors->stop(vex::coast);
 }
 
+void Chassis::pid(float dist, float heading, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist)
+{
+    Pose target = Pose(0, 0, 0);
+    straightPid::params(reversed, true, false, dist, lmaxSpeed, amaxSpeed, heading, target);
+    moveToSettings(akp, aki, akd, lkp, lki, lkd, slew);
+    // setup the statemachine
+    autoChassis = drivePidMode;
+    waitUntilError(straightPid::breakOutError, breakDist);
+}
+
+void Chassis::pid(float dist, float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist)
+{
+    Pose target = Pose(x, y, 0);
+    straightPid::params(reversed, true, true, dist, lmaxSpeed, amaxSpeed, 0, target);
+    moveToSettings(akp, aki, akd, lkp, lki, lkd, slew);
+    // setup the statemachine
+    autoChassis = drivePidMode;
+    waitUntilError(straightPid::breakOutError, breakDist);
+}
+
 /**
  * This function sets up the Boomerang controller
  *
@@ -293,23 +312,23 @@ void Chassis::SwingOnRightToHeading(float heading, bool reversed, float maxSpeed
  * It also needs to decide what the chasePower should be. Usually this will be the value set in
  * the drivetrain struct, but it can be overridden by the user if needed.
  */
-void Chassis::boomerangTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float breakDist)
+void Chassis::boomerangTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float slew, float breakDist)
 {
     MoveTo::useBoomerang = true;
     Pose target = Pose(x, y, theta);
     MoveTo::params(target, reversed, lmaxSpeed, amaxSpeed, lead, chasePower);
-    moveToSettings(akp, aki, akd, lkp, lki, lkd);
+    moveToSettings(akp, aki, akd, lkp, lki, lkd, slew);
     // setup the statemachine
     autoChassis = moveToMode;
     waitUntilError(MoveTo::breakOutError, breakDist);
 }
 
-void Chassis::moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float breakDist)
+void Chassis::moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float breakDist)
 {
     MoveTo::useBoomerang = false;
     Pose target = Pose(x, y, 0);
     MoveTo::params(target, reversed, lmaxSpeed, amaxSpeed, 0, chasePower);
-    moveToSettings(akp, aki, akd, lkp, lki, lkd);
+    moveToSettings(akp, aki, akd, lkp, lki, lkd, slew);
     // setup the statemachine
     autoChassis = moveToMode;
     waitUntilError(MoveTo::breakOutError, breakDist);
@@ -359,7 +378,8 @@ std::pair<float, float> Chassis::stateMachine()
         return MoveTo::update(this->getPose());
     case followMode:
         return {0, 0};
-
+    case drivePidMode:
+        return straightPid::update(this->getPose());
     default:
         return {0, 0};
     }

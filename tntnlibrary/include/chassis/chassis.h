@@ -122,7 +122,7 @@ namespace tntnlib
          */
         void waitUntilError(float &error, float margin);
 
-        void moveToSettings(float akp, float aki, float akd, float lkp, float lki, float lkd);
+        void moveToSettings(float akp, float aki, float akd, float lkp, float lki, float lkd, float slew);
 
         /**
          * @brief Prepare the angular pid for a turn movement
@@ -170,6 +170,9 @@ namespace tntnlib
         void SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
         void SwingOnRightToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
 
+
+        void pid(float dist, float heading, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist);
+        void pid(float dist, float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist);
         /**
          * @brief Move the chassis towards the target pose
          *
@@ -186,7 +189,7 @@ namespace tntnlib
          *      
          * @param maxSpeed the maximum speed the robot can move at. 12 at default
          */
-        void boomerangTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float breakDist);
+        void boomerangTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float slew, float breakDist);
 
         /**
          * @brief Move the chassis towards the target pose
@@ -201,7 +204,7 @@ namespace tntnlib
          * default to global value
          * @param maxSpeed the maximum speed the robot can move at. 12 at default
          */
-        void moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float breakDist);
+        void moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float breakDist);
 
         /**
          * @brief Move the chassis using a custom motion algorithm
@@ -262,7 +265,8 @@ namespace tntnlib
             disabledMode,
             turnMode,
             moveToMode,
-            followMode
+            followMode,
+            drivePidMode
         };
         moveState autoChassis = turnMode;
         std::pair<float, float> stateMachine();

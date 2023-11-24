@@ -58,7 +58,7 @@ namespace tntnlib
                  * @param kIstart the minimum error to start integrating
                  * @param slew the maximum change in voltage per iteration
                  */
-        
+
                 ControllerSettings(float kP, float kI, float kD, float kImax, float kIstart, float slew)
                     : kP(kP),
                       kI(kI),
