@@ -39,8 +39,8 @@ void startAuto(float x, float y, float theta)
 void programming_skills()
 {
   startAuto(0, 0, 0);
-  chassis.pid(24, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2); //Moves backward 24 inches holding heading 0,0
+  chassis.pid(24, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2); // Moves backward 24 inches holding heading 0,0
   delay(200);
-  chassis.pid(-24, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2); //Moves backward 24 inches holding heading 0,0
+  chassis.pid(-24, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2); // Moves backward 24 inches holding heading 0,0
   delay(200);
 }
