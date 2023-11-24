@@ -19,6 +19,7 @@ motor_group rightMotors = motor_group(rs_front, rs_back);
 /* tracking wheels and gyro */
 tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 0.002292, 1);
 tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, -0.253611, 1);
+
 tntnlib::Gyro imu(1, 1.010357);
 
 /* chassis and controllers */
