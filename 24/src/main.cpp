@@ -9,17 +9,21 @@ brain Brain;
 /* tntnlib robot Config */
 
 /* drive motors */
-motor ls_front = motor(6 - 1, ratio6_1, true);
-motor ls_mid = motor(7 - 1, ratio6_1, true);
-motor ls_back = motor(8 - 1, ratio6_1, true);
-motor rs_front = motor(3 - 1, ratio6_1, false);
-motor rs_mid = motor(13 - 1, ratio6_1, false);
-motor rs_back = motor(14 - 1, ratio6_1, false);
-motor_group leftMotors = motor_group(ls_front, ls_mid, ls_back);
-motor_group rightMotors = motor_group(rs_front, rs_mid, rs_back);
+motor ls_front = motor(PORT7, ratio6_1, false);
+motor ls_mid = motor(PORT6, ratio6_1, true);
+motor ls_back = motor(PORT8, ratio6_1, true);
+motor ls_top = motor(PORT5, ratio6_1, false);
+
+motor rs_front = motor(PORT3, ratio6_1, true);
+motor rs_mid = motor(PORT13, ratio6_1, false);
+motor rs_back = motor(PORT14, ratio6_1, false);
+motor rs_top = motor(PORT15, ratio6_1, true);
+//, ls_mid, ls_back, ls_top
+motor_group leftMotors = motor_group(rs_front);
+motor_group rightMotors = motor_group(rs_front, rs_mid, rs_back, rs_top);
 
 /* tracking wheels and gyro */
-// tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 0.002292, 1);
+tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 0.002292, 1);
 // tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, -0.253611, 1);
 tntnlib::TrackingWheel vertical(&leftMotors, tntnlib::Omniwheel::NEW_4, -8, 600, 300);
 tntnlib::Gyro imu(1, 1.010357);
@@ -28,7 +32,7 @@ tntnlib::Gyro imu(1, 1.010357);
 tntnlib::ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
 tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
 tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
-tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, nullptr, nullptr, &imu);
+tntnlib::OdomSensors tntnlib::sensors(&vertical, &horizontal, nullptr, nullptr, nullptr);
 /* End of tntnlib Robot Config */
 
 motor DFWl1 = motor(PORT11, ratio6_1, true);
@@ -61,9 +65,9 @@ int logger()
 /* runs when program first starts */
 void pre_auton()
 {
-  task log(logger);
+  //task log(logger);
   printf("Entered pre_auton\n");
-  chassis.initialize(true, 0, 0, 0);
+  //chassis.initialize(true, 0, 0, 0);
 }
 
 /* runs on comp switch autonomous */
