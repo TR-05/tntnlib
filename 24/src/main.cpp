@@ -32,7 +32,7 @@ tntnlib::Gyro imu(1, 1.010357);
 tntnlib::ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
 tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
 tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
-tntnlib::OdomSensors tntnlib::sensors(&vertical, &horizontal, nullptr, nullptr, nullptr);
+tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, nullptr, nullptr, nullptr);
 /* End of tntnlib Robot Config */
 
 motor DFWl1 = motor(PORT11, ratio6_1, true);
@@ -53,7 +53,7 @@ int logger()
   while (true)
   {
     tntnlib::Pose current(chassis.getPose(false));
-    printf("SX:%6.2f, SR:%6.2f, IMU:%6.2f ", tntnlib::sensors.horizontal1->getDistance(), tntnlib::sensors.vertical1->getDistance(), tntnlib::sensors.gyro != nullptr ? tntnlib::sensors.gyro->rotation() : 0);
+    printf("SX:%6.2f, SR:%6.2f, IMU:%6.2f ", tntnlib::sensors.horizontal1 != nullptr ? tntnlib::sensors.horizontal1->getDistance() : 0, tntnlib::sensors.vertical1 != nullptr ? tntnlib::sensors.vertical1->getDistance() : 0, tntnlib::sensors.gyro != nullptr ? tntnlib::sensors.gyro->rotation() : 0);
     printf("X:%9.2f, Y:%9.2f, H:%9.2f BH:%9.2f\n", current.x, current.y, current.theta, fmod(current.theta, 360));
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
@@ -65,9 +65,9 @@ int logger()
 /* runs when program first starts */
 void pre_auton()
 {
-  //task log(logger);
   printf("Entered pre_auton\n");
-  //chassis.initialize(true, 0, 0, 0);
+  chassis.initialize(true, 0, 0, 0);
+  task log(logger);
 }
 
 /* runs on comp switch autonomous */
