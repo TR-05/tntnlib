@@ -22,7 +22,7 @@ tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_2
 
 tntnlib::Gyro imu(1, 1.010357);
 
-/* chassis and controllers */
+/* chassis and controllers (DO NOT CHANGE NAMES)*/
 tntnlib::ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
 tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
 tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
@@ -47,9 +47,10 @@ int logger()
 /* runs when program first starts */
 void pre_auton()
 {
-  task log(logger);
+  //task log(logger);
   printf("Entered pre_auton\n");
   chassis.initialize(true, 0, 0, 0);
+
 }
 
 /* runs on comp switch autonomous */
@@ -63,6 +64,7 @@ void usercontrol()
 {
   printf("Entered Driver\n");
   chassis.stateMachineOff();
+
 
   while (1)
   {

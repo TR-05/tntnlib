@@ -11,6 +11,8 @@
 
 #include <math.h>
 #include "../tntnlibrary/include/pose.h"
+using namespace tntnlib;
+
 /**
  * @brief Create a new pose
  *
@@ -18,7 +20,8 @@
  * @param y component
  * @param theta heading. Defaults to 0
  */
-tntnlib::Pose::Pose(float x, float y, float theta) {
+Pose::Pose(float x, float y, float theta)
+{
     this->x = x;
     this->y = y;
     this->theta = theta;
@@ -30,9 +33,10 @@ tntnlib::Pose::Pose(float x, float y, float theta) {
  * @param other other pose
  * @return Pose
  */
-tntnlib::Pose tntnlib::Pose::operator+(const tntnlib::Pose& other) {
+Pose Pose::operator+(const Pose &other)
+{
     this->x += other.x, this->y += other.y, this->theta += other.theta;
-    return tntnlib::Pose(this->x, this->y, this->theta);
+    return Pose(this->x, this->y, this->theta);
 }
 
 /**
@@ -41,8 +45,9 @@ tntnlib::Pose tntnlib::Pose::operator+(const tntnlib::Pose& other) {
  * @param other other pose
  * @return Pose
  */
-tntnlib::Pose tntnlib::Pose::operator-(const tntnlib::Pose& other) {
-    return tntnlib::Pose(this->x - other.x, this->y - other.y, this->theta);
+Pose Pose::operator-(const Pose &other)
+{
+    return Pose(this->x - other.x, this->y - other.y, this->theta);
 }
 
 /**
@@ -51,7 +56,7 @@ tntnlib::Pose tntnlib::Pose::operator-(const tntnlib::Pose& other) {
  * @param other other pose
  * @return Pose
  */
-float tntnlib::Pose::operator*(const tntnlib::Pose& other) { return this->x * other.x + this->y * other.y; }
+float Pose::operator*(const Pose &other) { return this->x * other.x + this->y * other.y; }
 
 /**
  * @brief Multiply a pose by a float
@@ -59,8 +64,9 @@ float tntnlib::Pose::operator*(const tntnlib::Pose& other) { return this->x * ot
  * @param other float
  * @return Pose
  */
-tntnlib::Pose tntnlib::Pose::operator*(const float& other) {
-    return tntnlib::Pose(this->x * other, this->y * other, this->theta);
+Pose Pose::operator*(const float &other)
+{
+    return Pose(this->x * other, this->y * other, this->theta);
 }
 
 /**
@@ -69,8 +75,9 @@ tntnlib::Pose tntnlib::Pose::operator*(const float& other) {
  * @param other float
  * @return Pose
  */
-tntnlib::Pose tntnlib::Pose::operator/(const float& other) {
-    return tntnlib::Pose(this->x / other, this->y / other, this->theta);
+Pose Pose::operator/(const float &other)
+{
+    return Pose(this->x / other, this->y / other, this->theta);
 }
 
 /**
@@ -79,7 +86,8 @@ tntnlib::Pose tntnlib::Pose::operator/(const float& other) {
  * @param other the other pose
  * @return bool
  */
-bool tntnlib::Pose::operator==(const Pose& other) {
+bool Pose::operator==(const Pose &other)
+{
     return this->x == other.x && this->y == other.y && this->theta == other.theta;
 }
 
@@ -89,7 +97,8 @@ bool tntnlib::Pose::operator==(const Pose& other) {
  * @param other the other pose
  * @return bool
  */
-bool tntnlib::Pose::operator!=(const Pose& other) {
+bool Pose::operator!=(const Pose &other)
+{
     return this->x != other.x || this->y != other.y || this->theta != other.theta;
 }
 
@@ -100,8 +109,9 @@ bool tntnlib::Pose::operator!=(const Pose& other) {
  * @param t t value
  * @return Pose
  */
-tntnlib::Pose tntnlib::Pose::lerp(tntnlib::Pose other, float t) {
-    return tntnlib::Pose(this->x + (other.x - this->x) * t, this->y + (other.y - this->y) * t, this->theta);
+Pose Pose::lerp(Pose other, float t)
+{
+    return Pose(this->x + (other.x - this->x) * t, this->y + (other.y - this->y) * t, this->theta);
 }
 
 /**
@@ -110,7 +120,7 @@ tntnlib::Pose tntnlib::Pose::lerp(tntnlib::Pose other, float t) {
  * @param other the other pose
  * @return float
  */
-float tntnlib::Pose::distance(tntnlib::Pose other) { return hypot(this->x - other.x, this->y - other.y); }
+float Pose::distance(Pose other) { return hypot(this->x - other.x, this->y - other.y); }
 
 /**
  * @brief Get the angle between two poses
@@ -118,7 +128,7 @@ float tntnlib::Pose::distance(tntnlib::Pose other) { return hypot(this->x - othe
  * @param other the other pose
  * @return float in radians
  */
-float tntnlib::Pose::angle(tntnlib::Pose other) { return atan2(other.y - this->y, other.x - this->x); }
+float Pose::angle(Pose other) { return atan2(other.y - this->y, other.x - this->x); }
 
 /**
  * @brief Rotate a pose by an angle
@@ -126,7 +136,8 @@ float tntnlib::Pose::angle(tntnlib::Pose other) { return atan2(other.y - this->y
  * @param angle angle in radians
  * @return Pose
  */
-tntnlib::Pose tntnlib::Pose::rotate(float angle) {
-    return tntnlib::Pose(this->x * cos(angle) - this->y * sin(angle),
-                        this->x * sin(angle) + this->y * cos(angle), this->theta);
+Pose Pose::rotate(float angle)
+{
+    return Pose(this->x * cos(angle) - this->y * sin(angle),
+                this->x * sin(angle) + this->y * cos(angle), this->theta);
 }

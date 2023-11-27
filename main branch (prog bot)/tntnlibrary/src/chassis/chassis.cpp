@@ -314,8 +314,8 @@ void Chassis::pid(float dist, float x, float y, bool reversed, float lmaxSpeed, 
  */
 void Chassis::boomerangTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float slew, float breakDist)
 {
-    MoveTo::useBoomerang = true;
     Pose target = Pose(x, y, theta);
+    MoveTo::targetChoice = MoveTo::boomerangTargetMode;
     MoveTo::params(target, reversed, lmaxSpeed, amaxSpeed, lead, chasePower);
     moveToSettings(akp, aki, akd, lkp, lki, lkd, slew);
     // setup the statemachine
@@ -325,9 +325,9 @@ void Chassis::boomerangTo(float x, float y, float theta, bool reversed, float lm
 
 void Chassis::moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float breakDist)
 {
-    MoveTo::useBoomerang = false;
     Pose target = Pose(x, y, 0);
-    MoveTo::params(target, reversed, lmaxSpeed, amaxSpeed, 0, chasePower);
+    MoveTo::targetChoice = MoveTo::staticTargetMode;
+    MoveTo::params(target, reversed, lmaxSpeed, amaxSpeed);
     moveToSettings(akp, aki, akd, lkp, lki, lkd, slew);
     // setup the statemachine
     autoChassis = moveToMode;
@@ -340,13 +340,15 @@ void Chassis::moveTo(float x, float y, bool reversed, float lmaxSpeed, float ama
  * Unlike the chassis::moveTo function, we can just pass the parameters directly to the
  * Pure Pursuit constructor
  */
-void Chassis::follow(float path, float lookahead, int timeout, bool forwards, int maxSpeed)
+void Chassis::follow(Path &path, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float lookAhead, float breakDist)
 {
-    // if a movement is already running, wait until it is done
-    // if (movement != nullptr)
-    //    waitUntilDone();
-    // create the movement
-    // movement = make_unique<PurePursuit>(drivetrain.trackWidth, path, lookahead, timeout, forwards, maxSpeed);
+    Pose target = Pose(path.x3, path.y3, path.theta[path.numberOfPoints]);
+    MoveTo::targetChoice = MoveTo::purePursuitTargetMode;
+    MoveTo::params(target, path, reversed, lmaxSpeed, amaxSpeed, lookAhead, chasePower);
+    moveToSettings(akp, aki, akd, lkp, lki, lkd, slew);
+    // setup the statemachine
+    autoChassis = moveToMode;
+    waitUntilError(MoveTo::breakOutError, breakDist);
 }
 
 void Chassis::stateMachineOn()

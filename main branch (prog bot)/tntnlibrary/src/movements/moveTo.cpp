@@ -4,12 +4,14 @@
 #include "../tntnlibrary/include/util.h"
 #include "../tntnlibrary/include/pose.h"
 #include "../tntnlibrary/include/movements/moveTo.h"
+#include "../tntnlibrary/include/pathing/purePursuit.h"
+#include "../tntnlibrary/include/pathing/cubicBezier.h"
+
 #include "vex.h"
 
 using namespace tntnlib;
 
-bool MoveTo::useBoomerang = false;
-
+Path MoveTo::path = Path(0,0, 0,0, 0,0, 0,0);
 /**
  * Turn constructor
  *
@@ -20,9 +22,19 @@ bool MoveTo::useBoomerang = false;
  * initial competition state.
  */
 
+void MoveTo::params(Pose target, bool reversed, float lmaxSpeed, float amaxSpeed)
+{
+    MoveTo::targetPose = target;
+    MoveTo::reversed = reversed;
+    MoveTo::lmaxSpeed = lmaxSpeed;
+    MoveTo::amaxSpeed = amaxSpeed;
+    MoveTo::state = 0;
+    MoveTo::breakOutError = 0;
+}
+
 void MoveTo::params(Pose target, bool reversed, float lmaxSpeed, float amaxSpeed, float lead, float chasePower)
 {
-    targetPose = target;
+    MoveTo::targetPose = target;
     MoveTo::reversed = reversed;
     MoveTo::lmaxSpeed = lmaxSpeed;
     MoveTo::amaxSpeed = amaxSpeed;
@@ -32,16 +44,47 @@ void MoveTo::params(Pose target, bool reversed, float lmaxSpeed, float amaxSpeed
     MoveTo::breakOutError = 0;
 }
 
+void MoveTo::params(Pose target, Path path, bool reversed, float lmaxSpeed, float amaxSpeed, float lookAhead, float chasePower)
+{
+    MoveTo::targetPose = target;
+    MoveTo::path = path;
+    MoveTo::reversed = reversed;
+    MoveTo::lmaxSpeed = lmaxSpeed;
+    MoveTo::amaxSpeed = amaxSpeed;
+    MoveTo::lookAhead = lookAhead;
+    MoveTo::chasePower = chasePower;
+    MoveTo::state = 0;
+    MoveTo::breakOutError = 0;
+    purePursuit.last_found_index = 0;
+}
+
+void MoveTo::updateTarget(Pose &pose)
+{
+    if (targetChoice == staticTargetMode)
+    {
+        currentTargetPose = targetPose;
+    }
+    else if (targetChoice == boomerangTargetMode)
+    {
+        currentTargetPose = carrot;
+    }
+    else if (targetChoice == purePursuitTargetMode)
+    {
+        purePursuit.getNextIntersect(path, pose, lookAhead);
+        currentTargetPose = purePursuit.target;
+    }
+}
 std::pair<float, float> MoveTo::update(Pose pose)
 {
     // set state to 1 if in state 0 and close to the target
-    if (state == 0 && pose.distance(targetPose) < 4) {
+    if (state == 0 && pose.distance(targetPose) < 4)
+    {
         state = 1;
-        if (!MoveTo::useBoomerang) {
+        if (targetChoice == staticTargetMode)
+        {
             targetPose.theta = StandardFormRadToDeg(pose.angle(targetPose));
         }
     }
-
 
     // if going in reverse, flip the heading of the pose
     if (reversed)
@@ -50,13 +93,17 @@ std::pair<float, float> MoveTo::update(Pose pose)
     float targetHeadingRad = degToStandardFormRad(targetPose.theta);
     float poseError = pose.distance(targetPose);
     // calculate the carrot point
-    Pose carrot = targetPose - Pose(poseError * lead * cos(targetHeadingRad), poseError * lead * sin(targetHeadingRad));
-    if (state == 1 or !MoveTo::useBoomerang)
+    carrot = targetPose - Pose(poseError * lead * cos(targetHeadingRad), poseError * lead * sin(targetHeadingRad));
+    if (state == 1)
         carrot = targetPose; // settling behavior
 
+    // choose target Pose
+    updateTarget(pose);
+    //printf("target: (%.2f,%.2f)\n", currentTargetPose.x, currentTargetPose.y);
+
     // calculate error
-    float angularError = angleError(StandardFormRadToDeg(pose.angle(carrot)), pose.theta, false); // angular error
-    float linearError = poseError * cos(degToRad(angularError));                                  // linear error
+    float angularError = angleError(StandardFormRadToDeg(pose.angle(currentTargetPose)), pose.theta, false); // angular error
+    float linearError = poseError * cos(degToRad(angularError));                                             // linear error
 
     if (state == 1)
     {
@@ -78,7 +125,7 @@ std::pair<float, float> MoveTo::update(Pose pose)
     linearPower = clamp(linearPower, -lmaxSpeed, lmaxSpeed);
 
     // calculate radius of turn
-    float curvature = fabs(getCurvature(pose, carrot));
+    float curvature = fabs(getCurvature(pose, currentTargetPose));
     if (curvature == 0)
         curvature = -1;
     float radius = 1 / curvature;
@@ -90,9 +137,9 @@ std::pair<float, float> MoveTo::update(Pose pose)
         float maxTurnSpeed = sqrt(chasePower * radius * 9.8);
         // the new linear power is the minimum of the linear power and the max turn speed
         if (linearPower > maxTurnSpeed && state == 0)
-            ;//linearPower = maxTurnSpeed;
+            linearPower = maxTurnSpeed;
         else if (linearPower < -maxTurnSpeed && state == 0)
-            ;//linearPower = -maxTurnSpeed;
+            linearPower = -maxTurnSpeed;
     }
 
     // prioritize turning over moving
