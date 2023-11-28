@@ -88,8 +88,8 @@ std::pair<float, float> tntnlib::Turn::update(Pose pose)
     if (turnSettings.boundto360)
     {
         error = fmod(error, 360);
-        if (error > 360)
-            error -= 180;
+        if (error > 180)
+            error -= 360;
         else if (error < -180)
             error += 360;
     }

@@ -22,6 +22,8 @@
 #include "../tntnlibrary/include/chassis/structs.h"
 #include "../tntnlibrary/include/chassis/odom.h"
 #include "../tntnlibrary/include/devices/defaultDevices.h"
+#include "../tntnlibrary/include/pathing/cubicBezier.h"
+
 namespace tntnlib
 {
     /**
@@ -223,7 +225,7 @@ namespace tntnlib
          * @param forwards whether the robot should follow the path going forwards. true by default
          * @param maxSpeed the maximum speed the robot can move at
          */
-        void follow(float path, float lookahead, int timeout, bool forwards = true, int maxSpeed = 12);
+        void follow(Path &path, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float lookAhead, float breakDist);
 
         /**
          * @brief Control the robot during the driver control period using the tank drive control scheme. In this
@@ -268,7 +270,7 @@ namespace tntnlib
             followMode,
             drivePidMode
         };
-        moveState autoChassis = turnMode;
+        moveState autoChassis = disabledMode;
         std::pair<float, float> stateMachine();
 
     private:
