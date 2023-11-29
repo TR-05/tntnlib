@@ -9,10 +9,11 @@ brain Brain;
 /* tntnlib robot Config */
 
 /* drive motors */
-motor ls_front = motor(8 - 1, ratio6_1, true);
-motor ls_back = motor(10 - 1, ratio6_1, true);
+motor ls_front = motor(8  -1, ratio6_1, true);
+motor ls_back = motor(10  -1, ratio6_1, true);
 motor rs_front = motor(PORT18, ratio6_1, false);
 motor rs_back = motor(PORT19, ratio6_1, false);
+
 motor_group leftMotors = motor_group(ls_front, ls_back);
 motor_group rightMotors = motor_group(rs_front, rs_back);
 
@@ -47,10 +48,9 @@ int logger()
 /* runs when program first starts */
 void pre_auton()
 {
-  //task log(logger);
+  // task log(logger);
   printf("Entered pre_auton\n");
   chassis.initialize(true, 0, 0, 0);
-
 }
 
 /* runs on comp switch autonomous */
@@ -64,7 +64,6 @@ void usercontrol()
 {
   printf("Entered Driver\n");
   chassis.stateMachineOff();
-
 
   while (1)
   {
