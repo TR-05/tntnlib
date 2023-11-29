@@ -16,6 +16,8 @@ SRC_C += $(wildcard tntnlibrary/src/*/*.cpp)
 SRC_C += $(wildcard tntnlibrary/src/*/*/*.cpp) 
 SRC_C += $(wildcard tntnlibrary/src/*/*/*/*.cpp) 
 SRC_C += $(wildcard tntnlibrary/src/*/*/*/*/*.cpp) 
+SRC_C += $(wildcard tntnlibrary/src/*/*/*/*/*/*.cpp) 
+SRC_C += $(wildcard tntnlibrary/src/*/*/*/*/*/*/*.cpp) 
 
 OBJ = $(addprefix $(BUILD)/, $(addsuffix .o, $(basename $(SRC_C))) )
 

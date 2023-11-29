@@ -14,7 +14,7 @@
 
 #include "../tntnlibrary/include/util.h"
 #include "../tntnlibrary/include/pid.h"
-#include "../tntnlibrary/include/pose.h"
-#include "../tntnlibrary/include/pathing/cubicBezier.h"
-#include "../tntnlibrary/include/chassis/chassis.h"
-#include "../tntnlibrary/include/devices/defaultDevices.h"
+#include "../tntnlibrary/include/drivetrain/pose.h"
+#include "../tntnlibrary/include/drivetrain/pathing/cubicBezier.h"
+#include "../tntnlibrary/include/drivetrain/chassis/chassis.h"
+#include "../tntnlibrary/include/defaultDevices.h"

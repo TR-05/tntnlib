@@ -12,9 +12,9 @@
 #include <math.h>
 #include <vector>
 #include <string.h>
-#include "../tntnlibrary/include/pose.h"
+#include "../tntnlibrary/include/drivetrain/pose.h"
 #include "../tntnlibrary/include/util.h"
-#include "../tntnlibrary/include/devices/defaultDevices.h"
+#include "../tntnlibrary/include/defaultDevices.h"
 
 /**
  * @brief Slew rate limiter

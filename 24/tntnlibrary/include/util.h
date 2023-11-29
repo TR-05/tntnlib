@@ -13,7 +13,7 @@
 
 #include <vector>
 #include <string>
-#include "../tntnlibrary/include/pose.h"
+#include "../tntnlibrary/include/drivetrain/pose.h"
 
 namespace tntnlib {
 
