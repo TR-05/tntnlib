@@ -24,7 +24,7 @@ namespace tntnlib
          * @param inputRPM the rpm of your motors (IE, 100, 200, 600)
          * @param outputRPM the rpm of the flywheel (IE 3000)
          */
-        Flywheel(vex::motor_group motors, float inputRPM, float outputRPM)
+        Flywheel(std::vector<vex::motor> *motors, float inputRPM, float outputRPM)
             : motors(motors),
               inputRPM(inputRPM),
               outputRPM(outputRPM)
@@ -45,8 +45,11 @@ namespace tntnlib
          * @return float rpm
          */
         float getRPM();
-        void settings(float kV, float kP, float kI, float kD, float bangBangMargin);
+        void settings(float kV, float kA, float kP, float kI, float kD, float bangBangMargin);
 
+        float getTBHPower(float rpm);
+        float getFAPIDPower(float rpm);
+        float getPower(float rpm);
         void spinVolts(float volts);
 
         void update();
@@ -57,12 +60,14 @@ namespace tntnlib
 
         float stateMachinePower = 0;
 
+        std::vector<vex::motor> *motors;
     private:
         bool StateMachineEnabled = false;
         float prevDist = 0; // the previous distance travelled by the movement
         const float inputRPM = 0;
         const float outputRPM = 0;
+        float lastEmaOutput = 0;
+        float bangBangMargin = 0;
         std::unique_ptr<vex::task> task;
-        vex::motor_group motors;
     };
 } // namespace tntnlib

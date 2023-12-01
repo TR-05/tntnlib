@@ -29,7 +29,8 @@ tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
 tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
 tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 /* End of tntnlib Robot Config */
-
+std::vector<vex::motor> flywheelMotors = {ls_front, ls_back, rs_front, rs_back};
+tntnlib::Flywheel flywheel(&flywheelMotors, 600, 3600);
 /* data logger idk where to put :/ */
 int logger()
 {
@@ -51,6 +52,7 @@ void pre_auton()
   // task log(logger);
   printf("Entered pre_auton\n");
   chassis.initialize(true, 0, 0, 0);
+  flywheel.settings(0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0);
 }
 
 /* runs on comp switch autonomous */
