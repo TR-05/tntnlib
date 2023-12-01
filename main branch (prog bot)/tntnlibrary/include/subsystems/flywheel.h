@@ -24,10 +24,14 @@ namespace tntnlib
          * @param inputRPM the rpm of your motors (IE, 100, 200, 600)
          * @param outputRPM the rpm of the flywheel (IE 3000)
          */
-        Flywheel(std::vector<vex::motor> *motors, float inputRPM, float outputRPM)
+        Flywheel(std::vector<vex::motor> *motors, float inputRPM, float outputRPM, float kV, float kP, float kI, float bangBangMargin)
             : motors(motors),
               inputRPM(inputRPM),
-              outputRPM(outputRPM)
+              outputRPM(outputRPM),
+              kV(kV),
+              kP(kP),
+              kI(kI),
+              bangBangMargin(bangBangMargin)
         {
         }
         int FlywheelLoop();
@@ -38,17 +42,16 @@ namespace tntnlib
          * @param rpm new rpm value to spin at
          *
          */
-        void spinRPM(float rpm);
+        void spinRPM(double rpm);
         /**
          * @brief Get the current flywheel RPM
          *
          * @return float rpm
          */
         float getRPM();
-        void settings(float kV, float kA, float kP, float kI, float kD, float bangBangMargin);
+        float getWatts();
+        float getVolts();
 
-        float getTBHPower(float rpm);
-        float getFAPIDPower(float rpm);
         float getPower(float rpm);
         void spinVolts(float volts);
 
@@ -61,12 +64,18 @@ namespace tntnlib
         float stateMachinePower = 0;
 
         std::vector<vex::motor> *motors;
+
+        double targetRPM = 0;
+
     private:
         bool StateMachineEnabled = false;
         float prevDist = 0; // the previous distance travelled by the movement
-        const float inputRPM = 0;
-        const float outputRPM = 0;
-        float lastEmaOutput = 0;
+        const double inputRPM = 0;
+        const double outputRPM = 0;
+        float kV = 0, kP = 0, kI = 0;
+        float error = 0, lastError = 0, integral = 0;
+        float lastRPMEmaOutput = 0;
+        float lastWattEmaOutput = 0;
         float bangBangMargin = 0;
         std::unique_ptr<vex::task> task;
     };

@@ -21,7 +21,7 @@
 #include <functional>
 
 using namespace tntnlib;
-tntnlib::Chassis chassis{};
+Chassis chassis{};
 
 /**
  * Initialize the chassis

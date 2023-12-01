@@ -40,12 +40,14 @@ motor DFWl2 = motor(PORT12, ratio6_1, false);
 motor DFWr1 = motor(PORT20, ratio6_1, false);
 motor DFWr2 = motor(PORT19, ratio6_1, true);
 
+std::vector<vex::motor> flywheelMotors = {DFWl1, DFWl2, DFWr1, DFWr2};
+tntnlib::Flywheel flywheel(&flywheelMotors, 600, 3600, 10, 0, 0.8, .25);
+
 motor left_intake = motor(PORT10, ratio6_1, false);
 motor right_intake = motor(PORT17, ratio6_1, true);
 
 digital_out left_intake_piston = digital_out(Brain.ThreeWirePort.A);
 digital_out right_intake_piston = digital_out(Brain.ThreeWirePort.B);
-motor_group DFW = motor_group(DFWl1, DFWl2, DFWr1, DFWr2);
 
 /* data logger idk where to put :/ */
 int logger()
@@ -84,20 +86,20 @@ void usercontrol()
 
   bool flywheelOn = false;
   // User control code here, inside the loop
-  float volts = 0;
+  float rpm = 0;
   bool pistonState = false;
   while (1)
   {
 
     if (Controller.ButtonA.pressing())
     {
-      volts = 12;
+      rpm = 4000;
       flywheelOn = true;
     }
 
     if (Controller.ButtonB.pressing())
     {
-      volts = 9.5;
+      rpm = 3000;
       flywheelOn = true;
     }
     if (Controller.ButtonL2.pressing())
@@ -107,11 +109,11 @@ void usercontrol()
 
     if (flywheelOn)
     {
-      DFW.spin(fwd, volts, volt);
+      flywheel.spinRPM(rpm);
     }
     else
     {
-      DFW.stop(coast);
+      flywheel.spinVolts(0);
     }
     if (Controller.ButtonL1.pressing() && !pistonState)
     {
