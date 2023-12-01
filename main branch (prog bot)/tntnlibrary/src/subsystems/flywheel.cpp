@@ -12,7 +12,7 @@
 #include "vex.h"
 #include "../tntnlibrary/include/util.h"
 #include "../tntnlibrary/include/pid.h"
-#include "../tntnlibrary/include/subsystems/flywheel/flywheel.h"
+#include "../tntnlibrary/include/subsystems/flywheel.h"
 #include <functional>
 using namespace tntnlib;
 
