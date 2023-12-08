@@ -35,13 +35,8 @@ tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib
 tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, nullptr, nullptr, nullptr);
 /* End of tntnlib Robot Config */
 
-motor DFWl1 = motor(PORT11, ratio6_1, true);
-motor DFWl2 = motor(PORT12, ratio6_1, false);
-motor DFWr1 = motor(PORT20, ratio6_1, false);
-motor DFWr2 = motor(PORT19, ratio6_1, true);
 
-std::vector<vex::motor> flywheelMotors = {DFWl1, DFWl2, DFWr1, DFWr2};
-tntnlib::Flywheel flywheel(&flywheelMotors, 600, 3600, 11, 0, 0.0, 2);
+tntnlib::Flywheel flywheel(ratio6_1, 3600, 11, 0, 0.0, 2, -11, 12, 20, -19);
 
 motor left_intake = motor(PORT10, ratio6_1, false);
 motor right_intake = motor(PORT17, ratio6_1, true);

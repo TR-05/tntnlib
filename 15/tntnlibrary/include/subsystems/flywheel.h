@@ -2,15 +2,13 @@
 
 #include <functional>
 #include <memory>
-
 #include "vex.h"
-
 #include "../tntnlibrary/include/defaultDevices.h"
 
 namespace tntnlib
 {
     /**
-     * @brief Chassis class
+     * @brief Flywheel class
      *
      */
     class Flywheel
@@ -24,15 +22,38 @@ namespace tntnlib
          * @param inputRPM the rpm of your motors (IE, 100, 200, 600)
          * @param outputRPM the rpm of the flywheel (IE 3000)
          */
-        Flywheel(std::vector<vex::motor> *motors, float inputRPM, float outputRPM, float kV, float kP, float kI, float bangBangMargin)
-            : motors(motors),
-              inputRPM(inputRPM),
-              outputRPM(outputRPM),
+        template <typename... Ports>
+        Flywheel(vex::gearSetting gear, float outputRPM, float kV, float kP, float kI, float bangBangMargin, Ports... ports)
+            : outputRPM(outputRPM),
               kV(kV),
               kP(kP),
               kI(kI),
               bangBangMargin(bangBangMargin)
         {
+            if (gear == vex::gearSetting::ratio6_1)
+            {
+                inputRPM = 600;
+            }
+            else if (gear == vex::gearSetting::ratio18_1)
+            {
+                inputRPM = 200;
+            }
+            else if (gear == vex::gearSetting::ratio36_1)
+            {
+                inputRPM = 100;
+            }
+            else
+            {
+                inputRPM = 600;
+            }
+            std::array<int, sizeof...(Ports)> portsArray = {ports...};
+            int size = portsArray.size();
+            motors.resize(size, vex::motor(-1));
+            for (int i = 0; i < size; i++)
+            {
+                motors[i] = vex::motor(abs(portsArray[i]) - 1, gear, (portsArray[i] < 0 ? true : false));
+                printf("Created motor on port %d\n", portsArray[i]);
+            }
         }
         int FlywheelLoop();
         void initialize();
@@ -63,14 +84,15 @@ namespace tntnlib
 
         float stateMachinePower = 0;
 
-        std::vector<vex::motor> *motors;
+        std::vector<vex::motor> motors;
 
-        double targetRPM = 0;
+        float targetRPM = 0;
+        float currentRPM = 0;
 
     private:
         bool StateMachineEnabled = false;
         float prevDist = 0; // the previous distance travelled by the movement
-        const double inputRPM = 0;
+        double inputRPM = 0;
         const double outputRPM = 0;
         float kV = 0, kP = 0, kI = 0;
         float error = 0, lastError = 0, integral = 0;

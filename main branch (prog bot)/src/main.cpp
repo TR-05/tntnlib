@@ -11,10 +11,8 @@ brain Brain;
 /* drive motors */
 motor ls_front = motor(8  -1, ratio6_1, true);
 motor ls_back = motor(10  -1, ratio6_1, true);
-
 motor rs_front = motor(PORT18, ratio6_1, false);
 motor rs_back = motor(PORT19, ratio6_1, false);
-
 motor_group leftMotors = motor_group(ls_front, ls_back);
 motor_group rightMotors = motor_group(rs_front, rs_back);
 
@@ -29,9 +27,13 @@ tntnlib::ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
 tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
 tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
 tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
+
+//tntnlib::Flywheel flywheel(ratio6_1, 3600, 10, 0, 0.8, .25, -8, -10);
+//tntnlib::Intake intake(ratio6_1, 360, -8, -10);
+
 /* End of tntnlib Robot Config */
-//std::vector<vex::motor> flywheelMotors = {ls_front, ls_back};
-//tntnlib::Flywheel flywheel(&flywheelMotors, 600, 3600, 10, 0, 0.8, .25);
+
+
 /* data logger idk where to put :/ */
 int logger()
 {
@@ -66,9 +68,14 @@ void usercontrol()
 {
   printf("Entered Driver\n");
   chassis.stateMachineOff();
+  //intake.setBrakeType(vex::brakeType::brake);
+
   while (1)
   {
     chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
+    //intake.driver(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
+    //flywheel.spinVolts(6);
+    //intake.driverToggle(Controller.ButtonA.pressing(), 3);
     // chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
     // chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
     wait(10.0, msec);

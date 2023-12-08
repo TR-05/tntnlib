@@ -33,7 +33,7 @@ tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib
 tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 /* End of tntnlib Robot Config */
 
-motor intake = motor(PORT11, ratio6_1, true);
+tntnlib::Intake intake(ratio6_1, 600, -11);
 digital_out left_wing = digital_out(Brain.ThreeWirePort.F);
 digital_out right_wing = digital_out(Brain.ThreeWirePort.E);
 
@@ -134,9 +134,8 @@ void usercontrol()
     {
       A = false;
     }
-    float pow = (Controller.ButtonR1.pressing() - Controller.ButtonR2.pressing()) * 12;
-    intake.spin(fwd, pow, volt);
-    intake.setStopping(brake);
+    intake.driver(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
+    intake.setBrakeType(brake);
     //chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
     chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
     // chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade

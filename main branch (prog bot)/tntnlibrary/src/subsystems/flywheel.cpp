@@ -1,13 +1,3 @@
-/**
- * @file src/lemlib/chassis/chassis.cpp
- * @author LemLib Team
- * @brief definitions for the chassis class
- * @version 0.4.5
- * @date 2023-01-27
- *
- * @copyright Copyright (c) 2023
- *
- */
 #include <math.h>
 #include "vex.h"
 #include "../tntnlibrary/include/util.h"
@@ -64,7 +54,7 @@ float Flywheel::getRPM()
 {
     double total = 0;
     float motorCount = 0;
-    for (auto &motor : *motors)
+    for (auto &motor : motors)
     {
         total += motor.velocity(vex::velocityUnits::rpm);
         motorCount++;
@@ -73,6 +63,7 @@ float Flywheel::getRPM()
     double stableVelo = rawOutput / inputRPM;
     rawOutput = rawOutput * (outputRPM / inputRPM); // converts to output RPM
     lastRPMEmaOutput = ema(stableVelo, lastRPMEmaOutput, .2);
+    currentRPM = lastWattEmaOutput;
     return lastRPMEmaOutput;
 }
 
@@ -80,7 +71,7 @@ float Flywheel::getWatts()
 {
     double total = 0;
     float motorCount = 0;
-    for (vex::motor &motor : *motors)
+    for (vex::motor &motor : motors)
     {
         total += motor.power(vex::powerUnits::watt);
         motorCount++;
@@ -93,7 +84,7 @@ float Flywheel::getVolts()
 {
     double total = 0;
     float motorCount = 0;
-    for (vex::motor &motor : *motors)
+    for (vex::motor &motor : motors)
     {
         total += motor.voltage(vex::voltageUnits::volt);
         motorCount++;
@@ -104,7 +95,7 @@ float Flywheel::getVolts()
 
 void Flywheel::spinVolts(float volts)
 {
-    for (auto &motor : *motors)
+    for (auto &motor : motors)
     {
         motor.spin(vex::directionType::fwd, volts, vex::voltageUnits::volt);
     }
