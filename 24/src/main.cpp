@@ -19,7 +19,7 @@ motor rs_mid = motor(PORT13, ratio6_1, false);
 motor rs_back = motor(PORT14, ratio6_1, false);
 motor rs_top = motor(PORT15, ratio6_1, true);
 //, ls_mid, ls_back, ls_top
-motor_group leftMotors = motor_group(rs_front);
+motor_group leftMotors = motor_group(ls_front, ls_mid, ls_back, ls_top);
 motor_group rightMotors = motor_group(rs_front, rs_mid, rs_back, rs_top);
 
 /* tracking wheels and gyro */
@@ -41,7 +41,7 @@ motor DFWr1 = motor(PORT20, ratio6_1, false);
 motor DFWr2 = motor(PORT19, ratio6_1, true);
 
 std::vector<vex::motor> flywheelMotors = {DFWl1, DFWl2, DFWr1, DFWr2};
-tntnlib::Flywheel flywheel(&flywheelMotors, 600, 3600, 10, 0, 0.8, .25);
+tntnlib::Flywheel flywheel(&flywheelMotors, 600, 3600, 11, 0, 0.0, 2);
 
 motor left_intake = motor(PORT10, ratio6_1, false);
 motor right_intake = motor(PORT17, ratio6_1, true);
@@ -55,8 +55,8 @@ int logger()
   while (true)
   {
     tntnlib::Pose current(chassis.getPose(false));
-    printf("SX: %.2f, SR: %.2f, IMU: %.2f ", tntnlib::sensors.horizontal1 != nullptr ? tntnlib::sensors.horizontal1->getDistance() : 0, tntnlib::sensors.vertical1 != nullptr ? tntnlib::sensors.vertical1->getDistance() : 0, tntnlib::sensors.gyro != nullptr ? tntnlib::sensors.gyro->rotation() : 0);
-    printf("  X: %.2f,  Y: %.2f,  H: %.2f   BH: %.2f\n", current.x, current.y, current.theta, fmod(current.theta, 360));
+    printf("F: %.2f,    SX: %.2f, SR: %.2f, IMU: %.2f ", flywheel.currentRPM, tntnlib::sensors.horizontal1 != nullptr ? tntnlib::sensors.horizontal1->getDistance() : 0, tntnlib::sensors.vertical1 != nullptr ? tntnlib::sensors.vertical1->getDistance() : 0, tntnlib::sensors.gyro != nullptr ? tntnlib::sensors.gyro->rotation() : 0);
+    printf("X: %.2f,Y: %.2f,H: %.2f BH: %.2f\n", current.x, current.y, current.theta, fmod(current.theta, 360));
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
     wait(50, msec);
@@ -88,18 +88,19 @@ void usercontrol()
   // User control code here, inside the loop
   float rpm = 0;
   bool pistonState = false;
+  bool lastIntakeMacro = false;
   while (1)
   {
 
     if (Controller.ButtonA.pressing())
     {
-      rpm = 4000;
+      rpm = 3600;
       flywheelOn = true;
     }
 
     if (Controller.ButtonB.pressing())
     {
-      rpm = 3000;
+      rpm = 2600;
       flywheelOn = true;
     }
     if (Controller.ButtonL2.pressing())
@@ -122,13 +123,24 @@ void usercontrol()
     }
     pistonState = Controller.ButtonL1.pressing();
 
+    if (Controller.ButtonRight.pressing() && !lastIntakeMacro)
+    {
+      left_intake.spin(fwd, 12, volt);
+      right_intake.spin(fwd, 12, volt);
+      left_intake_piston.set(0);
+      right_intake_piston.set(0);
+      wait(200, msec);
+      left_intake_piston.set(1);
+      right_intake_piston.set(1);
+    }
+    lastIntakeMacro = Controller.ButtonRight.pressing();
     float intakePower = 12 * (Controller.ButtonR1.pressing() - Controller.ButtonR2.pressing());
     left_intake.spin(fwd, intakePower, volt);
     right_intake.spin(fwd, intakePower, volt);
 
-    chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
-    // chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
-    // chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
+    // chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
+    //  chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
+    chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); // split arcade
     wait(10.0, msec);
   }
 }

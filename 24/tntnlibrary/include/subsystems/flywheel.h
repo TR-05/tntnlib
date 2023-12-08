@@ -66,7 +66,7 @@ namespace tntnlib
         std::vector<vex::motor> *motors;
 
         double targetRPM = 0;
-
+        double currentRPM = 0;
     private:
         bool StateMachineEnabled = false;
         float prevDist = 0; // the previous distance travelled by the movement

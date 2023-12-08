@@ -1,5 +1,6 @@
 #import customtkinter
 from tkinter import *
+from PIL import ImageTk, Image  
 import numpy as np
 
 window = Tk()
@@ -31,10 +32,10 @@ class Point():
         label.bind("<Button-1>",self.drag_start)
         label.bind("<B1-Motion>",self.drag_motion)
 
-p0 = Point("p0",0,0,"green",1,1)
-p1 = Point("p1",0,20,"blue",1,1)
-p2 = Point("p2",20,0,"red",1,1)
-p3 = Point("p3",20,20,"orange",1,1)
+p0 = Point("p0",30,30,"green",1,1)
+p1 = Point("p1",30,30,"blue",1,1)
+p2 = Point("p2",30,30,"red",1,1)
+p3 = Point("p3",30,30,"orange",1,1)
 
 def generateCubic(p0x,p0y,p1x,p1y,p2x,p2y,p3x,p3y, number_of_points):
     print(f"({p0x},{p0y}),({p1x},{p1y}),({p2x},{p2y}),({p3x},{p3y}),")
@@ -56,9 +57,19 @@ button = Button(master=frame, text="Exit", command=exitButton)
 button.pack(pady=12, padx=10)
 button.place(x=0,y=0)
 
+image1 = Image.open("<project/field.png>")
+test = ImageTk.PhotoImage(image1)
+label1 = Label(image=test)
+label1.image = test
+# Position image
+label1.place(x=20, y=20)
+#fieldImage = PhotoImage(file="field.pgm")
+#fieldImage.pack(pady=12, padx=10)
+#fieldImage.place(x=0,y=0)
 #window.mainloop()
 #print(generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y, 20))
 generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y, 20)
 while loop:
     window.update()
-    print(p0,p1,p2,p3)
+    generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y, 5)
+    #print(p0,p1,p2,p3)

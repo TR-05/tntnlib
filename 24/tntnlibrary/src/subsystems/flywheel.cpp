@@ -73,6 +73,7 @@ float Flywheel::getRPM()
     double stableVelo = rawOutput / inputRPM;
     rawOutput = rawOutput * (outputRPM / inputRPM); // converts to output RPM
     lastRPMEmaOutput = ema(stableVelo, lastRPMEmaOutput, .2);
+    currentRPM = lastRPMEmaOutput * 3600;
     return lastRPMEmaOutput;
 }
 
@@ -126,7 +127,7 @@ float Flywheel::getPower(float rpm)
         }
         lastError = error;
         float power = clamp( kV * targetRPM + kP * error + kI * integral, -12, 12);
-        printf("power: %.2f integral: %.2f kI: %.2f rpm: %.3f\n", power, integral, kI, getRPM());
+        //printf("power: %.2f integral: %.2f kI: %.2f rpm: %.3f\n", power, integral, kI, getRPM());
         return power; 
     }
 }
