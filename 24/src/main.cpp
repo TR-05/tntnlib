@@ -9,24 +9,24 @@ brain Brain;
 /* tntnlib robot Config */
 
 /* drive motors */
-motor ls_front = motor(PORT7, ratio6_1, false);
-motor ls_mid = motor(PORT6, ratio6_1, true);
-motor ls_back = motor(PORT8, ratio6_1, true);
-motor ls_top = motor(PORT5, ratio6_1, false);
+motor ls_1 = motor(PORT7, ratio6_1, false);
+motor ls_2 = motor(PORT8, ratio6_1, true);
+motor ls_3 = motor(PORT9, ratio6_1, true);
+motor ls_4 = motor(PORT10, ratio6_1, false);
 
-motor rs_front = motor(PORT3, ratio6_1, true);
-motor rs_mid = motor(PORT13, ratio6_1, false);
-motor rs_back = motor(PORT14, ratio6_1, false);
-motor rs_top = motor(PORT15, ratio6_1, true);
+motor rs_1 = motor(PORT1, ratio6_1, true);
+motor rs_2 = motor(PORT2, ratio6_1, false);
+motor rs_3 = motor(PORT3, ratio6_1, false);
+motor rs_4 = motor(PORT4, ratio6_1, true);
 //, ls_mid, ls_back, ls_top
-motor_group leftMotors = motor_group(ls_front, ls_mid, ls_back, ls_top);
-motor_group rightMotors = motor_group(rs_front, rs_mid, rs_back, rs_top);
-
+motor_group leftMotors(ls_1, ls_2, ls_3, ls_4);
+motor_group rightMotors(rs_1, rs_2, rs_3, rs_4);
+tntnlib::MotorGroup leftMotors2(ratio6_1, 600, 7, 8, 9, 10);
 /* tracking wheels and gyro */
 tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 0.002292, 1);
 // tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, -0.253611, 1);
 tntnlib::TrackingWheel vertical(&leftMotors, tntnlib::Omniwheel::NEW_4, -8, 600, 300);
-tntnlib::Gyro imu(1, 1.010357);
+tntnlib::Gyro imu(PORT15, 1.010357);
 
 /* chassis and controllers */
 tntnlib::ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
@@ -35,11 +35,8 @@ tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib
 tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, nullptr, nullptr, nullptr);
 /* End of tntnlib Robot Config */
 
-
-tntnlib::Flywheel flywheel(ratio6_1, 3600, 11, 0, 0.0, 2, -11, 12, 20, -19);
-
-motor left_intake = motor(PORT10, ratio6_1, false);
-motor right_intake = motor(PORT17, ratio6_1, true);
+tntnlib::Flywheel flywheel(ratio6_1, 3600, 11, 0, 0.0, 2, -12, 11, 20, -19);
+tntnlib::Intake intake(ratio6_1, 600, -13, 17);
 
 digital_out left_intake_piston = digital_out(Brain.ThreeWirePort.A);
 digital_out right_intake_piston = digital_out(Brain.ThreeWirePort.B);
@@ -71,6 +68,25 @@ void pre_auton()
 void autonomous()
 {
   programming_skills();
+}
+
+void singleLoadMacro()
+{
+  intake.spinVolts(12);
+  left_intake_piston.set(0);
+  right_intake_piston.set(0);
+  wait(200, msec);
+  left_intake_piston.set(1);
+  right_intake_piston.set(1);
+}
+
+void loadMacro(int times)
+{
+  for (int i = 0; i < times; i++) 
+  {
+    singleLoadMacro();
+    wait(1000, msec);
+  }
 }
 
 /* runs on comp switch driver */
@@ -120,18 +136,10 @@ void usercontrol()
 
     if (Controller.ButtonRight.pressing() && !lastIntakeMacro)
     {
-      left_intake.spin(fwd, 12, volt);
-      right_intake.spin(fwd, 12, volt);
-      left_intake_piston.set(0);
-      right_intake_piston.set(0);
-      wait(200, msec);
-      left_intake_piston.set(1);
-      right_intake_piston.set(1);
+      loadMacro(30);
     }
     lastIntakeMacro = Controller.ButtonRight.pressing();
-    float intakePower = 12 * (Controller.ButtonR1.pressing() - Controller.ButtonR2.pressing());
-    left_intake.spin(fwd, intakePower, volt);
-    right_intake.spin(fwd, intakePower, volt);
+    intake.driver(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
 
     // chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
     //  chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade

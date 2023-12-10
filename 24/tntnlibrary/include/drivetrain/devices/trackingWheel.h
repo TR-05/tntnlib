@@ -15,27 +15,30 @@
 #include "vex.h"
 #include "../tntnlibrary/include/drivetrain/devices/encoder/encoder.h"
 
-namespace tntnlib {
+namespace tntnlib
+{
 
-/**
- * @brief A namespace representing the size of omniwheels.
- */
-namespace Omniwheel {
-constexpr float NEW_275 = 2.75;
-constexpr float OLD_275 = 2.75;
-constexpr float NEW_275_HALF = 2.744;
-constexpr float OLD_275_HALF = 2.74;
-constexpr float NEW_325 = 3.25;
-constexpr float OLD_325 = 3.25;
-constexpr float NEW_325_HALF = 3.246;
-constexpr float OLD_325_HALF = 3.246;
-constexpr float NEW_4 = 4;
-constexpr float OLD_4 = 4.18;
-constexpr float NEW_4_HALF = 3.995;
-constexpr float OLD_4_HALF = 4.175;
-} // namespace Omniwheel
+    /**
+     * @brief A namespace representing the size of omniwheels.
+     */
+    namespace Omniwheel
+    {
+        constexpr float NEW_275 = 2.75;
+        constexpr float OLD_275 = 2.75;
+        constexpr float NEW_275_HALF = 2.744;
+        constexpr float OLD_275_HALF = 2.74;
+        constexpr float NEW_325 = 3.25;
+        constexpr float OLD_325 = 3.25;
+        constexpr float NEW_325_HALF = 3.246;
+        constexpr float OLD_325_HALF = 3.246;
+        constexpr float NEW_4 = 4;
+        constexpr float OLD_4 = 4.18;
+        constexpr float NEW_4_HALF = 3.995;
+        constexpr float OLD_4_HALF = 4.175;
+    } // namespace Omniwheel
 
-class TrackingWheel {
+    class TrackingWheel
+    {
     public:
         /**
          * @brief Create a tracking wheel with a custom encoder
@@ -53,7 +56,7 @@ class TrackingWheel {
          * @param offset distance between the wheel and the tracking center, in inches
          * @param rpm of the rpm of the wheels the motor group is driving
          */
-        TrackingWheel(vex::motor_group* motors, float diameter, float offset, float cartridgeRpm, float rpm);
+        TrackingWheel(vex::motor_group *motors, float diameter, float offset, float cartridgeRpm, float rpm);
         /**
          * @brief Create a new optical encoder tracking wheel
          *
@@ -102,9 +105,10 @@ class TrackingWheel {
          * @return float diameter, in inches
          */
         float getDiameter() const;
+
     private:
         std::shared_ptr<Encoder> encoder;
         const float diameter;
         const float offset;
-};
+    };
 } // namespace tntnlib
