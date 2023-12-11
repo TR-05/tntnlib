@@ -53,7 +53,8 @@ void programming_skills()
   Path path2(10,48,  -23,71,  -72,31,  -42,25,  100);
   Path path3(-42,25,  -4,17,  -70,0,  0,0,  100);
   Path path4 = path1 + path2;
-
+  Path path(11.9,12.1, 36.9,60.6, 106.9,60.6, 132.7,14.7, 100.0);
+  
   chassis.follow(path4, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 14);
   chassis.follow(path3, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 3);
   chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
