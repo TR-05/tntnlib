@@ -42,8 +42,8 @@ canvas = Canvas(frame, bg="black", height=750, width=750, cursor="crosshair")
 canvas.place(x=100,y=800)
 canvas.pack()
 
-
-fieldImage = Image.open("C:/Users/trevo/OneDrive/Documents/GitHub/tntnlib/Python/field.png")
+fieldImage = Image.open("field.png")
+#fieldImage = Image.open("C:/Users/trevo/OneDrive/Documents/GitHub/tntnlib/Python/field.png")
 test = ImageTk.PhotoImage(fieldImage)
 image = canvas.create_image(0, 0, anchor=NW, image=test)
 
@@ -98,17 +98,19 @@ p3 = Point("p3",0,60,"orange",1,1)
 
 number_of_points = 20
 points = [0.0 for i in range(number_of_points)]
-def generateCubic(p0x,p0y,p1x,p1y,p2x,p2y,p3x,p3y, number_of_points):
-    print(f"({p0x},{p0y}),({p1x},{p1y}),({p2x},{p2y}),({p3x},{p3y}),")
+def generateCubic(p0x,p0y,p1x,p1y,p2x,p2y,p3x,p3y):
+    #print(f"({p0x},{p0y}),({p1x},{p1y}),({p2x},{p2y}),({p3x},{p3y}),")
+    global number_of_points
     t = np.linspace(0,1,number_of_points)
     x = (1-t)**3*p0x + 3*(1-t)**2*t*p1x + 3*(1-t)*t**2*p2x + t**3*p3x
     y = (1-t)**3*p0y + 3*(1-t)**2*t*p1y + 3*(1-t)*t**2*p2y + t**3*p3y
     for i in range(number_of_points):
         canvas.delete(points[i])
     for i in range(len(x)):
-        print(f"({x[i]},{y[i]}),")
-        position1 = (x[i], y[i])*2
-        points[i] = canvas.create_rectangle( position1, outline="purple")
+        #print(f"({x[i]},{y[i]}),")
+        #position1 = (x[i], y[i])*2
+        size = 4
+        points[i] = canvas.create_rectangle(x[i]-size, y[i]-size, x[i]+size, y[i]+size, outline="black", fill="red", width=1)
     return x,y
     
 loop = True 
@@ -139,7 +141,7 @@ Label(left_frame, textvariable=p3ReadOut,fg="black", width=12).pack()
 
 #window.mainloop()
 #print(generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y, 20))
-generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y, 20)
+generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y)
 while loop:
     window.update_idletasks()
     p0ReadOut.set('p0: ({0},{1})'.format(p0.x,p0.y))
@@ -147,5 +149,5 @@ while loop:
     p2ReadOut.set('p2: ({0},{1})'.format(p2.x,p2.y))
     p3ReadOut.set('p3: ({0},{1})'.format(p3.x,p3.y))
     window.update()
-    generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y, 15)
+    generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y)
     #print(p0,p1,p2,p3)
