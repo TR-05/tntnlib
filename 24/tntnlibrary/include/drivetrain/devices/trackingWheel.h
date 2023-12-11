@@ -14,6 +14,7 @@
 #include <cstdint>
 #include "vex.h"
 #include "../tntnlibrary/include/drivetrain/devices/encoder/encoder.h"
+#include "../tntnlibrary/include/motors/motorGroup.h"
 
 namespace tntnlib
 {
@@ -56,7 +57,7 @@ namespace tntnlib
          * @param offset distance between the wheel and the tracking center, in inches
          * @param rpm of the rpm of the wheels the motor group is driving
          */
-        TrackingWheel(vex::motor_group *motors, float diameter, float offset, float cartridgeRpm, float rpm);
+        TrackingWheel(MotorGroup *motors, float diameter, float offset, float cartridgeRpm, float rpm);
         /**
          * @brief Create a new optical encoder tracking wheel
          *

@@ -12,8 +12,10 @@
 
 #include "vex.h"
 
-namespace tntnlib {
-class Encoder {
+namespace tntnlib
+{
+    class Encoder
+    {
     public:
         /**
          * @brief Construct a new Encoder
@@ -34,5 +36,5 @@ class Encoder {
          * @return false encoder calibration succeeded
          */
         virtual bool reset() = 0;
-};
+    };
 } // namespace tntnlib

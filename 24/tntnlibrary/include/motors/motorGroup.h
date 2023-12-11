@@ -5,11 +5,10 @@
 #include <vector> // Include this line
 #include "vex.h"
 #include "../tntnlibrary/include/defaultDevices.h"
-#include "../tntnlibrary/include/motors/motor.h"
 
 namespace tntnlib
 {
-    class MotorGroup : public Motor
+    class MotorGroup
     {
     public:
         /**
@@ -52,16 +51,23 @@ namespace tntnlib
             for (int i = 0; i < size; i++)
             {
                 motors[i] = vex::motor(abs(portsArray[i]) - 1, gear, (portsArray[i] < 0 ? true : false));
-                printf("Created motor on port %d\n", portsArray[i]);
+                // printf("Created motor on port %d\n", portsArray[i]);
             }
         }
 
-        void spinRPM(double rpm) override;
-        float getRPM() override;
-        float getWatts() override;
-        float getVolts() override;
-        float getPower(float rpm) override;
-        void spinVolts(float volts) override;
+        void setBrakeType(vex::brakeType type);
+        void spinVolts(float volts);
+        void spinPct(float pct);
+        void stop(vex::brakeType type);
+        void spinRPM(double rpm);
+        float getRPM();
+        float getWatts();
+        float getVolts();
+        float getPower(float rpm);
+        float position();
+        void resetPosition();
+        void driverTwoButton(bool in, bool out, float inVolts, float outVolts);
+        void driverToggle(bool input, float inVolts);
 
         float targetRPM = 0;
         float currentRPM = 0;
@@ -75,5 +81,8 @@ namespace tntnlib
         float kV = 0, kP = 0, kI = 0;
         float error = 0, lastError = 0, integral = 0;
         float bangBangMargin = 0;
+        float currentVoltage = 0;
+        bool lastToggleInput = false;
+        vex::brakeType brakeType = vex::brakeType::coast;
     };
 } // namespace tntnlib

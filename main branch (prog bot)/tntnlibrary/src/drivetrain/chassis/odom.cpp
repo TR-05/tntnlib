@@ -58,11 +58,11 @@ void Odometry::calibrate(bool calibrateIMU)
             sensors.gyro = nullptr;
             // rumble controller if imu calibration fails
             Controller.rumble("---");
-            printf("IMU FAILED\n\n");
+            printf("IMU FAILED\n");
         } 
         else 
         {
-            printf("IMU success\n\n");
+            printf("IMU success\n");
         }
     }
 }

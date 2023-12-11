@@ -25,6 +25,12 @@ float lkp = linearSettings.kP;
 float lki = linearSettings.kI;
 float lkd = linearSettings.kD;
 
+void printTime()
+{
+  endTime = Brain.timer(vex::msec);
+  totalTime = endTime - startTime;
+  printf("Time: %.2f\n", totalTime/1000.0);
+}
 void startAuto(float x, float y, float theta)
 {
   printf("Entered Auto\n");
@@ -47,35 +53,11 @@ void programming_skills()
   Path path2(10,48,  -23,71,  -72,31,  -42,25,  100);
   Path path3(-42,25,  -4,17,  -70,0,  0,0,  100);
   Path path4 = path1 + path2;
-  //path4.printPath();
- /* path1.printPath();
-  delay(500);
-  path2.printPath();
-  delay(500);
-  path3.printPath();
-  delay(500);
-*/
-  chassis.follow(path4, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 10, 12, 6, 3);
-  //chassis.follow(path2, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 2, 12, 7, 7);
-  chassis.follow(path3, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 10, 12, 6, 3);
+
+  chassis.follow(path4, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 14);
+  chassis.follow(path3, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 3);
   chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
-  endTime = Brain.timer(vex::msec);
-  totalTime = (endTime - startTime)/1000.0;
-  printf("Time: %f.2f\n", totalTime);
-  return;
+  printTime();
 
   return;
-
-  chassis.boomerangTo(0, 20, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 12, 2);
-  chassis.boomerangTo(0, 0, 0, true, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 12, 2);
-  return;
-  
-  chassis.moveTo(0, 20, false, 12, 12, lkp, lki, lkd, akp*1.3, aki, akd * 1.25, .3, 12, 2);
-  chassis.moveTo(0, -20, true, 12, 12, lkp, lki, lkd, akp*1.3, aki, akd * 1.25, .3, 12, 2);
-
-  return;
-  chassis.pid(24, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2); // Moves backward 24 inches holding heading 0,0
-  delay(200);
-  chassis.pid(-24, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2); // Moves backward 24 inches holding heading 0,0
-  delay(200);
 }

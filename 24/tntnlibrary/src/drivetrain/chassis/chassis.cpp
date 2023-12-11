@@ -404,7 +404,7 @@ void Chassis::update()
     {
         std::pair<float, float> output = stateMachine(); // get output
         // move the motors
-        drivetrain.leftMotors->spin(vex::fwd, output.first, vex::volt);
-        drivetrain.rightMotors->spin(vex::fwd, output.second, vex::volt);
+        drivetrain.leftMotors->spinVolts(output.first);
+        drivetrain.rightMotors->spinVolts(output.second);
     }
 }

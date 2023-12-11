@@ -11,7 +11,7 @@
  * a reference, due to limitations in PROS 3. This is fixed in PROS 4, but
  * we have to deal with this for now.
  */
-tntnlib::MotorEncoder::MotorEncoder(vex::motor_group *motors, float cartridgeRpm, float rpm)
+tntnlib::MotorEncoder::MotorEncoder(MotorGroup *motors, float cartridgeRpm, float rpm)
     : motors(motors),
       rpm(rpm),
       cartridgeRpm(cartridgeRpm) {}
@@ -29,7 +29,7 @@ float tntnlib::MotorEncoder::getAngle()
 {
     // get gearboxes and encoder position for each motor in the group
     int cartridge = this->cartridgeRpm;
-    double position = this->motors->position(vex::deg);
+    double position = this->motors->position();
     // calculate ratio'd output for each motor
     float angle = (position * (rpm / cartridge) * 2 * M_PI);
 

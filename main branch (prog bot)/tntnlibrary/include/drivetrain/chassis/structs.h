@@ -101,7 +101,7 @@ namespace tntnlib
                  * @param rpm the rpm of the wheels
                  * @param chasePower higher values make the robot move faster but causes more overshoot on turns
                  */
-                Drivetrain(vex::motor_group *leftMotors, vex::motor_group *rightMotors,
+                Drivetrain(MotorGroup *leftMotors, MotorGroup *rightMotors,
                            float trackWidth, float wheelDiameter, float rpm, float chasePower)
                     : leftMotors(leftMotors),
                       rightMotors(rightMotors),
@@ -110,8 +110,8 @@ namespace tntnlib
                       rpm(rpm),
                       chasePower(chasePower) {}
 
-                vex::motor_group *leftMotors;
-                vex::motor_group *rightMotors;
+                MotorGroup *leftMotors;
+                MotorGroup *rightMotors;
                 float trackWidth;
                 float wheelDiameter;
                 float rpm;

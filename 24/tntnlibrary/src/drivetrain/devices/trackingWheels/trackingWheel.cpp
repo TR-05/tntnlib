@@ -32,7 +32,7 @@ tntnlib::TrackingWheel::TrackingWheel(std::shared_ptr<Encoder> encoder, float di
  * We pass a pointer to a motor group instead of a reference motor group due to a
  * limitation of PROS 3. This is fixed in PROS 4, but its not ready for release yet
  */
-tntnlib::TrackingWheel::TrackingWheel(vex::motor_group* motors, float diameter, float offset,  float cartridgeRpm, float rpm)
+tntnlib::TrackingWheel::TrackingWheel(MotorGroup * motors, float diameter, float offset,  float cartridgeRpm, float rpm)
     : encoder(new MotorEncoder(motors, cartridgeRpm, rpm)),
       diameter(diameter),
       offset(offset) {}

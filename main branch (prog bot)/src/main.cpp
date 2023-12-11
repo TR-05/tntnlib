@@ -2,49 +2,37 @@
 #include "../tntnlibrary/include/api.h"
 #include "autos.h"
 #include <iostream>
-using namespace vex;
-competition Competition;
-brain Brain;
+using namespace tntnlib;
+vex::competition Competition;
+vex::brain Brain;
 
 /* tntnlib robot Config */
-
-/* drive motors */
-motor ls_front = motor(8  -1, ratio6_1, true);
-motor ls_back = motor(10  -1, ratio6_1, true);
-motor rs_front = motor(PORT18, ratio6_1, false);
-motor rs_back = motor(PORT19, ratio6_1, false);
-motor_group leftMotors = motor_group(ls_front, ls_back);
-motor_group rightMotors = motor_group(rs_front, rs_back);
-
-/* tracking wheels and gyro */
-tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 0.002292, 1);
-tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, -0.253611, 1);
-
-tntnlib::Gyro imu(1, 1.010357);
-
-/* chassis and controllers (DO NOT CHANGE NAMES)*/
-tntnlib::ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
-tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
-tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
-tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
-
-//tntnlib::Flywheel flywheel(ratio6_1, 3600, 10, 0, 0.8, .25, -8, -10);
-//tntnlib::Intake intake(ratio6_1, 360, -8, -10);
+MotorGroup leftMotors(vex::gearSetting::ratio6_1, 360, -8, -10);
+MotorGroup rightMotors(vex::gearSetting::ratio6_1, 360, 18, 19);
+TrackingWheel horizontal(Brain.ThreeWirePort.G, Omniwheel::NEW_275, 0.002292, 1);
+TrackingWheel vertical(Brain.ThreeWirePort.E, Omniwheel::NEW_275, -0.253611, 1);
+Gyro imu(1, 1.010357);
+/* chassis and controllers (DO NOT CHANGE NAMES) */
+ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
+ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
+Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::OLD_325, 360, 8);
+OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
+// Flywheel flywheel(ratio6_1, 3600, 10, 0, 0.8, .25, -8, -10);
+// MotorGroup intake(vex::gearSetting::ratio6_1, 360, -8, -10);
 
 /* End of tntnlib Robot Config */
-
 
 /* data logger idk where to put :/ */
 int logger()
 {
   while (true)
   {
-    tntnlib::Pose current(chassis.getPose(false));
+    Pose current(chassis.getPose(false));
     printf("SX: %.2f, SR: %.2f, IMU: %.2f ", tntnlib::sensors.horizontal1 != nullptr ? tntnlib::sensors.horizontal1->getDistance() : 0, tntnlib::sensors.vertical1 != nullptr ? tntnlib::sensors.vertical1->getDistance() : 0, tntnlib::sensors.gyro != nullptr ? tntnlib::sensors.gyro->rotation() : 0);
     printf("  X: %.2f,  Y: %.2f,  H: %.2f   BH: %.2f\n", current.x, current.y, current.theta, fmod(current.theta, 360));
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
-    wait(50, msec);
+    vex::wait(50, vex::msec);
   }
   return 0;
 }
@@ -68,17 +56,16 @@ void usercontrol()
 {
   printf("Entered Driver\n");
   chassis.stateMachineOff();
-  //intake.setBrakeType(vex::brakeType::brake);
-
+  // intake.setBrakeType(vex::brakeType::brake);
   while (1)
   {
     chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
-    //intake.driver(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
-    //flywheel.spinVolts(6);
-    //intake.driverToggle(Controller.ButtonA.pressing(), 3);
-    // chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
-    // chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
-    wait(10.0, msec);
+    // intake.driverTwoButton(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), 12, -12);
+    // flywheel.spinVolts(6);
+    // intake.driverToggle(Controller.ButtonA.pressing(), 3);
+    //  chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
+    //  chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
+    vex::wait(10.0, vex::msec);
   }
 }
 
@@ -91,6 +78,6 @@ int main()
 
   while (true)
   {
-    wait(100, msec);
+    vex::wait(100, vex::msec);
   }
 }

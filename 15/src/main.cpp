@@ -2,40 +2,29 @@
 #include "../tntnlibrary/include/api.h"
 #include "autos.h"
 #include <iostream>
-using namespace vex;
-competition Competition;
-brain Brain;
+using namespace tntnlib;
+vex::competition Competition;
+vex::brain Brain;
 
 /* tntnlib robot Config */
+MotorGroup leftMotors(vex::gearSetting::ratio6_1, -7, 8, -9, -10);
+MotorGroup rightMotors(vex::gearSetting::ratio6_1, 1, 2, -3, 4);
 
-/* drive motors */
-motor LS_bottom = motor(PORT9, ratio18_1, true);
-motor LS_middle = motor(PORT8, ratio18_1, false);
-motor LS_top = motor(PORT7, ratio18_1, true);
-motor LS_front = motor(PORT10, ratio18_1, true);
-
-motor RS_bottom = motor(PORT2, ratio18_1, false);
-motor RS_middle = motor(PORT3, ratio18_1, true);
-motor RS_top = motor(PORT4, ratio18_1, false);
-motor RS_front = motor(PORT1, ratio18_1, false);
-
-motor_group leftMotors = motor_group(LS_bottom, LS_middle, LS_top, LS_front);
-motor_group rightMotors = motor_group(RS_bottom, RS_middle, RS_top, RS_front);
 /* tracking wheels and gyro */
-tntnlib::TrackingWheel horizontal(Brain.ThreeWirePort.A, tntnlib::Omniwheel::NEW_275, 0.002292, 1);
-tntnlib::TrackingWheel vertical(Brain.ThreeWirePort.C, tntnlib::Omniwheel::NEW_275, -0.253611, 1);
-tntnlib::Gyro imu(12, 1.010357);
+TrackingWheel horizontal(Brain.ThreeWirePort.A, Omniwheel::NEW_275, 0.002292, 1);
+TrackingWheel vertical(Brain.ThreeWirePort.C, Omniwheel::NEW_275, -0.253611, 1);
+Gyro imu(12, 1.010357);
 
 /* chassis and controllers */
-tntnlib::ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
-tntnlib::ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
-tntnlib::Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
-tntnlib::OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
+ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
+ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
+Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::NEW_275, 450, 8);
+OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 /* End of tntnlib Robot Config */
 
-tntnlib::Intake intake(ratio6_1, 600, -11);
-digital_out left_wing = digital_out(Brain.ThreeWirePort.F);
-digital_out right_wing = digital_out(Brain.ThreeWirePort.E);
+MotorGroup intake(vex::gearSetting::ratio6_1, 600, -11);
+vex::digital_out left_wing(Brain.ThreeWirePort.F);
+vex::digital_out right_wing(Brain.ThreeWirePort.E);
 
 /* data logger idk where to put :/ */
 int logger()
@@ -47,7 +36,7 @@ int logger()
     printf("  X: %.2f,  Y: %.2f,  H: %.2f   BH: %.2f\n", current.x, current.y, current.theta, fmod(current.theta, 360));
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
-    wait(50, msec);
+    vex::wait(50, vex::msec);
   }
   return 0;
 }
@@ -55,7 +44,7 @@ int logger()
 /* runs when program first starts */
 void pre_auton()
 {
-  task log(logger);
+  vex::task log(logger);
   printf("Entered pre_auton\n");
   chassis.initialize(true, 0, 0, 0);
 }
@@ -134,12 +123,12 @@ void usercontrol()
     {
       A = false;
     }
-    intake.driver(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
-    intake.setBrakeType(brake);
+    intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
+    intake.setBrakeType(vex::brakeType::brake);
     //chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
     chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
     // chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
-    wait(10.0, msec);
+    vex::wait(10.0, vex::msec);
   }
 }
 
@@ -152,6 +141,6 @@ int main()
 
   while (true)
   {
-    wait(100, msec);
+    vex::wait(100, vex::msec);
   }
 }

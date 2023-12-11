@@ -13,6 +13,7 @@
 #include <memory>
 #include "vex.h"
 #include "../tntnlibrary/include/drivetrain/devices/encoder/encoder.h"
+#include "../tntnlibrary/include/motors/motorGroup.h"
 
 namespace tntnlib {
 class MotorEncoder : public Encoder {
@@ -25,7 +26,7 @@ class MotorEncoder : public Encoder {
          * @param motors pointer to the motor group to be used
          * @param rpm output rpm
          */
-        MotorEncoder(vex::motor_group* motors, float cartridge_rpm, float rpm);
+        MotorEncoder(MotorGroup* motors, float cartridge_rpm, float rpm);
 
         /**
          * @brief Get the angle rotated by the motor encoders, in radians
@@ -41,7 +42,7 @@ class MotorEncoder : public Encoder {
          */
         bool reset() override;
     private:
-        vex::motor_group* motors;
+        MotorGroup* motors;
         const float rpm;
         const float cartridgeRpm;
 };

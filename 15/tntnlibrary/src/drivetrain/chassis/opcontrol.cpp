@@ -32,8 +32,8 @@ float defaultDriveCurve(float input, float scale) {
  * curve, refer to the `defaultDriveCurve` documentation.
  */
 void Chassis::tank(int left, int right, float curveGain) {
-    drivetrain.leftMotors->spin(vex::fwd, defaultDriveCurve(left, curveGain), vex::volt);
-    drivetrain.rightMotors->spin(vex::fwd, defaultDriveCurve(right, curveGain), vex::volt);
+    drivetrain.leftMotors->spinVolts(defaultDriveCurve(left, curveGain));
+    drivetrain.rightMotors->spinVolts(defaultDriveCurve(right, curveGain));
 }
 
 /**
@@ -48,8 +48,8 @@ void Chassis::tank(int left, int right, float curveGain) {
 void Chassis::arcade(int throttle, int turn, float curveGain) {
     int leftPower = defaultDriveCurve(throttle + turn, curveGain);
     int rightPower = defaultDriveCurve(throttle - turn, curveGain);
-    drivetrain.leftMotors->spin(vex::fwd, leftPower, vex::volt);
-    drivetrain.rightMotors->spin(vex::fwd, rightPower, vex::volt);
+    drivetrain.leftMotors->spinVolts(leftPower);
+    drivetrain.rightMotors->spinVolts(rightPower);
 }
 
 /**
@@ -75,7 +75,7 @@ void Chassis::curvature(int throttle, int turn, float curveGain) {
     leftPower = defaultDriveCurve(leftPower, curveGain);
     rightPower = defaultDriveCurve(rightPower, curveGain);
 
-    drivetrain.leftMotors->spin(vex::fwd, leftPower, vex::volt);
-    drivetrain.rightMotors->spin(vex::fwd, rightPower, vex::volt);
+    drivetrain.leftMotors->spinVolts(leftPower);
+    drivetrain.rightMotors->spinVolts(rightPower);
 }
 } // namespace tntnlib

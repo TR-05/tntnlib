@@ -17,7 +17,5 @@
 #include "../tntnlibrary/include/drivetrain/pathing/cubicBezier.h"
 #include "../tntnlibrary/include/drivetrain/chassis/chassis.h"
 #include "../tntnlibrary/include/subsystems/flywheel.h"
-#include "../tntnlibrary/include/subsystems/intake.h"
-#include "../tntnlibrary/include/motors/motor.h"
 #include "../tntnlibrary/include/motors/motorGroup.h"
 #include "../tntnlibrary/include/defaultDevices.h"

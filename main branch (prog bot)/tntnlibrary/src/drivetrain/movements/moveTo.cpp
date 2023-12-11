@@ -137,9 +137,9 @@ std::pair<float, float> MoveTo::update(Pose pose)
         float maxTurnSpeed = sqrt(chasePower * radius * 9.8);
         // the new linear power is the minimum of the linear power and the max turn speed
         if (linearPower > maxTurnSpeed && state == 0)
-            linearPower = maxTurnSpeed;
+           ; //linearPower = maxTurnSpeed;
         else if (linearPower < -maxTurnSpeed && state == 0)
-            linearPower = -maxTurnSpeed;
+           ; //linearPower = -maxTurnSpeed;
     }
 
     // prioritize turning over moving
