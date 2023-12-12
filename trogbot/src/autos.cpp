@@ -29,7 +29,7 @@ void printTime()
 {
   endTime = Brain.timer(vex::msec);
   totalTime = endTime - startTime;
-  printf("Time: %.2f\n", totalTime/1000.0);
+  printf("Time: %.2f\n", totalTime / 1000.0);
 }
 void startAuto(float x, float y, float theta)
 {
@@ -47,18 +47,20 @@ void startAuto(float x, float y, float theta)
 
 void programming_skills()
 {
-  startAuto(0, 0, 0);
+  startAuto(12, 12, 45);
 
-  Path path1(0,0,  0,24,  37,37,  10,48,  100);
-  Path path2(10,48,  -23,71,  -72,31,  -42,25,  100);
-  Path path3(-42,25,  -4,17,  -70,0,  0,0,  100);
+  Path path1(0, 0, 0, 24, 37, 37, 10, 48, 100);
+  Path path2(10, 48, -23, 71, -72, 31, -42, 25, 100);
+  Path path3(-42, 25, -4, 17, -70, 0, 0, 0, 100);
   Path path4 = path1 + path2;
-  Path path(11.9,12.1, 36.9,60.6, 106.9,60.6, 132.7,14.7, 100.0);
-  
-  chassis.follow(path4, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 14);
-  chassis.follow(path3, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 3);
-  chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
-  printTime();
 
+  Path path(12.0, 12.0, 49.0, 65.0, 95.0, 65.0, 132.0, 12.0, 100);
+  chassis.follow(path, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 3);
+
+  // chassis.follow(path4, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 14);
+  // chassis.follow(path3, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 3);
+  chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
+
+  printTime();
   return;
 }

@@ -36,6 +36,18 @@ frame.pack_propagate(False)
 
 canvasWidth = 738
 canvasHeight = 737
+xPixelsToInches = 144.0/canvasWidth
+yPixelsToInches = 144.0/canvasHeight
+
+def pToX(p):
+    return p*xPixelsToInches
+def xToP(x):
+    return x/xPixelsToInches
+def pToY(p):
+    return 144 - p*yPixelsToInches
+def yToP(y):
+    return (144 - y)/yPixelsToInches
+
 canvas = Canvas(frame, bg="black", height=canvasHeight, width=canvasWidth, cursor="crosshair")
 #coord = 10, 50, 240, 210
 #arc = canvas.create_arc(coord, start=0, extent=150, fill="red")
@@ -47,22 +59,6 @@ fieldImage = Image.open("field.png")
 #fieldImage = Image.open("C:/Users/trevo/OneDrive/Documents/GitHub/tntnlib/Python/field.png")
 test = ImageTk.PhotoImage(fieldImage)
 image = canvas.create_image(0, 0, anchor=NW, image=test)
-
-mouseX = 0
-mouseY = 0
-mouseReadOut = 'mouse: ({0},{1})'.format(mouseX,mouseY)
-def getMouseCoords(event):
-    global mouseX
-    global mouseY
-    global mouseReadOut
-    mouseX = event.x
-    mouseY = event.y
-    mouseReadOut = 'mouse: ({0},{1})'.format(mouseX,mouseY)
-
-canvas.bind("<Motion>", getMouseCoords)
-mouseLabel = Label(master = frame, textvariable=mouseReadOut,fg="black", width=20)
-mouseLabel.place(x=0,y=100)
-mouseLabel.pack()
 
 def resize_image(event):
     new_width = event.width
@@ -112,11 +108,11 @@ class Point():
         canvas.moveto(self.point, self.x-(self.size/2),self.y-(self.size/2))
         #widget.place(x=self.x,y=self.y)
     def __init__(self, name, startx, starty, color, size):
-        self.x = startx
-        self.y = starty
+        self.x = xToP(startx)
+        self.y = yToP(starty)
         self.name = name
-        self.startx = startx
-        self.starty = starty
+        self.startx = xToP(startx)
+        self.starty = yToP(starty)
         self.tag = name
         self.size = size
         self.point = canvas.create_oval(self.x-(size/2),self.y-(size/2),self.x+(size/2),self.y+(size/2),fill=color, tag=self.tag)
@@ -133,10 +129,10 @@ class Point():
         #label.bind("<Button-1>",self.drag_start)
         #label.bind("<B1-Motion>",self.drag_motion)
 
-p0 = Point("p0",30,60,"green",25)
-p1 = Point("p1",30,90,"purple",25)
-p2 = Point("p2",30,120,"purple",25)
-p3 = Point("p3",30,150,"red",25)
+p0 = Point("p0",12,12,"green",25)
+p1 = Point("p1",49,65,"purple",25)
+p2 = Point("p2",95,65,"purple",25)
+p3 = Point("p3",132,12,"red",25)
 
 points = [0.0 for i in range(number_of_points)]
 p0line = 0;
@@ -184,12 +180,38 @@ Label(left_frame, textvariable=p1ReadOut,fg="black", width=20).pack()
 Label(left_frame, textvariable=p2ReadOut,fg="black", width=20).pack()
 Label(left_frame, textvariable=p3ReadOut,fg="black", width=20).pack()
 
+
+
+
+mouseX = 0
+mouseY = 0
+mouseReadOut = StringVar()
+
+def getMouseCoords(event):
+    global mouseX
+    global mouseY
+    global mouseReadOut
+    mouseX = event.x
+    mouseY = event.y
+    mouseReadOut.set('mouse: {0:.1f},{1:.1f}'.format(pToX(mouseX), pToY(mouseY)) )
+
+canvas.bind("<Motion>", getMouseCoords)
+Label(left_frame, textvariable=mouseReadOut,fg="black", width=20).pack()
+#mouseLabel.place(x=0,y=100)
+
 def copyButton():
     window.clipboard_clear()
     fidelity = StringVar()
-    fidelity.set('{0:.1f}'.format(number_of_points))
+    fidelity.set('{0:.0f}'.format(number_of_points))
     output = "Path path(" + p0ReadOut.get() + p1ReadOut.get() + p2ReadOut.get() + p3ReadOut.get() + fidelity.get()+ ");"
-    window.clipboard_append(output)
+    new_line = StringVar()
+    new_line.set('chassis.follow(path, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, {0:.0f});'.format(3))
+    #line = '\n'.join(output, new_line)
+    #window.clipboard_append(output)
+    window.clipboard_append(output + '\n' + new_line.get())
+
+
+
 copy = Button(master=frame, text="Copy", command=copyButton)
 copy.pack()
 copy.place(x=0,y=30)
@@ -197,14 +219,12 @@ copy.place(x=0,y=30)
 #window.mainloop()
 #print(generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y, 20))
 generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y)
-xPixelsToInches = 144.0/canvasWidth
-yPixelsToInches = 144.0/canvasHeight
 while loop:
     generateCubic(p0.x,p0.y,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y)
     window.update_idletasks()
-    p0ReadOut.set('{0:.1f},{1:.1f}, '.format(p0.x*xPixelsToInches, 144 - p0.y*yPixelsToInches))
-    p1ReadOut.set('{0:.1f},{1:.1f}, '.format(p1.x*xPixelsToInches, 144 - p1.y*yPixelsToInches))
-    p2ReadOut.set('{0:.1f},{1:.1f}, '.format(p2.x*xPixelsToInches, 144 - p2.y*yPixelsToInches))
-    p3ReadOut.set('{0:.1f},{1:.1f}, '.format(p3.x*xPixelsToInches, 144 - p3.y*yPixelsToInches))
+    p0ReadOut.set('{0:.1f},{1:.1f},  '.format(pToX(p0.x), pToY(p0.y)))
+    p1ReadOut.set('{0:.1f},{1:.1f},  '.format(pToX(p1.x), pToY(p1.y)))
+    p2ReadOut.set('{0:.1f},{1:.1f},  '.format(pToX(p2.x), pToY(p2.y)))
+    p3ReadOut.set('{0:.1f},{1:.1f},  '.format(pToX(p3.x), pToY(p3.y)))
     window.update()
     #print(p0,p1,p2,p3)
