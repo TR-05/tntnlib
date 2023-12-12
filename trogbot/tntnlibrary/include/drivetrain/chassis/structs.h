@@ -117,9 +117,4 @@ namespace tntnlib
                 float rpm;
                 float chasePower;
         };
-
-        extern ControllerSettings linearSettings;
-        extern ControllerSettings angularSettings;
-        extern Drivetrain drivetrain;
-        extern OdomSensors sensors;
 } // namespace tntnlib

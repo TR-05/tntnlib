@@ -15,7 +15,7 @@ using namespace tntnlib;
 
 void straightPid::params(bool reversed, bool holdHeading, bool turnToPoint, float straightDistance, float lmaxSpeed, float amaxSpeed, float targetHeading, Pose targetPose)
 {
-    straightPid::startingVertical1Dist = sensors.vertical1->getDistance();
+    straightPid::startingVertical1Dist = chassis.sensors.vertical1->getDistance();
     straightPid::targetHeading = targetHeading;
     straightPid::straightDistance = straightDistance;
     straightPid::reversed = reversed;
@@ -39,7 +39,7 @@ std::pair<float, float> straightPid::update(Pose pose)
 
     // calculate error
     float angularError = angleError(targetHeading, pose.theta, false); // angular error
-    float error = (straightDistance) - (sensors.vertical1->getDistance() - startingVertical1Dist);
+    float error = (straightDistance) - (chassis.sensors.vertical1->getDistance() - startingVertical1Dist);
 
     // get PID outputs
     float angularPower = angularPID.update(angularError, 0);

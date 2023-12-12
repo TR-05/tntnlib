@@ -36,7 +36,7 @@ namespace tntnlib
          *
          * @return std::pair<int, int> left and right motor power respectively. 128 means movement is done
          */
-        std::pair<float, float> update(Pose pose);
+        std::pair<float, float> update(Pose pose, Pose offset);
 
 
         /**

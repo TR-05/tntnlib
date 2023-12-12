@@ -21,7 +21,6 @@
 #include <functional>
 
 using namespace tntnlib;
-Chassis chassis{};
 
 /**
  * Initialize the chassis
@@ -102,6 +101,16 @@ Pose Chassis::getPose(bool radians)
     if (!radians)
         pose.theta = radToDeg(pose.theta);
     return pose;
+}
+
+Pose Chassis::getOffsetPose()
+{
+    return this->offsetPose;
+}
+void Chassis::setOffset(float x, float y)
+{
+    this->offsetPose.x = x;
+    this->offsetPose.y = y;
 }
 
 /**
@@ -377,7 +386,7 @@ std::pair<float, float> Chassis::stateMachine()
     case turnMode:
         return Turn::update(this->getPose());
     case moveToMode:
-        return MoveTo::update(this->getPose());
+        return MoveTo::update(this->getPose(), this->getOffsetPose());
     case followMode:
         return {0, 0};
     case drivePidMode:

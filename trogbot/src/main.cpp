@@ -13,10 +13,11 @@ TrackingWheel horizontal(Brain.ThreeWirePort.G, Omniwheel::NEW_275, 0.002292, 1)
 TrackingWheel vertical(Brain.ThreeWirePort.E, Omniwheel::NEW_275, -0.253611, 1);
 Gyro imu(1, 1.010357);
 /* chassis and controllers (DO NOT CHANGE NAMES) */
-ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
-ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
-Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::OLD_325, 360, 8);
-OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
+ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
+ControllerSettings angularSettings(.25, 0.01, 2.0, 10, 2, 12);
+Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::OLD_325, 360, 8);
+OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
+Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
 // Flywheel flywheel(ratio6_1, 3600, 10, 0, 0.8, .25, -8, -10);
 // MotorGroup intake(vex::gearSetting::ratio6_1, 360, -8, -10);
 
@@ -28,8 +29,8 @@ int logger()
   while (true)
   {
     Pose current(chassis.getPose(false));
-    printf("SX: %.2f, SR: %.2f, IMU: %.2f ", tntnlib::sensors.horizontal1 != nullptr ? tntnlib::sensors.horizontal1->getDistance() : 0, tntnlib::sensors.vertical1 != nullptr ? tntnlib::sensors.vertical1->getDistance() : 0, tntnlib::sensors.gyro != nullptr ? tntnlib::sensors.gyro->rotation() : 0);
-    printf("  X: %.2f,  Y: %.2f,  H: %.2f   BH: %.2f\n", current.x, current.y, current.theta, fmod(current.theta, 360));
+    //printf("SX: %.2f, SR: %.2f, IMU: %.2f ", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
+    printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f\n", current.x, current.y, current.theta, getTime());
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
     vex::wait(50, vex::msec);
@@ -40,7 +41,7 @@ int logger()
 /* runs when program first starts */
 void pre_auton()
 {
-  // task log(logger);
+  vex::task log(logger);
   printf("Entered pre_auton\n");
   chassis.initialize(true, 0, 0, 0);
 }
