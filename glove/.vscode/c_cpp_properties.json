@@ -10,8 +10,7 @@
 			"${vex_sdkPath}/gcc/include",
 			"${vex_sdkPath}/include/**",
 			"${workspaceFolder}/include/**",
-			"${workspaceFolder}/src/**",
-			"${workspaceFolder}/tntnlibrary/**"
+			"${workspaceFolder}/src/**"
 		]
 	},
 	"configurations": [

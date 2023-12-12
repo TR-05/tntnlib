@@ -18,7 +18,7 @@
 namespace tntnlib {
 class Odometry {
     public:
-
+        Odometry(OdomSensors sensors) : sensors(sensors) {}
         /**
          * @brief Calibrate sensors used for odometry
          *
@@ -52,7 +52,7 @@ class Odometry {
         void update();
     private:
         Pose pose = Pose(0, 0, 0);
-
+        OdomSensors sensors;
         float prevVertical = 0;
         float prevVertical1 = 0;
         float prevVertical2 = 0;

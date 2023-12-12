@@ -11,7 +11,7 @@
 
 using namespace tntnlib;
 
-Path MoveTo::path = Path(0,0, 0,0, 0,0, 0,0);
+Path MoveTo::path = Path(0, 0, 0, 0, 0, 0, 0, 0);
 /**
  * Turn constructor
  *
@@ -74,8 +74,11 @@ void MoveTo::updateTarget(Pose &pose)
         currentTargetPose = purePursuit.target;
     }
 }
-std::pair<float, float> MoveTo::update(Pose pose)
+std::pair<float, float> MoveTo::update(Pose pose, Pose offset)
 {
+    offset.rotate(degToStandardFormRad(pose.theta));
+    pose.x += offset.x;
+    pose.y += offset.y;
     // set state to 1 if in state 0 and close to the target
     if (state == 0 && pose.distance(targetPose) < 4)
     {
@@ -99,7 +102,7 @@ std::pair<float, float> MoveTo::update(Pose pose)
 
     // choose target Pose
     updateTarget(pose);
-    //printf("target: (%.2f,%.2f)\n", currentTargetPose.x, currentTargetPose.y);
+    // printf("target: (%.2f,%.2f)\n", currentTargetPose.x, currentTargetPose.y);
 
     // calculate error
     float angularError = angleError(StandardFormRadToDeg(pose.angle(currentTargetPose)), pose.theta, false); // angular error
@@ -137,9 +140,9 @@ std::pair<float, float> MoveTo::update(Pose pose)
         float maxTurnSpeed = sqrt(chasePower * radius * 9.8);
         // the new linear power is the minimum of the linear power and the max turn speed
         if (linearPower > maxTurnSpeed && state == 0)
-           ; //linearPower = maxTurnSpeed;
+            ; // linearPower = maxTurnSpeed;
         else if (linearPower < -maxTurnSpeed && state == 0)
-           ; //linearPower = -maxTurnSpeed;
+            ; // linearPower = -maxTurnSpeed;
     }
 
     // prioritize turning over moving

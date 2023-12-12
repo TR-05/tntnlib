@@ -24,15 +24,9 @@
 #include "../tntnlibrary/include/defaultDevices.h"
 #include "../tntnlibrary/include/drivetrain/pathing/cubicBezier.h"
 
+
 namespace tntnlib
 {
-    /**
-     * @brief Function pointer type for drive curve functions.
-     * @param input The control input in the range [-127, 127].
-     * @param scale The scaling factor, which can be optionally ignored.
-     * @return The new value to be used.
-     */
-    typedef std::function<float(float, float)> DriveCurveFunction_t;
 
     /**
      * @brief  Default drive curve. Modifies  the input with an exponential curve. If the input is 127, the function
@@ -62,8 +56,10 @@ namespace tntnlib
          * @param sensors sensors to be used for odometry
          * @param driveCurve drive curve to be used. defaults to `defaultDriveCurve`
          */
-        Chassis(DriveCurveFunction_t driveCurve = 0)
-            : driveCurve(driveCurve) {}
+        Chassis(Drivetrain drivetrain, ControllerSettings linearSettings, ControllerSettings angularSettings,
+                OdomSensors sensors)
+            : drivetrain(drivetrain), linearSettings(linearSettings), angularSettings(angularSettings), sensors(sensors), odom(sensors)
+            {}
 
         /**
          * @brief Initialize the chassis
@@ -98,6 +94,9 @@ namespace tntnlib
          */
         Pose getPose(bool radians = false);
 
+
+        Pose getOffsetPose();
+        void setOffset(float x, float y);
         /**
          * @brief Wait until the robot has traveled a certain distance, or angle, along the path
          *
@@ -273,23 +272,24 @@ namespace tntnlib
         moveState autoChassis = disabledMode;
         std::pair<float, float> stateMachine();
 
+
+        ControllerSettings linearSettings;
+        ControllerSettings angularSettings;
+        Drivetrain drivetrain;
+        OdomSensors sensors;
     private:
         /**
          * @brief Chassis update function. Updates chassis motion and odometry
          *
          */
         bool StateMachineEnabled = false;
-
+        Pose offsetPose = Pose(0, 0, 0);
         float prevDist = 0; // the previous distance travelled by the movement
         Odometry odom;
         // std::unique_ptr<Movement> movement;
         std::unique_ptr<vex::task> task;
 
-        //ChassisController_t linearSettings;
-        //ChassisController_t angularSettings;
-        //Drivetrain_t drivetrain;
-        //OdomSensors_t sensors;
-        DriveCurveFunction_t driveCurve;
+
     };
 } // namespace tntnlib
 extern tntnlib::Chassis chassis;

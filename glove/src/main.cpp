@@ -16,10 +16,11 @@ TrackingWheel vertical(Brain.ThreeWirePort.C, Omniwheel::NEW_275, -0.253611, 1);
 Gyro imu(12, 1.010357);
 
 /* chassis and controllers */
-ControllerSettings tntnlib::linearSettings(.6, 0, 3.5, 0, 0, 12);
-ControllerSettings tntnlib::angularSettings(.25, 0.01, 2.0, 10, 2, 12);
-Drivetrain tntnlib::drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::NEW_275, 450, 8);
-OdomSensors tntnlib::sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
+ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
+ControllerSettings angularSettings(.25, 0.01, 2.0, 10, 2, 12);
+Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::NEW_275, 450, 8);
+OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
+Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
 /* End of tntnlib Robot Config */
 
 MotorGroup intake(vex::gearSetting::ratio6_1, 600, -11);
@@ -31,9 +32,9 @@ int logger()
 {
   while (true)
   {
-    tntnlib::Pose current(chassis.getPose(false));
-    printf("SX: %.2f, SR: %.2f, IMU: %.2f ", tntnlib::sensors.horizontal1 != nullptr ? tntnlib::sensors.horizontal1->getDistance() : 0, tntnlib::sensors.vertical1 != nullptr ? tntnlib::sensors.vertical1->getDistance() : 0, tntnlib::sensors.gyro != nullptr ? tntnlib::sensors.gyro->rotation() : 0);
-    printf("  X: %.2f,  Y: %.2f,  H: %.2f   BH: %.2f\n", current.x, current.y, current.theta, fmod(current.theta, 360));
+    Pose current(chassis.getPose(false));
+    //printf("SX: %.2f, SR: %.2f, IMU: %.2f ", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
+    printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f\n", current.x, current.y, current.theta, getTime());
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
     vex::wait(50, vex::msec);

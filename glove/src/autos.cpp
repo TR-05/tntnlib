@@ -18,64 +18,59 @@ float startTime{0}, endTime{0}, totalTime{0};
   chassis.boomerangTo(0, 20, -180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 12, 2);
   chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
 */
-float akp = angularSettings.kP;
-float aki = angularSettings.kI;
-float akd = angularSettings.kD;
-float lkp = linearSettings.kP;
-float lki = linearSettings.kI;
-float lkd = linearSettings.kD;
+float akp = chassis.angularSettings.kP;
+float aki = chassis.angularSettings.kI;
+float akd = chassis.angularSettings.kD;
+float lkp = chassis.linearSettings.kP;
+float lki = chassis.linearSettings.kI;
+float lkd = chassis.linearSettings.kD;
 
+void printTime()
+{
+  endTime = Brain.timer(vex::msec);
+  totalTime = endTime - startTime;
+  printf("Time: %.2f\n", totalTime / 1000.0);
+}
+
+float getTime()
+{
+  endTime = Brain.timer(vex::msec);
+  totalTime = endTime - startTime;
+  return totalTime / 1000.0;
+}
 void startAuto(float x, float y, float theta)
 {
   printf("Entered Auto\n");
   startTime = Brain.timer(vex::msec);
   chassis.initialize(false, x, y, theta);
+  chassis.setOffset(0, 0);
   chassis.stateMachineOn();
-  akp = angularSettings.kP;
-  aki = angularSettings.kI;
-  akd = angularSettings.kD;
-  lkp = linearSettings.kP;
-  lki = linearSettings.kI;
-  lkd = linearSettings.kD;
+  akp = chassis.angularSettings.kP;
+  aki = chassis.angularSettings.kI;
+  akd = chassis.angularSettings.kD;
+  lkp = chassis.linearSettings.kP;
+  lki = chassis.linearSettings.kI;
+  lkd = chassis.linearSettings.kD;
 }
 
 void programming_skills()
 {
-  startAuto(0, 0, 0);
+  startAuto(8, 8, 0);
 
-  Path path1(0,0,  0,24,  37,37,  10,48,  100);
-  Path path2(10,48,  -23,71,  -72,31,  -42,25,  100);
-  Path path3(-42,25,  -4,17,  -70,0,  0,0,  100);
-  Path path4 = path1 + path2;
-  //path4.printPath();
- /* path1.printPath();
-  delay(500);
-  path2.printPath();
-  delay(500);
-  path3.printPath();
-  delay(500);
-*/
-  chassis.follow(path4, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 10, 12, 6, 3);
-  //chassis.follow(path2, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 2, 12, 7, 7);
-  chassis.follow(path3, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 10, 12, 6, 3);
+Path path(11.3,13.7,  46.1,59.8,  95.0,52.6,  130.7,13.7,  100);
+chassis.follow(path, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 8);
+
+chassis.setOffset(0,-6);
+Path path2(130.9,14.1,  141.3,144.0,  124.3,141.5,  11.1,14.1,  100);
+chassis.follow(path2, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 3);
+  //chassis.setOffset(6, 6);
+  //chassis.moveTo(0, 24, false, 12, 12, lkp, lki, lkd, akp*1.3, aki, akd * 1.25, .3, 12, 2);
+  delay(1000);
+
+  // chassis.follow(path4, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 14);
+  // chassis.follow(path3, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 3);
   chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
-  endTime = Brain.timer(vex::msec);
-  totalTime = (endTime - startTime)/1000.0;
-  printf("Time: %f.2f\n", totalTime);
-  return;
 
+  printTime();
   return;
-
-  chassis.boomerangTo(0, 20, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 12, 2);
-  chassis.boomerangTo(0, 0, 0, true, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 12, 2);
-  return;
-  
-  chassis.moveTo(0, 20, false, 12, 12, lkp, lki, lkd, akp*1.3, aki, akd * 1.25, .3, 12, 2);
-  chassis.moveTo(0, -20, true, 12, 12, lkp, lki, lkd, akp*1.3, aki, akd * 1.25, .3, 12, 2);
-
-  return;
-  chassis.pid(24, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2); // Moves backward 24 inches holding heading 0,0
-  delay(200);
-  chassis.pid(-24, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .3, 2); // Moves backward 24 inches holding heading 0,0
-  delay(200);
 }

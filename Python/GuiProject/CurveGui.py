@@ -10,7 +10,7 @@ def resize_image(event):
     util.image.resize((new_width, new_height))
 
 curve1 = curveClass.Curve("c1", 12, 12, 49, 65, 95, 65, 132, 12, 100, 30)
-curve2 = curveClass.Curve("c2", 12, 100, 49, 100, 95, 100, 132, 100, 100, 70)
+curve2 = curveClass.Curve("c2", 12, 100, 49, 100, 95, 100, 132, 100, 100, 60)
 
 
 
