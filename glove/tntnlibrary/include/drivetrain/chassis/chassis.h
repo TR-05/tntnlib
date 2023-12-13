@@ -24,7 +24,6 @@
 #include "../tntnlibrary/include/defaultDevices.h"
 #include "../tntnlibrary/include/drivetrain/pathing/cubicBezier.h"
 
-
 namespace tntnlib
 {
 
@@ -59,7 +58,8 @@ namespace tntnlib
         Chassis(Drivetrain drivetrain, ControllerSettings linearSettings, ControllerSettings angularSettings,
                 OdomSensors sensors)
             : drivetrain(drivetrain), linearSettings(linearSettings), angularSettings(angularSettings), sensors(sensors), odom(sensors)
-            {}
+        {
+        }
 
         /**
          * @brief Initialize the chassis
@@ -93,7 +93,6 @@ namespace tntnlib
          * @return Pose
          */
         Pose getPose(bool radians = false);
-
 
         Pose getOffsetPose();
         void setOffset(float x, float y);
@@ -171,7 +170,6 @@ namespace tntnlib
         void SwingOnLeftToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
         void SwingOnRightToHeading(float heading, bool reversed, float maxSpeed, float kp, float ki, float kd, float breakAngle);
 
-
         void pid(float dist, float heading, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist);
         void pid(float dist, float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist);
         /**
@@ -187,7 +185,7 @@ namespace tntnlib
          * @param chasePower higher values make the robot move faster but causes more overshoot on turns. 0 makes it
          * default to global value
          * @param lead the lead parameter. Determines how curved the robot will move. 0.6 by default (0 < lead < 1)
-         *      
+         *
          * @param maxSpeed the maximum speed the robot can move at. 12 at default
          */
         void boomerangTo(float x, float y, float theta, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float lead, float slew, float breakDist);
@@ -199,32 +197,43 @@ namespace tntnlib
          *
          * @param x x location
          * @param y y location
-         * @param reversed whether the robot should move forwards or backwards. true for forwards (default), false for
-         * backwards
-         * @param chasePower higher values make the robot move faster but causes more overshoot on turns. 0 makes it
-         * default to global value
-         * @param maxSpeed the maximum speed the robot can move at. 12 at default
+         * @param reversed whether the robot should move forwards or backwards. true for forwards (default), false for backwards
+         * @param lmaxSpeed the maximum linear speed the robot can move at
+         * @param amaxSpeed the maximum angular speed the robot can move at
+         * @param lkp the proportional gain for the linear PID controller
+         * @param lki the integral gain for the linear PID controller
+         * @param lkd the derivative gain for the linear PID controller
+         * @param akp the proportional gain for the angular PID controller
+         * @param aki the integral gain for the angular PID controller
+         * @param akd the derivative gain for the angular PID controller
+         * @param chasePower higher values make the robot move faster but causes more overshoot on turns. 0 makes it default to global value
+         * @param slew the slew rate for the robot's movement
+         * @param breakDist the breaking distance for the robot
          */
         void moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float breakDist);
 
         /**
-         * @brief Move the chassis using a custom motion algorithm
-         *
-         * @param movement shared pointer to the custom movement
-         */
-        // void moveCustom(std::unique_ptr<Movement> movement);
-
-        /**
          * @brief Move the chassis along a path
          *
-         * @param filePath the filename of the path to follow
-         * @param lookahead the lookahead distance. Units in inches. Larger values will make the robot move faster but
-         * will follow the path less accurately
-         * @param timeout the maximum time the robot can spend moving
-         * @param forwards whether the robot should follow the path going forwards. true by default
-         * @param maxSpeed the maximum speed the robot can move at
+         * @param path the precomputed cubic curve to follow
+         * @param reversed whether the robot should follow the path in reverse. false by default
+         * @param lmaxSpeed the maximum linear speed the robot can move at
+         * @param amaxSpeed the maximum angular speed the robot can move at
+         * @param lkp the proportional gain for the linear PID controller
+         * @param lki the integral gain for the linear PID controller
+         * @param lkd the derivative gain for the linear PID controller
+         * @param akp the proportional gain for the angular PID controller
+         * @param aki the integral gain for the angular PID controller
+         * @param akd the derivative gain for the angular PID controller
+         * @param chasePower the power level for the chase controller
+         * @param slew the slew rate for the robot's movement
+         * @param lookAhead the look-ahead distance for the path follower
+         * @param breakDist the breaking distance for the robot
          */
         void follow(Path &path, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float lookAhead, float breakDist);
+
+        void autoTankVolts(float left, float right);
+        void autoTankPct(float left, float right);
 
         /**
          * @brief Control the robot during the driver control period using the tank drive control scheme. In this
@@ -267,29 +276,36 @@ namespace tntnlib
             turnMode,
             moveToMode,
             followMode,
-            drivePidMode
+            drivePidMode,
+            voltageMode,
+            velocityMode
         };
         moveState autoChassis = disabledMode;
+        enum motorMoveType
+        {
+            voltage,
+            velocity
+        };
+        motorMoveType motorControl = voltage;
         std::pair<float, float> stateMachine();
-
 
         ControllerSettings linearSettings;
         ControllerSettings angularSettings;
         Drivetrain drivetrain;
         OdomSensors sensors;
+
     private:
         /**
          * @brief Chassis update function. Updates chassis motion and odometry
          *
          */
         bool StateMachineEnabled = false;
+        float leftVolts = 0, rightVolts = 0;
         Pose offsetPose = Pose(0, 0, 0);
         float prevDist = 0; // the previous distance travelled by the movement
         Odometry odom;
         // std::unique_ptr<Movement> movement;
         std::unique_ptr<vex::task> task;
-
-
     };
 } // namespace tntnlib
 extern tntnlib::Chassis chassis;

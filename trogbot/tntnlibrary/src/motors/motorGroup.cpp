@@ -126,6 +126,21 @@ void MotorGroup::spinVolts(float volts)
     }
 }
 
+void MotorGroup::spinPct(float pct)
+{
+    for (auto &motor : motors)
+    {
+        if (pct == 0)
+        {
+            motor.stop(brakeType);
+        }
+        else
+        {
+            motor.spin(vex::directionType::fwd, pct, vex::velocityUnits::pct);
+        }
+    }
+}
+
 void MotorGroup::spinRPM(double rpm)
 {
     targetRPM = rpm / outputRPM;

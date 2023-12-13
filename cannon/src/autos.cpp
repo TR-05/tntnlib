@@ -35,8 +35,7 @@ void printTime()
 float getTime()
 {
   endTime = Brain.timer(vex::msec);
-  totalTime = endTime - startTime;
-  return totalTime / 1000.0;
+  return (endTime - startTime) / 1000.0;
 }
 void startAuto(float x, float y, float theta)
 {
@@ -55,21 +54,38 @@ void startAuto(float x, float y, float theta)
 
 void programming_skills()
 {
-  startAuto(8, 8, 0);
-
-Path path(11.3,13.7,  46.1,59.8,  95.0,52.6,  130.7,13.7,  100);
-chassis.follow(path, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 8);
-
-chassis.setOffset(0,-6);
-Path path2(130.9,14.1,  141.3,144.0,  124.3,141.5,  11.1,14.1,  100);
-chassis.follow(path2, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 3);
-  //chassis.setOffset(6, 6);
-  //chassis.moveTo(0, 24, false, 12, 12, lkp, lki, lkd, akp*1.3, aki, akd * 1.25, .3, 12, 2);
+  startAuto(23, 16, -90);
+  chassis.SwingOnLeftToHeading(-135, 0, 12, akp * 1.6, aki, akd, 0);
+  delay(500);
+  chassis.autoTankVolts(2.5, 2.5);
+  delay(250);
+  chassis.pid(-3, -135, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2);
+  delay(100);
+  chassis.autoTankPct(5, 5);
+  delay(1000);
+  chassis.autoTankVolts(-3.5, -3.5);
+  delay(300);
+  chassis.SwingOnLeftToHeading(-145, 0, 12, akp * 1.6, aki, akd, 0);
   delay(1000);
 
-  // chassis.follow(path4, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 14);
-  // chassis.follow(path3, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, 3);
-  chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
+  /* matchload */
+  delay(2000);
+
+  // chassis.autoTankVolts(-3.5, -3.5); //switch to this once we have a matchload bar
+  chassis.autoTankVolts(3.5, 3.5);
+  delay(300);
+  chassis.autoTankVolts(0, 0);
+  delay(300);
+  // chassis.setPose(18, 18, -135); //assumes the matchload bar acts as a reset
+  Path path(14.3, 14.3, 34.8, 54.9, 62.1, 43.4, 103.4, 42.0, 100);
+  chassis.follow(path, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 24, 4);
+
+  chassis.turnToHeading(135, false, 12, akp, aki, akd, 10);
+  // chassis.setOffset(0, 9);
+  chassis.moveTo(128, 16, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 0, 12, 2);
+  chassis.autoTankVolts(-3.5, -3.5);
+  delay(500);
+  chassis.SwingOnRightToHeading(145, 0, 12, akp * 1.6, aki, akd, 0);
 
   printTime();
   return;

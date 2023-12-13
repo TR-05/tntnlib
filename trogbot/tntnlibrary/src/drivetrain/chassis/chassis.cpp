@@ -157,7 +157,7 @@ void Chassis::waitUntilError(float &error, float margin)
     do
     {
         wait(10, vex::msec);
-    } while (fabs(error) > margin);
+    } while (fabs(error) > margin && margin != 0);
 }
 
 /**
@@ -172,6 +172,7 @@ void Chassis::waitUntilError(float &error, float margin)
 
 void Chassis::turnSettings(float kp, float ki, float kd)
 {
+    motorControl = voltage;
     //  set up the PID
     angularPID.setGains(0, 0, kp, ki, kd);
     angularPID.reset();
@@ -183,6 +184,7 @@ void Chassis::turnSettings(float kp, float ki, float kd)
 void Chassis::moveToSettings(float akp, float aki, float akd, float lkp, float lki, float lkd, float slew)
 {
     //  set up the PIDs
+    motorControl = voltage;
     angularPID.setGains(0, 0, akp, aki, akd);
     linearPID.setGains(0, slew, lkp, lki, lkd);
     angularPID.reset();
@@ -249,6 +251,7 @@ void Chassis::turnToHeadingUnbounded(float heading, bool reversed, float maxSpee
 
 void Chassis::tuneOffsets(float ang, float kp, float ki, float kd, float maxSpeed, float breakang)
 {
+    motorControl = voltage;
     Chassis::turnToHeadingUnbounded(ang, false, maxSpeed, kp, ki, kd, breakang);
     vex::wait(1000, vex::msec);
     stateMachineOff();
@@ -360,6 +363,23 @@ void Chassis::follow(Path &path, bool reversed, float lmaxSpeed, float amaxSpeed
     waitUntilError(MoveTo::breakOutError, breakDist);
 }
 
+void Chassis::autoTankVolts(float left, float right)
+{
+    this->leftVolts = left, this->rightVolts = right;
+    // setup the statemachine
+    this->motorControl = voltage;
+    this->autoChassis = voltageMode;
+}
+
+void Chassis::autoTankPct(float left, float right)
+{
+    leftVolts = left, rightVolts = right;
+    // setup the statemachine
+    motorControl = velocity;
+    autoChassis = voltageMode;
+}
+
+
 void Chassis::stateMachineOn()
 {
     StateMachineEnabled = true;
@@ -391,6 +411,8 @@ std::pair<float, float> Chassis::stateMachine()
         return {0, 0};
     case drivePidMode:
         return straightPid::update(this->getPose());
+    case voltageMode:
+        return {leftVolts, rightVolts};
     default:
         return {0, 0};
     }
@@ -413,7 +435,15 @@ void Chassis::update()
     {
         std::pair<float, float> output = stateMachine(); // get output
         // move the motors
-        drivetrain.leftMotors->spinVolts(output.first);
-        drivetrain.rightMotors->spinVolts(output.second);
+        if (motorControl == voltage)
+        {
+            drivetrain.leftMotors->spinVolts(output.first);
+            drivetrain.rightMotors->spinVolts(output.second);
+        }
+        else if (motorControl == velocity)
+        {
+            drivetrain.leftMotors->spinPct(output.first);
+            drivetrain.rightMotors->spinPct(output.second);
+        }
     }
 }
