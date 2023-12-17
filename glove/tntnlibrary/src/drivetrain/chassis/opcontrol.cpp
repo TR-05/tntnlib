@@ -14,7 +14,6 @@ namespace tntnlib {
  * @return The new value to be used.
  */
 float defaultDriveCurve(float input, float scale) {
-    input *= 0.12;
     if (scale != 0) {
         //return (powf(2.718, -(scale / 10)) + powf(2.718, (fabs(input) - 127) / 10) * (1 - powf(2.718, -(scale / 10)))) * input;
         return (powf(2.718, ( ( (fabs(input) - 12) * scale ) / 1000.0)) * input);
@@ -46,10 +45,12 @@ void Chassis::tank(int left, int right, float curveGain) {
  * curve, refer to the `defaultDriveCurve` documentation.
  */
 void Chassis::arcade(int throttle, int turn, float curveGain) {
+    //int leftPower = throttle*.12 + defaultDriveCurve( + turn, curveGain);
+    //int rightPower = throttle*.12 + defaultDriveCurve(- turn, curveGain);
     int leftPower = defaultDriveCurve(throttle + turn, curveGain);
     int rightPower = defaultDriveCurve(throttle - turn, curveGain);
-    drivetrain.leftMotors->spinVolts(leftPower);
-    drivetrain.rightMotors->spinVolts(rightPower);
+    drivetrain.leftMotors->spinVolts(leftPower*.12);
+    drivetrain.rightMotors->spinVolts(rightPower*.12);
 }
 
 /**

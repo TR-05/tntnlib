@@ -52,17 +52,31 @@ void startAuto(float x, float y, float theta)
   lkd = chassis.linearSettings.kD;
 }
 
+float rpm = 0;
+int updateFlywheel()
+{
+  while (true)
+  {
+    flywheel.spinRPM(rpm);
+    vex::wait(10, vex::msec);
+  }
+  return 0;
+}
+
 void programming_skills()
 {
   startAuto(23, 16, -90);
+  vex::task fly(updateFlywheel);
+  rpm = 0;
   chassis.SwingOnLeftToHeading(-135, 0, 12, akp * 1.6, aki, akd, 0);
   delay(500);
   chassis.autoTankVolts(2.5, 2.5);
   delay(250);
   chassis.pid(-3, -135, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2);
   delay(100);
-  chassis.autoTankPct(5, 5);
+  chassis.autoTankPct(100, 100);
   delay(1000);
+  rpm = 3600;
   chassis.autoTankVolts(-3.5, -3.5);
   delay(300);
   chassis.SwingOnLeftToHeading(-145, 0, 12, akp * 1.6, aki, akd, 0);
@@ -70,7 +84,8 @@ void programming_skills()
 
   /* matchload */
   delay(2000);
-
+  loadMacro(23);
+  rpm = 0;
   // chassis.autoTankVolts(-3.5, -3.5); //switch to this once we have a matchload bar
   chassis.autoTankVolts(3.5, 3.5);
   delay(300);
@@ -90,3 +105,7 @@ void programming_skills()
   printTime();
   return;
 }
+
+
+
+
