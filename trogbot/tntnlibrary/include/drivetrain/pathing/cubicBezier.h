@@ -4,6 +4,7 @@
 #include "vex.h"
 namespace tntnlib
 {
+    // uses 4 points and a number of points to generate a path
     class Path
     {
         // The Path class represents a path defined by a number of points.

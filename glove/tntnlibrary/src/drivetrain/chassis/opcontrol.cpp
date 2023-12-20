@@ -18,7 +18,7 @@ float defaultDriveCurve(float input, float scale) {
         //return (powf(2.718, -(scale / 10)) + powf(2.718, (fabs(input) - 127) / 10) * (1 - powf(2.718, -(scale / 10)))) * input;
         return (powf(2.718, ( ( (fabs(input) - 12) * scale ) / 1000.0)) * input);
     }
-    return input;
+    return input *.12;
 }
 
 /**
@@ -45,12 +45,8 @@ void Chassis::tank(int left, int right, float curveGain) {
  * curve, refer to the `defaultDriveCurve` documentation.
  */
 void Chassis::arcade(int throttle, int turn, float curveGain) {
-    //int leftPower = throttle*.12 + defaultDriveCurve( + turn, curveGain);
-    //int rightPower = throttle*.12 + defaultDriveCurve(- turn, curveGain);
-    int leftPower = defaultDriveCurve(throttle + turn, curveGain);
-    int rightPower = defaultDriveCurve(throttle - turn, curveGain);
-    drivetrain.leftMotors->spinVolts(leftPower*.12);
-    drivetrain.rightMotors->spinVolts(rightPower*.12);
+    drivetrain.leftMotors->spinVolts(defaultDriveCurve(throttle+turn, curveGain));
+    drivetrain.rightMotors->spinVolts(defaultDriveCurve(throttle-turn, curveGain));
 }
 
 /**

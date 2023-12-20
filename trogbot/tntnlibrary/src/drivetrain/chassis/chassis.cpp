@@ -335,7 +335,7 @@ void Chassis::boomerangTo(float x, float y, float theta, bool reversed, float lm
     waitUntilError(MoveTo::breakOutError, breakDist);
 }
 
-void Chassis::moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float breakDist)
+void Chassis::moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist)
 {
     Pose target = Pose(x, y, 0);
     MoveTo::targetChoice = MoveTo::staticTargetMode;
@@ -349,14 +349,12 @@ void Chassis::moveTo(float x, float y, bool reversed, float lmaxSpeed, float ama
 /**
  * This function sets up Pure Pursuit
  *
- * Unlike the chassis::moveTo function, we can just pass the parameters directly to the
- * Pure Pursuit constructor
  */
-void Chassis::follow(Path &path, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float lookAhead, float breakDist)
+void Chassis::follow(Path &path, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float lookAhead, float breakDist)
 {
     Pose target = Pose(path.x3, path.y3, path.theta[path.numberOfPoints]);
     MoveTo::targetChoice = MoveTo::purePursuitTargetMode;
-    MoveTo::params(target, path, reversed, lmaxSpeed, amaxSpeed, lookAhead, chasePower);
+    MoveTo::params(target, path, reversed, lmaxSpeed, amaxSpeed, lookAhead, 0);
     moveToSettings(akp, aki, akd, lkp, lki, lkd, slew);
     // setup the statemachine
     autoChassis = moveToMode;

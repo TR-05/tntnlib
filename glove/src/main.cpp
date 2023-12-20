@@ -8,15 +8,15 @@ vex::brain Brain;
 
 /* tntnlib robot Config */
 MotorGroup leftMotors(vex::gearSetting::ratio6_1, 450, -7, 8, -9, -10);
-//MotorGroup leftMotors(vex::gearSetting::ratio6_1, 11);
-//MotorGroup rightMotors(vex::gearSetting::ratio6_1, 11);
+// MotorGroup leftMotors(vex::gearSetting::ratio6_1, 11);
+// MotorGroup rightMotors(vex::gearSetting::ratio6_1, 11);
 
-//MotorGroup leftMotors2(vex::gearSetting::ratio6_1, -7);
-//MotorGroup rightMotors2(vex::gearSetting::ratio6_1, 1);
+// MotorGroup leftMotors2(vex::gearSetting::ratio6_1, -7);
+// MotorGroup rightMotors2(vex::gearSetting::ratio6_1, 1);
 MotorGroup rightMotors(vex::gearSetting::ratio6_1, 450, 1, 2, -3, 4);
-//MotorGroup rightMotors(vex::gearSetting::ratio6_1, 4);
-//vex::motor leftTest(vex::PORT7, vex::ratio6_1, true);
-//vex::motor rightTest(vex::PORT1, vex::ratio6_1, false);
+// MotorGroup rightMotors(vex::gearSetting::ratio6_1, 4);
+// vex::motor leftTest(vex::PORT7, vex::ratio6_1, true);
+// vex::motor rightTest(vex::PORT1, vex::ratio6_1, false);
 
 /* tracking wheels and gyro */
 TrackingWheel horizontal(Brain.ThreeWirePort.A, Omniwheel::NEW_275, 0.002292, 1);
@@ -42,8 +42,8 @@ int logger()
   while (true)
   {
     Pose current(chassis.getPose(false));
-    //printf("SX: %.2f, SR: %.2f, IMU: %.2f ", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
-    //printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
+    // printf("SX: %.2f, SR: %.2f, IMU: %.2f ", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
+    // printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
     vex::wait(50, vex::msec);
@@ -64,7 +64,6 @@ void autonomous()
 {
   programming_skills();
 }
-
 
 void toggleLeftWing()
 {
@@ -92,20 +91,18 @@ void usercontrol()
   while (1)
   {
 
-
     if (Controller.ButtonL1.pressing())
     {
       if (!L1pressed)
       {
         wings();
       }
-        L1pressed = true;
+      L1pressed = true;
     }
     else
     {
       L1pressed = false;
     }
-
 
     if (Controller.ButtonY.pressing())
     {
@@ -113,13 +110,12 @@ void usercontrol()
       {
         toggleLeftWing();
       }
-        Y = true;
+      Y = true;
     }
     else
     {
       Y = false;
     }
-
 
     if (Controller.ButtonA.pressing())
     {
@@ -127,7 +123,7 @@ void usercontrol()
       {
         toggleRightWing();
       }
-        A = true;
+      A = true;
     }
     else
     {
@@ -138,25 +134,16 @@ void usercontrol()
     {
       hang.set(1);
     }
-     if (Controller.ButtonX.pressing())
+    if (Controller.ButtonX.pressing())
     {
       hang.set(0);
-    }   
+    }
 
     intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
     intake.setBrakeType(vex::brakeType::brake);
-    //chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
-    chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
-  //float pow = Controller.Axis3.position() *.12;
-  //leftMotors2.spinVolts(pow);
-  //rightMotors2.spinVolts(pow);
-  //leftMotors.spinVolts(pow);
-  //rightMotors.spinVolts(pow);
-    //leftTest.spin(vex::directionType::fwd, pow, vex::voltageUnits::volt);
-    //rightTest.spin(vex::directionType::fwd, pow, vex::voltageUnits::volt);
-    //rightTest.spin(vex::directionType::fwd, pow, vex::percentUnits::pct);
-    //leftTest.spin(vex::directionType::fwd, pow, vex::percentUnits::pct);
-     //chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
+    // chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
+    chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); // single stick arcade
+    // chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
     vex::wait(10.0, vex::msec);
   }
 }

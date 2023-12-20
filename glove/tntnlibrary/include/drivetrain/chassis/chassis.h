@@ -200,17 +200,12 @@ namespace tntnlib
          * @param reversed whether the robot should move forwards or backwards. true for forwards (default), false for backwards
          * @param lmaxSpeed the maximum linear speed the robot can move at
          * @param amaxSpeed the maximum angular speed the robot can move at
-         * @param lkp the proportional gain for the linear PID controller
-         * @param lki the integral gain for the linear PID controller
-         * @param lkd the derivative gain for the linear PID controller
-         * @param akp the proportional gain for the angular PID controller
-         * @param aki the integral gain for the angular PID controller
-         * @param akd the derivative gain for the angular PID controller
-         * @param chasePower higher values make the robot move faster but causes more overshoot on turns. 0 makes it default to global value
+         * @param lk the gain for the linear PID controller
+         * @param ak the gain for the angular PID controller
          * @param slew the slew rate for the robot's movement
          * @param breakDist the breaking distance for the robot
          */
-        void moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float breakDist);
+        void moveTo(float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist);
 
         /**
          * @brief Move the chassis along a path
@@ -225,12 +220,11 @@ namespace tntnlib
          * @param akp the proportional gain for the angular PID controller
          * @param aki the integral gain for the angular PID controller
          * @param akd the derivative gain for the angular PID controller
-         * @param chasePower the power level for the chase controller
          * @param slew the slew rate for the robot's movement
          * @param lookAhead the look-ahead distance for the path follower
          * @param breakDist the breaking distance for the robot
          */
-        void follow(Path &path, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float chasePower, float slew, float lookAhead, float breakDist);
+        void follow(Path &path, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float lookAhead, float breakDist);
 
         void autoTankVolts(float left, float right);
         void autoTankPct(float left, float right);

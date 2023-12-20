@@ -14,7 +14,7 @@ float startTime{0}, endTime{0}, totalTime{0};
   chassis.pid(24, 60, 60, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2); //Moves forward 24 inches looking at xy point (60,60)
   chassis.pid(-24, 0, true, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2); //Moves backward 24 inches holding heading 0,0
   chassis.SwingOnLeftToHeading(-45, 0, 12, akp*1.6, aki, akd, 1);
-  chassis.moveTo(0, 20, false, 12, 12, lkp, lki, lkd, akp*1.3, aki, akd * 1.25, .3, 12, 2);
+  chassis.moveTo(0, 20, false, 12, 12, lkp, lki, lkd, akp*1.3, aki, akd * 1.25, 12, 2);
   chassis.boomerangTo(0, 20, -180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 12, 2);
   chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
 */
@@ -93,11 +93,11 @@ void programming_skills()
   delay(300);
   // chassis.setPose(18, 18, -135); //assumes the matchload bar acts as a reset
   Path path(14.3, 14.3, 34.8, 54.9, 62.1, 43.4, 103.4, 42.0, 100);
-  chassis.follow(path, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 24, 4);
+  chassis.follow(path, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 24, 4);
 
   chassis.turnToHeading(135, false, 12, akp, aki, akd, 10);
   // chassis.setOffset(0, 9);
-  chassis.moveTo(128, 16, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 0, 12, 2);
+  chassis.moveTo(128, 16, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
   chassis.autoTankVolts(-3.5, -3.5);
   delay(500);
   chassis.SwingOnRightToHeading(145, 0, 12, akp * 1.6, aki, akd, 0);

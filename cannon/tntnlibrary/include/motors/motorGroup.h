@@ -51,7 +51,7 @@ namespace tntnlib
             for (int i = 0; i < size; i++)
             {
                 motors[i] = vex::motor(abs(portsArray[i]) - 1, gear, (portsArray[i] < 0 ? true : false));
-                // printf("Created motor on port %d\n", portsArray[i]);
+                 printf("Created motor on port %d\n", portsArray[i]);
             }
         }
 
