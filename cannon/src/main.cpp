@@ -24,7 +24,8 @@ MotorGroup intake(vex::gearSetting::ratio6_1, 600, -13, 17);
 
 vex::digital_out left_intake_piston(Brain.ThreeWirePort.A);
 vex::digital_out right_intake_piston(Brain.ThreeWirePort.B);
-
+vex::digital_out aligner(Brain.ThreeWirePort.C);
+vex::digital_out spaceMaker(Brain.ThreeWirePort.D);
 /* data logger idk where to put :/ */
 int logger()
 {
@@ -88,6 +89,8 @@ void usercontrol()
   // User control code here, inside the loop
   float rpm = 0;
   bool pistonState = false;
+  bool lastAligner = false;
+  bool lastSpaceMaker = false;
   bool lastIntakeMacro = false;
   while (1)
   {
@@ -123,6 +126,21 @@ void usercontrol()
     }
     pistonState = Controller.ButtonL1.pressing();
 
+
+    if (Controller.ButtonX.pressing() && !lastAligner)
+    {
+      aligner.set(!aligner);
+    }
+    lastAligner = Controller.ButtonX.pressing();
+
+
+    if (Controller.ButtonY.pressing() && !lastSpaceMaker)
+    {
+      spaceMaker.set(!spaceMaker);
+    }
+    lastSpaceMaker = Controller.ButtonY.pressing();
+
+
     if (Controller.ButtonRight.pressing() && !lastIntakeMacro)
     {
       loadMacro(30);
@@ -130,7 +148,7 @@ void usercontrol()
     lastIntakeMacro = Controller.ButtonRight.pressing();
     intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
 
-   chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
+   chassis.tank(Controller.Axis3.position() *.12, Controller.Axis2.position() * .12, 100); // tank (the best drive style)
     //  chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
    //chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); // split arcade
     vex::wait(10.0, vex::msec);

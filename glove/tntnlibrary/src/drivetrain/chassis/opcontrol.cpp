@@ -15,10 +15,9 @@ namespace tntnlib {
  */
 float defaultDriveCurve(float input, float scale) {
     if (scale != 0) {
-        //return (powf(2.718, -(scale / 10)) + powf(2.718, (fabs(input) - 127) / 10) * (1 - powf(2.718, -(scale / 10)))) * input;
         return (powf(2.718, ( ( (fabs(input) - 12) * scale ) / 1000.0)) * input);
     }
-    return input *.12;
+    return input;
 }
 
 /**

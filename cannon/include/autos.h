@@ -6,6 +6,8 @@ extern tntnlib::MotorGroup intake;
 extern tntnlib::Flywheel flywheel;
 extern vex::digital_out left_intake_piston;
 extern vex::digital_out right_intake_piston;
+extern vex::digital_out aligner;
+extern vex::digital_out spaceMaker;
 
 float getTime();
 void programming_skills();
