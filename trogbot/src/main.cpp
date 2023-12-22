@@ -66,8 +66,8 @@ int logger()
 
       if (Controller.ButtonR1.pressing())
       {
-        leftDrivePower = clamp(cameraObjectX * .2, -12, 12);
-        rightDrivePower = clamp(-cameraObjectX * .2, -12, 12);
+        leftDrivePower = clamp(cameraObjectX * .1, -12, 12);
+        rightDrivePower = clamp(-cameraObjectX * .1, -12, 12);
         printf(" X: %.2f,  Y: %.2f", cameraObjectX, cameraObjectY);
         printf("  L: %.2f,  R: %.2f\n", defaultDriveCurve(leftDrivePower, 100), defaultDriveCurve(rightDrivePower, 100));
       }
@@ -81,6 +81,8 @@ int logger()
     }
     else
     {
+        leftDrivePower = 0;
+        rightDrivePower = 0;
       Brain.Screen.print("Not Found");
       printf("None\n");
     }
@@ -115,7 +117,17 @@ void usercontrol()
   // intake.setBrakeType(vex::brakeType::brake);
   while (1)
   {
+    updateButtons();
+    if (r2.newPress()) {
+        chassis.tank(100, 0, 0);
+        vex::wait(200, vex::msec);
+    }
+    else if (l1.newPress()){
+        chassis.tank(0, 100, 0);
+        vex::wait(200, vex::msec);
+    }    else {
     chassis.tank(Controller.Axis3.position()*.12 + leftDrivePower, Controller.Axis2.position()*.12 + rightDrivePower, 100); // tank (the best drive style)
+    }
     // intake.driverTwoButton(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), 12, -12);
     // flywheel.spinVolts(6);
     // intake.driverToggle(Controller.ButtonA.pressing(), 3);
