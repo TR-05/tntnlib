@@ -84,7 +84,7 @@ void programming_skills()
 
   /* matchload */
   delay(2000);
-  loadMacro(23);
+  loadMacro(23, 800, 300);
   rpm = 0;
   // chassis.autoTankVolts(-3.5, -3.5); //switch to this once we have a matchload bar
   chassis.autoTankVolts(3.5, 3.5);

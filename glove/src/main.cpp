@@ -142,7 +142,7 @@ void usercontrol()
     intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
     intake.setBrakeType(vex::brakeType::brake);
     // chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
-    chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); // single stick arcade
+    chassis.arcade(Controller.Axis3.position()*.12, Controller.Axis4.position()*.12, 0); // single stick arcade
     // chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
     vex::wait(10.0, vex::msec);
   }

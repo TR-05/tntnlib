@@ -24,8 +24,8 @@ float defaultDriveCurve(float input, float scale) {
  * @brief Control the robot during the driver using the arcade drive control scheme. In this control scheme one
  * joystick axis controls the forwards and backwards movement of the robot, while the other joystick axis
  * controls  the robot's turning
- * @param throttle speed to move forward or backward. Takes an input from -127 to 127.
- * @param turn speed to turn. Takes an input from -127 to 127.
+ * @param throttle speed to move forward or backward. Takes an input from -12 to 12.
+ * @param turn speed to turn. Takes an input from -12 to 12.
  * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
  * curve, refer to the `defaultDriveCurve` documentation.
  */
@@ -38,8 +38,8 @@ void Chassis::tank(int left, int right, float curveGain) {
  * @brief Control the robot during the driver using the arcade drive control scheme. In this control scheme one
  * joystick axis controls the forwards and backwards movement of the robot, while the other joystick axis
  * controls  the robot's turning
- * @param throttle speed to move forward or backward. Takes an input from -127 to 127.
- * @param turn speed to turn. Takes an input from -127 to 127.
+ * @param throttle speed to move forward or backward. Takes an input from -12 to 12.
+ * @param turn speed to turn. Takes an input from -12 to 12.
  * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
  * curve, refer to the `defaultDriveCurve` documentation.
  */

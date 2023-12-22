@@ -32,8 +32,8 @@ int logger()
   while (true)
   {
     Pose current(chassis.getPose(false));
-    //chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0
-    //printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
+    // chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0
+    // printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
     printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
@@ -41,7 +41,6 @@ int logger()
   }
   return 0;
 }
-
 
 /* runs when program first starts */
 void pre_auton()
@@ -57,25 +56,22 @@ void autonomous()
   programming_skills();
 }
 
-
-
-
-void singleLoadMacro()
+void singleLoadMacro(int delay)
 {
   intake.spinVolts(12);
   left_intake_piston.set(0);
   right_intake_piston.set(0);
-  vex::wait(200, vex::msec);
+  vex::wait(delay, vex::msec);
   left_intake_piston.set(1);
   right_intake_piston.set(1);
 }
 
-void loadMacro(int times)
+void loadMacro(int times, int bigDelay, int smallDelay)
 {
-  for (int i = 0; i < times; i++) 
+  for (int i = 0; i < times; i++)
   {
-    singleLoadMacro();
-    vex::wait(1000, vex::msec);
+    singleLoadMacro(smallDelay);
+    vex::wait(bigDelay, vex::msec);
   }
 }
 
@@ -86,30 +82,25 @@ void usercontrol()
   chassis.stateMachineOff();
 
   bool flywheelOn = false;
-  // User control code here, inside the loop
   float rpm = 0;
-  bool pistonState = false;
-  bool lastAligner = false;
-  bool lastSpaceMaker = false;
-  bool lastIntakeMacro = false;
+  // User control code here, inside the loop
   while (1)
   {
+    updateButtons();
 
-    if (Controller.ButtonA.pressing())
+    if (a.newPress())
     {
       rpm = 3600;
       flywheelOn = true;
     }
 
-    if (Controller.ButtonB.pressing())
+    if (b.newPress())
     {
       rpm = 2600;
       flywheelOn = true;
     }
-    if (Controller.ButtonL2.pressing())
-    {
+    if (l2.newPress())
       flywheelOn = false;
-    }
 
     if (flywheelOn)
     {
@@ -119,38 +110,25 @@ void usercontrol()
     {
       flywheel.spinVolts(0);
     }
-    if (Controller.ButtonL1.pressing() && !pistonState)
+    if (l1.newPress())
     {
       left_intake_piston.set(!left_intake_piston);
       right_intake_piston.set(!left_intake_piston);
     }
-    pistonState = Controller.ButtonL1.pressing();
 
-
-    if (Controller.ButtonX.pressing() && !lastAligner)
-    {
+    if (x.newPress())
       aligner.set(!aligner);
-    }
-    lastAligner = Controller.ButtonX.pressing();
 
-
-    if (Controller.ButtonY.pressing() && !lastSpaceMaker)
-    {
+    if (y.newPress())
       spaceMaker.set(!spaceMaker);
-    }
-    lastSpaceMaker = Controller.ButtonY.pressing();
 
+    if (right.newPress())
+      loadMacro(60, 800, 300);
 
-    if (Controller.ButtonRight.pressing() && !lastIntakeMacro)
-    {
-      loadMacro(30);
-    }
-    lastIntakeMacro = Controller.ButtonRight.pressing();
     intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
-
-   chassis.tank(Controller.Axis3.position() *.12, Controller.Axis2.position() * .12, 100); // tank (the best drive style)
-    //  chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 0); //single stick arcade
-   //chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); // split arcade
+    chassis.tank(Controller.Axis3.position() * .12, Controller.Axis2.position() * .12, 100); // tank (the best drive style)
+    //  chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade
+    // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); // split arcade
     vex::wait(10.0, vex::msec);
   }
 }

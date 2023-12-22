@@ -19,3 +19,4 @@
 #include "../tntnlibrary/include/subsystems/flywheel.h"
 #include "../tntnlibrary/include/motors/motorGroup.h"
 #include "../tntnlibrary/include/defaultDevices.h"
+#include "../tntnlibrary/include/opcontrol/controller.h"

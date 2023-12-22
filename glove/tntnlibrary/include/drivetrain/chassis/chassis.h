@@ -232,8 +232,8 @@ namespace tntnlib
         /**
          * @brief Control the robot during the driver control period using the tank drive control scheme. In this
          * control scheme one joystick axis controls one half of the robot, and another joystick axis controls another.
-         * @param left speed of the left side of the drivetrain. Takes an input from -100 to 100.
-         * @param right speed of the right side of the drivetrain. Takes an input from -100 to 100.
+         * @param left speed of the left side of the drivetrain. Takes an input from -12 to 12.
+         * @param right speed of the right side of the drivetrain. Takes an input from -12 to 12.
          * @param curveGain control how steep the drive curve is. The larger the number, the steeper the curve. A value
          * of 0 disables the curve entirely.
          */
@@ -243,8 +243,8 @@ namespace tntnlib
          * @brief Control the robot during the driver using the arcade drive control scheme. In this control scheme one
          * joystick axis controls the forwards and backwards movement of the robot, while the other joystick axis
          * controls  the robot's turning
-         * @param throttle speed to move forward or backward. Takes an input from -100 to 100.
-         * @param turn speed to turn. Takes an input from -100 to 100.
+         * @param throttle speed to move forward or backward. Takes an input from -12 to 12.
+         * @param turn speed to turn. Takes an input from -12 to 12.
          * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
          * curve, refer to the `defaultDriveCurve` documentation.
          */
