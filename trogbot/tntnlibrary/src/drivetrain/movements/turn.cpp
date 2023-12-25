@@ -49,17 +49,6 @@ void Turn::params(Pose target, bool reversed, float maxSpeed, bool swingOnLeft, 
     turnSettings.boundto360 = boundto360;
 }
 
-/**
- * The turning algorithm uses field-relative position of the robot to face a target heading
- * or face a target point.
- *
- * This algorithm is simple. When the robot needs to face a target heading, it simply aligns
- * the robot's heading with the target heading. When the robot is turning to face a point,
- * the algorithm will align the robot's heading with the target point. This is better for
- * repeatability, but is not always necessary.
- *
- * This algorithm only uses 1 PID to turn the chassis.
- */
 std::pair<float, float> tntnlib::Turn::update(Pose pose)
 {
     float t;

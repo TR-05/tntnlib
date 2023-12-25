@@ -15,10 +15,11 @@ Gyro imu(15, 1.010357);
 /* chassis and controllers (DO NOT CHANGE NAMES) */
 ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
 ControllerSettings angularSettings(.25, 0.01, 2.0, 10, 2, 12);
-Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::OLD_325, 360, 8);
+Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::NEW_4, 300, 8);
 OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
-Flywheel flywheel(vex::gearSetting::ratio6_1, 3600, 11, 0, 0.0, 2, -12, 11, 20, -19);
+// Flywheel flywheel(vex::gearSetting::ratio6_1, 3600, 11, 0, 0.0, 2, -12, 11, 20, -19);
+MotorGroup flywheel(vex::gearSetting::ratio6_1, 3600, -12, 11, 20, -19);
 MotorGroup intake(vex::gearSetting::ratio6_1, 600, -13, 17);
 /* End of tntnlib Robot Config */
 
@@ -47,6 +48,7 @@ void pre_auton()
 {
   printf("Entered pre_auton\n");
   chassis.initialize(true, 0, 0, 0);
+  flywheel.initializeVeloController(11, 0, 0, 1, 1, 2, 0);
   vex::task log(logger);
 }
 
@@ -123,11 +125,11 @@ void usercontrol()
       spaceMaker.set(!spaceMaker);
 
     if (right.newPress())
-      loadMacro(60, 800, 300);
+      loadMacro(60, 950, 350);
 
     intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
-    chassis.tank(Controller.Axis3.position() * .12, Controller.Axis2.position() * .12, 100); // tank (the best drive style)
-    //  chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade
+    chassis.tank(Controller.Axis3.position() * .12, Controller.Axis2.position() * .12, 100); // tank
+    // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade
     // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); // split arcade
     vex::wait(10.0, vex::msec);
   }

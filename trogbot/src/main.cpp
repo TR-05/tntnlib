@@ -28,13 +28,6 @@ Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
 
 /* data logger idk where to put :/ */
 
-// width is 0-315 -> half is 157
-float halfWidth = 157;
-// height is 0-211 -> half is 105
-float halfHeight = 105;
-float cameraObjectX = 0, cameraObjectY = 0;
-float cameraObjectWidth = 0, cameraObjectHeight = 0;
-float leftDrivePower = 0, rightDrivePower = 0;
 int logger()
 {
   while (true)
@@ -42,51 +35,6 @@ int logger()
     Pose current(chassis.getPose(false));
     // printf("SX: %.2f, SR: %.2f, IMU: %.2f ", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
     // printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
-
-    // printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
-
-    Brain.Screen.clearLine(1);
-    Brain.Screen.clearLine(2);
-    Brain.Screen.clearScreen(vex::color(255, 20, 0));
-    Brain.Screen.setFillColor(vex::color(255, 20, 0));
-    Brain.Screen.setPenColor(vex::color(0, 0, 0));
-    vision1.takeSnapshot(SIG_1);
-    Brain.Screen.setCursor(1, 1);
-    printf("On: %d", vision1.installed());
-    if (vision1.objectCount > 0)
-    {
-      cameraObjectX = ema(-1 * (vision1.largestObject.centerX - halfWidth), cameraObjectX, .9);
-      cameraObjectY = ema(-1 * (vision1.largestObject.centerY - halfWidth), cameraObjectY, .9);
-      cameraObjectWidth = vision1.largestObject.width;
-      cameraObjectHeight = vision1.largestObject.height;
-
-      Brain.Screen.print("X:%.3f, Y:%.3f", cameraObjectX, cameraObjectY);
-      Brain.Screen.setCursor(2, 0);
-      Brain.Screen.print("w:%.2f, h:%.2f", cameraObjectWidth, cameraObjectHeight);
-
-      if (Controller.ButtonR1.pressing())
-      {
-        leftDrivePower = clamp(cameraObjectX * .1, -12, 12);
-        rightDrivePower = clamp(-cameraObjectX * .1, -12, 12);
-        printf(" X: %.2f,  Y: %.2f", cameraObjectX, cameraObjectY);
-        printf("  L: %.2f,  R: %.2f\n", defaultDriveCurve(leftDrivePower, 100), defaultDriveCurve(rightDrivePower, 100));
-      }
-
-      else
-      {
-        printf(" X: %.2f,  Y: %.2f\n", cameraObjectX, cameraObjectY);
-        leftDrivePower = 0;
-        rightDrivePower = 0;
-      }
-    }
-    else
-    {
-        leftDrivePower = 0;
-        rightDrivePower = 0;
-      Brain.Screen.print("Not Found");
-      printf("None\n");
-    }
-
     // Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
     vex::wait(20, vex::msec);
   }
@@ -118,16 +66,8 @@ void usercontrol()
   while (1)
   {
     updateButtons();
-    if (r2.newPress()) {
-        chassis.tank(100, 0, 0);
-        vex::wait(200, vex::msec);
-    }
-    else if (l1.newPress()){
-        chassis.tank(0, 100, 0);
-        vex::wait(200, vex::msec);
-    }    else {
-    chassis.tank(Controller.Axis3.position()*.12 + leftDrivePower, Controller.Axis2.position()*.12 + rightDrivePower, 100); // tank (the best drive style)
-    }
+    std::pair<float, float> output = visionPower();                                                                         // get output
+    chassis.tank(Controller.Axis3.position() * .12 + output.first, Controller.Axis2.position() * .12 + output.second, 100); // tank (the best drive style)
     // intake.driverTwoButton(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), 12, -12);
     // flywheel.spinVolts(6);
     // intake.driverToggle(Controller.ButtonA.pressing(), 3);

@@ -17,8 +17,8 @@
 #include "vex.h"
 
 #include "../tntnlibrary/include/drivetrain/pose.h"
-#include "../tntnlibrary/include/drivetrain/devices/trackingWheel.h"
-#include "../tntnlibrary/include/drivetrain/devices/gyro.h"
+#include "../tntnlibrary/include/drivetrain/sensors/trackingWheel.h"
+#include "../tntnlibrary/include/drivetrain/sensors/gyro.h"
 #include "../tntnlibrary/include/drivetrain/chassis/structs.h"
 #include "../tntnlibrary/include/drivetrain/chassis/odom.h"
 #include "../tntnlibrary/include/defaultDevices.h"

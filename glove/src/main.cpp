@@ -8,21 +8,12 @@ vex::brain Brain;
 
 /* tntnlib robot Config */
 MotorGroup leftMotors(vex::gearSetting::ratio6_1, 450, -7, 8, -9, -10);
-// MotorGroup leftMotors(vex::gearSetting::ratio6_1, 11);
-// MotorGroup rightMotors(vex::gearSetting::ratio6_1, 11);
-
-// MotorGroup leftMotors2(vex::gearSetting::ratio6_1, -7);
-// MotorGroup rightMotors2(vex::gearSetting::ratio6_1, 1);
 MotorGroup rightMotors(vex::gearSetting::ratio6_1, 450, 1, 2, -3, 4);
-// MotorGroup rightMotors(vex::gearSetting::ratio6_1, 4);
-// vex::motor leftTest(vex::PORT7, vex::ratio6_1, true);
-// vex::motor rightTest(vex::PORT1, vex::ratio6_1, false);
-
+MotorGroup intake(vex::gearSetting::ratio6_1, 600, -11);
 /* tracking wheels and gyro */
 TrackingWheel horizontal(Brain.ThreeWirePort.A, Omniwheel::NEW_275, 0.002292, 1);
 TrackingWheel vertical(Brain.ThreeWirePort.C, Omniwheel::NEW_275, -0.253611, 1);
 Gyro imu(12, 1.010357);
-
 /* chassis and controllers */
 ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
 ControllerSettings angularSettings(.25, 0.01, 2.0, 10, 2, 12);
@@ -31,7 +22,6 @@ OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
 /* End of tntnlib Robot Config */
 
-MotorGroup intake(vex::gearSetting::ratio6_1, 600, -11);
 vex::digital_out left_wing(Brain.ThreeWirePort.F);
 vex::digital_out right_wing(Brain.ThreeWirePort.E);
 vex::digital_out hang(Brain.ThreeWirePort.G);
@@ -65,85 +55,34 @@ void autonomous()
   programming_skills();
 }
 
-void toggleLeftWing()
-{
-  left_wing.set(!left_wing.value());
-}
-void toggleRightWing()
-{
-  right_wing.set(!right_wing.value());
-}
-void wings()
-{
-  left_wing.set(!left_wing.value());
-  right_wing.set(!left_wing.value());
-}
-
 /* runs on comp switch driver */
 void usercontrol()
 {
   printf("Entered Driver\n");
   chassis.stateMachineOff();
 
-  bool L1pressed;
-  bool A;
-  bool Y;
   while (1)
   {
-
-    if (Controller.ButtonL1.pressing())
+    updateButtons();
+    if (l1.newPress())
     {
-      if (!L1pressed)
-      {
-        wings();
-      }
-      L1pressed = true;
+      left_wing.set(!left_wing.value());
+      right_wing.set(!left_wing.value());
     }
-    else
-    {
-      L1pressed = false;
-    }
-
-    if (Controller.ButtonY.pressing())
-    {
-      if (!Y)
-      {
-        toggleLeftWing();
-      }
-      Y = true;
-    }
-    else
-    {
-      Y = false;
-    }
-
-    if (Controller.ButtonA.pressing())
-    {
-      if (!A)
-      {
-        toggleRightWing();
-      }
-      A = true;
-    }
-    else
-    {
-      A = false;
-    }
-
-    if (Controller.ButtonB.pressing())
-    {
+    if (y.newPress())
+      left_wing.set(!left_wing.value());
+    if (a.newPress())
+      right_wing.set(!right_wing.value());
+    if (b.newPress())
       hang.set(1);
-    }
-    if (Controller.ButtonX.pressing())
-    {
+    if (x.newPress())
       hang.set(0);
-    }
 
     intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
     intake.setBrakeType(vex::brakeType::brake);
-    // chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 100); // tank (the best drive style)
-    chassis.arcade(Controller.Axis3.position()*.12, Controller.Axis4.position()*.12, 0); // single stick arcade
-    // chassis.arcade(Controller.Axis3.position(), Controller.Axis1.position(), 0); //split arcade
+    // chassis.tank(Controller.Axis3.position() *.12, Controller.Axis2.position() *.12, 100); // tank
+    chassis.arcade(Controller.Axis3.position() * .12, Controller.Axis4.position() * .12, 0); // single stick arcade
+    // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); //split arcade
     vex::wait(10.0, vex::msec);
   }
 }

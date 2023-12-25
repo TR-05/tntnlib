@@ -1,8 +1,8 @@
 #pragma once
 
 #include "vex.h"
-#include "../tntnlibrary/include/drivetrain/devices/trackingWheel.h"
-#include "../tntnlibrary/include/drivetrain/devices/gyro.h"
+#include "../tntnlibrary/include/drivetrain/sensors/trackingWheel.h"
+#include "../tntnlibrary/include/drivetrain/sensors/gyro.h"
 
 namespace tntnlib
 {

@@ -13,7 +13,6 @@
 #include "../tntnlibrary/include/util.h"
 #include "../tntnlibrary/include/pid.h"
 #include "../tntnlibrary/include/drivetrain/movements/moveTo.h"
-#include "../tntnlibrary/include/drivetrain/movements/purepursuit.h"
 #include "../tntnlibrary/include/drivetrain/movements/turn.h"
 #include "../tntnlibrary/include/drivetrain/movements/straightPid.h"
 #include "../tntnlibrary/include/drivetrain/chassis/chassis.h"

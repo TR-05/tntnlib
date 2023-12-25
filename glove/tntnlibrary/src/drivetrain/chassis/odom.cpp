@@ -19,7 +19,7 @@
 #include "vex.h"
 #include "../tntnlibrary/include/util.h"
 #include "../tntnlibrary/include/drivetrain/chassis/odom.h"
-#include "../tntnlibrary/include/drivetrain/devices/trackingWheel.h"
+#include "../tntnlibrary/include/drivetrain/sensors/trackingWheel.h"
 #include "../tntnlibrary/include/defaultDevices.h"
 
 using namespace tntnlib;
