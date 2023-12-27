@@ -49,14 +49,12 @@ namespace tntnlib
                         Pose targetPose = Pose(0, 0, 0);
                         float targetHeading = 0;
                         bool reversed = false;
-                        float maxSpeed;
-                        int state = 0; // 0 = in progress, 1 = done
-                        float dist = 0;
+                        float maxSpeed = 12;
                         bool useHeading = true;
                         bool swingOnRight = false;
                         bool swingOnLeft = false;
                         bool boundto360 = false;
                 } static turnSettings;
-                inline float breakOutError = 0;
+                extern float breakOutError;
         };
 }; // namespace tntnlib

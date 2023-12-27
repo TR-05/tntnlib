@@ -1,5 +1,8 @@
 #include "autos.h"
+#include "vision.h"
 #include "vex.h"
+#include "../tntnlibrary/include/drivetrain/movements/turn.h"
+
 using namespace tntnlib;
 
 void delay(float ms)
@@ -52,6 +55,20 @@ void startAuto(float x, float y, float theta)
   lkd = chassis.linearSettings.kD;
 }
 
+bool enableVision = false;
+int vision()
+{
+  while (1)
+  {
+    if (enableVision)
+    {
+      float visionChange = visionX();
+      Pose current = chassis.getPose();
+      Turn::params(current.theta + visionChange, true, 12, false, false, true);
+    }
+  }
+  return 0;
+}
 void programming_skills()
 {
   startAuto(23, 16, -90);
@@ -70,6 +87,8 @@ void programming_skills()
 
   /* matchload */
   delay(2000);
+  vex::task visionTask(vision);
+  enableVision = true;
 
   // chassis.autoTankVolts(-3.5, -3.5); //switch to this once we have a matchload bar
   chassis.autoTankVolts(3.5, 3.5);

@@ -1,6 +1,8 @@
 #include "vex.h"
 #include "../tntnlibrary/include/api.h"
 #include "autos.h"
+#include "vision.h"
+
 #include <iostream>
 using namespace tntnlib;
 vex::competition Competition;
@@ -21,7 +23,6 @@ ControllerSettings angularSettings(.25, 0.01, 2.0, 10, 2, 12);
 Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::OLD_325, 360, 8);
 OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
-// Flywheel flywheel(ratio6_1, 3600, 10, 0, 0.8, .25, -8, -10);
 // MotorGroup intake(vex::gearSetting::ratio6_1, 360, -8, -10);
 
 /* End of tntnlib Robot Config */
@@ -45,7 +46,6 @@ int logger()
 void pre_auton()
 {
   Brain.Screen.clearScreen(vex::color(255, 20, 0));
-
   vex::task log(logger);
   printf("Entered pre_auton\n");
   chassis.initialize(true, 0, 0, 0);
@@ -66,8 +66,8 @@ void usercontrol()
   while (1)
   {
     updateButtons();
-    std::pair<float, float> output = visionPower();                                                                         // get output
-    chassis.tank(Controller.Axis3.position() * .12 + output.first, Controller.Axis2.position() * .12 + output.second, 100); // tank (the best drive style)
+    visionPower();                                                                                                         // get output
+    chassis.tank(Controller.Axis3.position() * .12 + visionOutput, Controller.Axis2.position() * .12 - visionOutput, 100); // tank (the best drive style)
     // intake.driverTwoButton(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), 12, -12);
     // flywheel.spinVolts(6);
     // intake.driverToggle(Controller.ButtonA.pressing(), 3);
