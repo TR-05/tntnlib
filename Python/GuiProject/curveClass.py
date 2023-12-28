@@ -6,11 +6,11 @@ class Curve():
     def __str__(self):
         return f"{self.name}:({self.x},{self.y})"
         
-    def __init__(self, name, p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y, fidelity, copyY):
+    def __init__(self, name, p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y, copyY, color):
         self.points = [0, 0, 0, 0]
         self.points[0] = pointClass.Point(str(name)+str(0),p0x,p0y,"green",25)
-        self.points[1] = pointClass.Point(str(name)+str(1),p1x,p1y,"purple",25)
-        self.points[2] = pointClass.Point(str(name)+str(2),p2x,p2y,"purple",25)
+        self.points[1] = pointClass.Point(str(name)+str(1),p1x,p1y, color,25)
+        self.points[2] = pointClass.Point(str(name)+str(2),p2x,p2y, color,25)
         self.points[3] = pointClass.Point(str(name)+str(3),p3x,p3y,"red",25)
         self.p0x = p0x
         self.p0y = p0y
@@ -20,16 +20,17 @@ class Curve():
         self.p2y = p2y
         self.p3x = p3x
         self.p3y = p3y
-        self.fidelity = fidelity
+        self.fidelity = 25
         self.p0line = 0;
         self.p3line = 0;
-        self.interpPoints = [0.0 for i in range(fidelity)]
+        self.interpPoints = [0.0 for i in range(self.fidelity)]
         self.name = name
+        self.color = color
         Label(util.left_frame, textvariable=self.points[0].readOut,fg="black", width=20).pack()
         Label(util.left_frame, textvariable=self.points[1].readOut,fg="black", width=20).pack()
         Label(util.left_frame, textvariable=self.points[2].readOut,fg="black", width=20).pack()
         Label(util.left_frame, textvariable=self.points[3].readOut,fg="black", width=20).pack()
-        copy = Button(master=util.frame, text=str(name) + " Copy", command=self.copyButton)
+        copy = Button(master=util.frame, text=str(name) + " Copy", fg=self.color, command=self.copyButton)
         copy.pack()
         copy.place(x=0,y=copyY)
     def generateCubic(self):
@@ -46,7 +47,7 @@ class Curve():
         self.p3line = util.canvas.create_line(self.points[3].x, self.points[3].y, self.points[2].x, self.points[2].y, fill="green", width=3)
         for i in range(self.fidelity-1):
             size = 4
-            self.interpPoints[i] = util.canvas.create_oval(x[i]-size, y[i]-size, x[i]+size, y[i]+size, outline="black", fill="cyan", width=1)
+            self.interpPoints[i] = util.canvas.create_oval(x[i]-size, y[i]-size, x[i]+size, y[i]+size, outline="black", fill=self.color, width=1)
             util.canvas.delete(self.interpPoints[0])
             util.canvas.delete(self.interpPoints[self.fidelity-1])
         return x,y

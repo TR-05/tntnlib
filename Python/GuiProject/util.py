@@ -1,8 +1,12 @@
-from tkinter import *
-from PIL import ImageTk, Image  
+from tkinter import*
+import tkinter
+from PIL import Image, ImageTk
 
-canvasWidth = 737
-canvasHeight = 737
+import curveClass
+fieldwidth = 500
+fieldheight = 500
+canvasWidth = fieldwidth + 200
+canvasHeight = fieldheight + 200
 xPixelsToInches = 144.0/canvasWidth
 yPixelsToInches = 144.0/canvasHeight
 
@@ -33,8 +37,9 @@ left_frame = Frame(frame, relief='raised', borderwidth=2)
 left_frame.place(relx=0.01, rely=0.5, anchor=W)
 
 fieldImage = Image.open("skills field.png")
+fieldImage = fieldImage.resize((fieldwidth,fieldheight))
 test = ImageTk.PhotoImage(fieldImage)
-image = canvas.create_image(0, 0, anchor=NW, image=test)
+image = canvas.create_image(100, 100, anchor=NW, image=test)
 
 
 mouseX = 0
@@ -61,3 +66,4 @@ def exitButton():
 button = Button(master=frame, text="Exit", command=exitButton)
 button.pack(pady=12, padx=10)
 button.place(x=0,y=0)
+

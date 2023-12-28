@@ -9,13 +9,31 @@ def resize_image(event):
     new_height = event.height
     util.image.resize((new_width, new_height))
 
-curve1 = curveClass.Curve("c1", 12, 12, 49, 65, 95, 65, 132, 12, 100, 30)
-curve2 = curveClass.Curve("c2", 12, 100, 49, 100, 95, 100, 132, 100, 100, 60)
 
+colors = ["cyan", "orange", "yellow", "green", "blue", "purple", "red", "magenta"]
+curves = [curveClass.Curve("c0", 131,60, 143,120, 116,140, 98, 131, 30, colors[0]) for i in range(1)]
+#curves[0] = curveClass.Curve("c0", 12, 12, 49, 65, 95, 65, 132, 12, 30, colors[0])
+i = 1;
 
+newy = 60;
+def newCurveButton():
+    global newy
+    global i
+    if i > 7:
+        return
+    newy += 30
+    print("new")
+    name = StringVar()
+    name = "c" + str(i)
+    curves.append(curveClass.Curve(name, 5,139, 5,129, 5,119, 5,109, newy, colors[i]))
+    i += 1
+
+CurveButton = Button(text="new", command=newCurveButton)
+CurveButton.pack()
+CurveButton.place(x=0,y=newy)
 
 while util.loop:
     util.window.update_idletasks()
-    curve1.generateCubic()
-    curve2.generateCubic()
+    for c in curves:
+        c.generateCubic()
     util.window.update()
