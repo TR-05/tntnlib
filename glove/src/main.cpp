@@ -11,12 +11,12 @@ MotorGroup leftMotors(vex::gearSetting::ratio6_1, 450, -7, 8, -9, -10);
 MotorGroup rightMotors(vex::gearSetting::ratio6_1, 450, 1, 2, -3, 4);
 MotorGroup intake(vex::gearSetting::ratio6_1, 600, -11);
 /* tracking wheels and gyro */
-TrackingWheel horizontal(Brain.ThreeWirePort.A, Omniwheel::NEW_275, 0.002292, 1);
-TrackingWheel vertical(Brain.ThreeWirePort.C, Omniwheel::NEW_275, -0.253611, 1);
-Gyro imu(12, 1.010357);
+TrackingWheel horizontal(Brain.ThreeWirePort.A, Omniwheel::NEW_275, 6.287188, 1);
+TrackingWheel vertical(Brain.ThreeWirePort.C, Omniwheel::NEW_275, -0.006111, 1);
+Gyro imu(12, 1.005360);
 /* chassis and controllers */
-ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
-ControllerSettings angularSettings(.25, 0.01, 2.0, 10, 2, 12);
+ControllerSettings linearSettings(.7, 0, 3.5, 2, 2, 12);
+ControllerSettings angularSettings(.35, 0.01, 2.5, 2, 15, 12);
 Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::NEW_275, 450, 8);
 OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
@@ -32,9 +32,9 @@ int logger()
   while (true)
   {
     Pose current(chassis.getPose(false));
-    // printf("SX: %.2f, SR: %.2f, IMU: %.2f ", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
-    // printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
-    Brain.Screen.clearLine();
+    //printf("SX: %.2f, SR: %.2f, IMU: %.2f ", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
+    //printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
+    Brain.Screen.clearScreen(vex::color(255, 75, 0));
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
     vex::wait(50, vex::msec);
   }

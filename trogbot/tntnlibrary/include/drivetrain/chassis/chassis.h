@@ -23,6 +23,7 @@
 #include "../tntnlibrary/include/drivetrain/chassis/odom.h"
 #include "../tntnlibrary/include/defaultDevices.h"
 #include "../tntnlibrary/include/drivetrain/pathing/cubicBezier.h"
+#include "../tntnlibrary/include/pid.h"
 
 namespace tntnlib
 {
@@ -59,6 +60,7 @@ namespace tntnlib
                 OdomSensors sensors)
             : drivetrain(drivetrain), linearSettings(linearSettings), angularSettings(angularSettings), sensors(sensors), odom(sensors)
         {
+            angularPID.setIntegral(angularSettings.kIStart, angularSettings.kIMax);
         }
 
         /**

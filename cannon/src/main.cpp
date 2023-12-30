@@ -1,20 +1,32 @@
 #include "vex.h"
 #include "../tntnlibrary/include/api.h"
 #include "autos.h"
+#include "vision.h"
 #include <iostream>
 using namespace tntnlib;
 vex::competition Competition;
 vex::brain Brain;
 
+
+vex::vision::signature SIG_1 (1, 4703, 5031, 4866, -1417, -1203, -1310, 11.000, 0);
+vex::vision::signature SIG_2 (2, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision::signature SIG_3 (3, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision::signature SIG_4 (4, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision::signature SIG_5 (5, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision::signature SIG_6 (6, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision::signature SIG_7 (7, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision vision1 ( vex::PORT5, 9, SIG_1, SIG_2, SIG_3, SIG_4, SIG_5, SIG_6, SIG_7 );
+
+
 /* tntnlib robot Config */
 MotorGroup leftMotors(vex::gearSetting::ratio6_1, 300, 7, -8, -9, 10);
 MotorGroup rightMotors(vex::gearSetting::ratio6_1, 300, -1, 2, 3, -4);
-TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 0.002292, -1);
-TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, 0.002292, -1);
+TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 3.545208, -1);
+TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, 0.596979, -1);
 Gyro imu(15, 1.010357);
 /* chassis and controllers (DO NOT CHANGE NAMES) */
-ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
-ControllerSettings angularSettings(.25, 0.01, 2.0, 10, 2, 12);
+ControllerSettings linearSettings(.6, 0, 3.5, 2, 2, 12);
+ControllerSettings angularSettings(.6, 0.01, 4.5, 2, 15, 12);
 Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::NEW_4, 300, 8);
 OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
@@ -34,7 +46,7 @@ int logger()
   {
     Pose current(chassis.getPose(false));
     // chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0
-    // printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
+     //printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
     printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
@@ -86,6 +98,11 @@ void usercontrol()
   bool flywheelOn = false;
   float rpm = 0;
   // User control code here, inside the loop
+  if (Controller.ButtonLeft.pressing())
+  {
+    vex::wait(2200, vex::msec);
+    autonomous();
+  }
   while (1)
   {
     updateButtons();
@@ -128,10 +145,16 @@ void usercontrol()
       loadMacro(60, 950, 350);
 
     intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
-    chassis.tank(Controller.Axis3.position() * .12, Controller.Axis2.position() * .12, 100); // tank
+    float pow = visionPower();
+    if (!down.state)
+    { 
+      pow = 0;
+    }
+    chassis.tank(Controller.Axis3.position() * .12 + pow, Controller.Axis2.position() * .12 - pow, 0); // tank (the best drive style)
+    //printf("LD: %.2f, RD: %.2f, F: %.2f\n", leftMotors.getCurrent(), rightMotors.getCurrent(), flywheel.getCurrent());
     // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade
-    // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); // split arcade
-    vex::wait(10.0, vex::msec);
+    //chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); // split arcade
+    vex::wait(25.0, vex::msec);
   }
 }
 

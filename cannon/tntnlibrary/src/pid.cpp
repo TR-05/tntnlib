@@ -14,6 +14,12 @@
 #include "../tntnlibrary/include/pid.h"
 #include "../tntnlibrary/include/util.h"
 
+namespace tntnlib
+{
+    FAPID angularPID(0, 0, 0, 0, 0);
+    FAPID linearPID(0, 0, 0, 0, 0);
+    FAPID liftPID(0, 0, 0, 0, 0);
+
 /**
  * @brief Construct a new FAPID
  *
@@ -24,7 +30,7 @@
  * @param kD derivative gain, multiplied by change in error and added to output
  * @param name name of the FAPID. Used for logging
  */
-tntnlib::FAPID::FAPID(float kF, float kA, float kP, float kI, float kD)
+FAPID::FAPID(float kF, float kA, float kP, float kI, float kD)
 {
     this->kF = kF;
     this->kA = kA;
@@ -42,14 +48,14 @@ tntnlib::FAPID::FAPID(float kF, float kA, float kP, float kI, float kD)
  * @param kI integral gain, multiplied by total error and added to output
  * @param kD derivative gain, multiplied by change in error and added to output
  */
-void tntnlib::FAPID::setGains(float kF, float kA, float kP, float kI, float kD)
+void FAPID::setGains(float kF, float kA, float kP, float kI, float kD)
 {
     this->kF = kF;
     this->kA = kA;
     this->kP = kP;
     this->kI = kI;
     this->kD = kD;
-    //std::cout << "\n New Gains: KF:" << kF << " KA:" << kA << " KP:" << kP << " KI:" << kI << " KD:" << kD;
+    // std::cout << "\n New Gains: KF:" << kF << " KA:" << kA << " KP:" << kP << " KI:" << kI << " KD:" << kD;
 }
 
 /**
@@ -61,7 +67,7 @@ void tntnlib::FAPID::setGains(float kF, float kA, float kP, float kI, float kD)
  * @param smallTime
  * @param maxTime
  */
-void tntnlib::FAPID::setExit(float largeError, float smallError, int largeTime, int smallTime, int maxTime)
+void FAPID::setExit(float largeError, float smallError, int largeTime, int smallTime, int maxTime)
 {
     this->largeError = largeError;
     this->smallError = smallError;
@@ -70,7 +76,8 @@ void tntnlib::FAPID::setExit(float largeError, float smallError, int largeTime, 
     this->maxTime = maxTime;
 }
 
-void tntnlib::FAPID::setIntegral(float kIStart, float kIMax) {
+void FAPID::setIntegral(float kIStart, float kIMax)
+{
     this->kIStart = kIStart;
     this->kIMax = kIMax;
 }
@@ -84,7 +91,7 @@ void tntnlib::FAPID::setIntegral(float kIStart, float kIMax) {
  * PIDs could slow down the program.
  * @return float - output
  */
-float tntnlib::FAPID::update(float target, float position, bool log)
+float FAPID::update(float target, float position, bool log)
 {
     // check most recent input if logging is enabled
     // this does not run by default because the mutexes could slow down the program
@@ -97,8 +104,9 @@ float tntnlib::FAPID::update(float target, float position, bool log)
     if (fabs(error) > kIStart)
         totalError = 0;
     if (fabs(kI * totalError) > kIMax)
-        totalError = 0, totalError = sgn(totalError) * kIMax / kI; 
-        //std::cout << totalError*kI << "\n";
+        totalError = sgn(totalError) * kIMax / kI;
+    //std::cout << totalError * kI << "\n";
+
     float output = kF * target + kP * error + kI * totalError + kD * deltaError;
     if (kA != 0)
         output = tntnlib::slew(output, prevOutput, kA);
@@ -112,7 +120,7 @@ float tntnlib::FAPID::update(float target, float position, bool log)
 /**
  * @brief Reset the FAPID
  */
-void tntnlib::FAPID::reset()
+void FAPID::reset()
 {
     prevError = 0;
     totalError = 0;
@@ -127,7 +135,7 @@ void tntnlib::FAPID::reset()
  * @return true - the FAPID has settled
  * @return false - the FAPID has not settled
  */
-bool tntnlib::FAPID::settled()
+bool FAPID::settled()
 {
     float t = time(true);
     if (startTime == 0)
@@ -156,4 +164,6 @@ bool tntnlib::FAPID::settled()
         // if none of the exit conditions have been met
         return false;
     }
+}
+
 }

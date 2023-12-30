@@ -10,7 +10,10 @@ void delay(float ms)
 float startTime{0}, endTime{0}, totalTime{0};
 
 /* Example auto move functions
+  startAuto(0,0,0);
   chassis.tuneOffsets(3600, akp, aki, akd, 6, 2); //Tunes odom + imu constants: DISABLE TERMINAL PRINT then jig bot to a tile, run auto, once bot stops moving tap and hold brain screen
+  return;
+
   chassis.pid(24, 60, 60, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2); //Moves forward 24 inches looking at xy point (60,60)
   chassis.pid(-24, 0, true, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2); //Moves backward 24 inches holding heading 0,0
   chassis.SwingOnLeftToHeading(-45, 0, 12, akp*1.6, aki, akd, 1);
@@ -65,9 +68,39 @@ int updateFlywheel()
 
 void programming_skills()
 {
-  startAuto(23, 16, -90);
+
+  startAuto(34.6, 13.2, -90);
   vex::task fly(updateFlywheel);
   rpm = 0;
+
+
+  //Score Preload
+  chassis.pid(-50, -90, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0); // Moves forward 24 inches looking at xy point (60,60)
+  delay(400);
+
+
+  //Go to matchload
+  chassis.moveTo(24, 25, false, 6, 6, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
+  chassis.turnToHeading(-135, false, 12, akp, aki, akd, 1);
+  spaceMaker.set(1);
+  left_intake_piston.set(1);
+  right_intake_piston.set(1);
+  intake.spinVolts(7);
+  chassis.autoTankPct(100, 100);
+  delay(600);
+  left_intake_piston.set(0);
+  right_intake_piston.set(0);
+  delay(400);
+  intake.spinVolts(0);
+
+  //Aim for matchload
+  chassis.turnToHeading(-152, false, 12, akp, aki, akd, 1);
+
+  chassis.stateMachineOff();
+  chassis.tank(0, 0);
+
+  delay(1000000);
+
   chassis.SwingOnLeftToHeading(-135, false, 12, akp * 1.6, aki, akd, 5);
   delay(200);
   chassis.autoTankVolts(2.5, 2.5);
@@ -105,7 +138,3 @@ void programming_skills()
   printTime();
   return;
 }
-
-
-
-

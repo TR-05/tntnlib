@@ -62,6 +62,7 @@ namespace tntnlib
         void spinRPM(double rpm);
         float getRPM();
         float getWatts();
+        float getCurrent();
         float getVolts();
         float getPower(float rpm);
         float position();

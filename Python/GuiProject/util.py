@@ -5,19 +5,20 @@ from PIL import Image, ImageTk
 import curveClass
 fieldwidth = 500
 fieldheight = 500
-canvasWidth = fieldwidth + 200
-canvasHeight = fieldheight + 200
-xPixelsToInches = 144.0/canvasWidth
-yPixelsToInches = 144.0/canvasHeight
+offset = 200
+canvasWidth = fieldwidth + offset
+canvasHeight = fieldheight + offset
+xPixelsToInches = 144.0/fieldwidth
+yPixelsToInches = 144.0/fieldheight
 
 def pToX(p):
-    return p*xPixelsToInches
+    return (p - (offset/2))*xPixelsToInches
 def xToP(x):
-    return x/xPixelsToInches
+    return x/xPixelsToInches + (offset/2)
 def pToY(p):
-    return 144 - p*yPixelsToInches
+    return 144 - (p - (offset/2))*yPixelsToInches
 def yToP(y):
-    return (144 - y)/yPixelsToInches
+    return (144 - y)/yPixelsToInches + (offset/2)
 
 number_of_points = 100
 window = Tk()

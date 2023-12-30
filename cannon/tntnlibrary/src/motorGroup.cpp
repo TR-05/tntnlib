@@ -70,6 +70,19 @@ float MotorGroup::getWatts()
     return rawOutput;
 }
 
+float MotorGroup::getCurrent()
+{
+    double total = 0;
+    float motorCount = 0;
+    for (auto &motor : motors)
+    {
+        total += motor.current(vex::amp);
+        motorCount++;
+    }
+    double rawOutput = total / motorCount;
+    return rawOutput;
+}
+
 float MotorGroup::getVolts()
 {
     double total = 0;
@@ -104,7 +117,7 @@ float MotorGroup::getPower(float rpm)
         else
             power *=kDec;
         power = clamp(power, -12, 12);
-        printf("power: %.2f integral: %.2f kI: %.2f rpm: %.3f\n", power, integral, kI, getRPM());
+        //printf("power: %.2f integral: %.2f kI: %.2f rpm: %.3f\n", power, integral, kI, getRPM());
         return power;
     }
 }
@@ -118,6 +131,7 @@ void MotorGroup::stop(vex::brakeType type)
 {
     for (auto &motor : motors)
     {
+        motor.setMaxTorque(.1, vex::amp);
         motor.stop(brakeType);
     }
 }
@@ -132,6 +146,7 @@ void MotorGroup::spinVolts(float volts)
         }
         else
         {
+            motor.setMaxTorque(2.5, vex::amp);
             motor.spin(vex::directionType::fwd, volts, vex::voltageUnits::volt);
         }
     }

@@ -107,9 +107,9 @@ namespace tntnlib
     };
 
 
-inline FAPID angularPID(0,0,0,0,0);
-inline FAPID linearPID(0,0,0,0,0);
-inline FAPID liftPID(0,0,0,0,0);
+extern FAPID angularPID;
+extern FAPID linearPID;
+extern FAPID liftPID;
 
 } // namespace tntnlib
 

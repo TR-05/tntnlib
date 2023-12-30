@@ -55,7 +55,7 @@ class Curve():
         util.window.clipboard_clear()
         fidelity = StringVar()
         fidelity.set('{0:.0f}'.format(util.number_of_points))
-        output = "Path path(" + self.points[0].readOut.get() + self.points[1].readOut.get() + self.points[2].readOut.get() + self.points[3].readOut.get() + str(self.fidelity) + ");"
+        output = "Path path(" + self.points[0].readOut.get() + self.points[1].readOut.get() + self.points[2].readOut.get() + self.points[3].readOut.get() + str(100) + ");"
         new_line = StringVar()
-        new_line.set('chassis.follow(path, false, 9, 12, lkp, lki, lkd, akp, aki, akd, 0, 12, 12, {0:.0f});'.format(3))
+        new_line.set('chassis.follow(path, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, {0:.0f});'.format(3))
         util.window.clipboard_append(output + '\n' + new_line.get())

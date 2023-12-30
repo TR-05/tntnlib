@@ -8,8 +8,8 @@ using namespace tntnlib;
 vex::competition Competition;
 vex::brain Brain;
 
-vex::vision::signature SIG_1(3, 8099, 8893, 8496, -1505, -949, -1227, 2.5, 0);
-vex::vision vision1(vex::PORT13, 50, SIG_1);
+vex::vision::signature SIG_1 (1, 4241, 4645, 4444, -1031, -683, -856, 2.800, 0);
+vex::vision vision1(vex::PORT13, 18, SIG_1);
 
 /* tntnlib robot Config */
 MotorGroup leftMotors(vex::gearSetting::ratio6_1, 360, -8, -10);
@@ -19,7 +19,7 @@ TrackingWheel vertical(Brain.ThreeWirePort.E, Omniwheel::NEW_275, -0.253611, 1);
 Gyro imu(1, 1.010357);
 /* chassis and controllers (DO NOT CHANGE NAMES) */
 ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
-ControllerSettings angularSettings(.25, 0.01, 2.0, 10, 2, 12);
+ControllerSettings angularSettings(.25, 0.01, 2.0, 2, 15, 12);
 Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::OLD_325, 360, 8);
 OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
@@ -66,8 +66,12 @@ void usercontrol()
   while (1)
   {
     updateButtons();
-    visionPower();                                                                                                         // get output
-    chassis.tank(Controller.Axis3.position() * .12 + visionOutput, Controller.Axis2.position() * .12 - visionOutput, 100); // tank (the best drive style)
+    float pow = visionPower();
+    if (Controller.ButtonR1.pressing())
+    { 
+      pow = 0;
+    }
+    chassis.tank(Controller.Axis3.position() * .12 + pow, Controller.Axis2.position() * .12 - pow, 0); // tank (the best drive style)
     // intake.driverTwoButton(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), 12, -12);
     // flywheel.spinVolts(6);
     // intake.driverToggle(Controller.ButtonA.pressing(), 3);
