@@ -37,7 +37,7 @@ canvas.pack()
 left_frame = Frame(frame, relief='raised', borderwidth=2)
 left_frame.place(relx=0.01, rely=0.5, anchor=W)
 
-fieldImage = Image.open("skills field.png")
+fieldImage = Image.open("match field.png")
 fieldImage = fieldImage.resize((fieldwidth,fieldheight))
 test = ImageTk.PhotoImage(fieldImage)
 image = canvas.create_image(100, 100, anchor=NW, image=test)

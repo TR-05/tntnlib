@@ -60,7 +60,7 @@ float visionPower()
     screenPrint();
 
     // calculate error
-    float error = visionChange;
+    float error = visionChange - (offset);
     float output = angularPID.update(error, 0);
     // cap the speed
     output = clamp(output, -3.5, 3.5);

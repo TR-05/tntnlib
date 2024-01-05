@@ -52,10 +52,17 @@ void startAuto(float x, float y, float theta)
   lkd = chassis.linearSettings.kD;
 }
 
+void stopAuto()
+{
+  chassis.stateMachineOff();
+  delay(20);
+  chassis.tank(0, 0);
+  intake.stop(vex::brakeType::coast);
+}
 void programming_skills()
 {
   startAuto(131, 54, 0);
-  Path path1(131,59,  129.6,123.6,  132.8,136.4,  98.2,136.5, 100);
+  Path path1(131, 59, 129.6, 123.6, 132.8, 136.4, 98.2, 136.5, 100);
   chassis.setOffset(0, 8);
   chassis.follow(path1, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 10);
   intake.spinVolts(-12);
@@ -63,15 +70,57 @@ void programming_skills()
   chassis.setOffset(0, 0);
   chassis.pid(-14, -90, false, 6, 12, lkp, lki, lkd, akp, aki, akd, .4, 2);
   chassis.turnToHeading(98, false, 12, akp, aki, akd, 1);
-  chassis.pid(-50, 98, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0); 
+  chassis.pid(-50, 98, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
   delay(500);
-  Path path2(98.2,131.9,  142.8,116.6,  72.3,69.7,  59.0,104, 100);
+  Path path2(98.2, 131.9, 142.8, 116.6, 72.3, 69.7, 59.0, 104, 100);
   chassis.follow(path2, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
   delay(500);
   chassis.turnToHeading(15, false, 12, akp, aki, akd, 1);
-  chassis.pid(4.5, 15, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 3); 
+  chassis.pid(4.5, 15, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 3);
   delay(500);
   chassis.turnToHeading(15, false, 12, akp, aki, akd, 1);
+  printTime();
+  return;
+}
+
+void awp()
+{
+  startAuto(131, 54, 0);
+
+  Path path1(131, 59, 133.3, 104.5, 131.3, 115.2, 121.2, 123.3, 100);
+  chassis.setOffset(0, 0);
+  chassis.follow(path1, false, 12, 12, lkp * .6, lki, lkd, akp, aki, akd, 12, 12, 20);
+  right_wing.set(true);
+  Pose fake(path1.x3, path1.y3, 0);
+  do
+  {
+    wait(10, vex::msec);
+  } while (fabs(chassis.getPose().distance(fake)) > 10);
+  intake.spinVolts(-12);
+  delay(500);
+  chassis.turnToHeading(-95, false, 12, akp, aki, akd, 5);
+  chassis.turnToHeading(-45, false, 12, akp, aki, akd, 5);
+  chassis.pid(-5, -45, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
+  right_wing.set(false);
+  chassis.turnToHeadingUnbounded(110, false, 12, akp, aki, akd, 6);
+  chassis.setOffset(0, 0);
+  chassis.moveTo(115, 128, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
+  chassis.moveTo(97, 125, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
+  delay(1000);
+
+  Path path2(104.5, 126.1, 125.6, 126.4, 129.0, 102.5, 71.4, 95.6, 100);
+  chassis.setOffset(0, 8);
+  intake.spinVolts(12);
+  chassis.follow(path2, false, 12, 12, lkp * .6, lki, lkd, akp, aki, akd, 12, 18, 5);
+  left_wing.set(true);
+  chassis.turnToHeading(0, false, 12, akp, aki, akd, 5);
+  left_wing.set(true);
+  intake.spinVolts(-12);
+  delay(400);
+  delay(500);
+  stopAuto();
+  delay(100000);
+
   printTime();
   return;
 }

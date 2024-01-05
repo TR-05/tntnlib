@@ -7,8 +7,7 @@ using namespace tntnlib;
 vex::competition Competition;
 vex::brain Brain;
 
-
-vex::vision::signature SIG_1 (1, 4703, 5031, 4866, -1417, -1203, -1310, 11.000, 0);
+vex::vision::signature SIG_1 (1, 6553, 7539, 7046, -2279, -1725, -2002, 7.000, 0);
 vex::vision::signature SIG_2 (2, 0, 0, 0, 0, 0, 0, 3.000, 0);
 vex::vision::signature SIG_3 (3, 0, 0, 0, 0, 0, 0, 3.000, 0);
 vex::vision::signature SIG_4 (4, 0, 0, 0, 0, 0, 0, 3.000, 0);
@@ -67,7 +66,8 @@ void pre_auton()
 /* runs on comp switch autonomous */
 void autonomous()
 {
-  programming_skills();
+  awp();
+  //programming_skills();
 }
 
 void singleLoadMacro(int delay)
@@ -100,7 +100,7 @@ void usercontrol()
   // User control code here, inside the loop
   if (Controller.ButtonLeft.pressing())
   {
-    vex::wait(2200, vex::msec);
+    vex::wait(2400, vex::msec);
     autonomous();
   }
   while (1)
