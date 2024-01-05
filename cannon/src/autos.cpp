@@ -193,7 +193,7 @@ void awp()
   left_intake_piston.set(true);
   right_intake_piston.set(true);
   intake.spinVolts(4);
-  chassis.moveTo(81.24, 48.5, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
+  chassis.moveTo(81.24, 47.5, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
   delay(250);
   left_intake_piston.set(false);
   right_intake_piston.set(false);
@@ -222,15 +222,16 @@ void awp()
   Path path3(84.1, 64.5, 90.7, 40.0, 106.0, 48.1, 118.5, 26, 100);
   chassis.follow(path3, false, 10, 12, lkp * .7, lki, lkd, akp, aki, akd, 12, 18, 5);
   delay(300);
-  chassis.turnToHeading(-50, false, 12, akp, aki, akd, 5);
+  chassis.turnToHeading(-50, false, 12, akp, aki, akd, 8);
   spaceMaker.set(true);
-  chassis.pid(-3, -50, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 1);
+  chassis.pid(-3, -50, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
   delay(400);
   chassis.turnToHeading(65, false, 12, akp, aki, akd, 5);
   spaceMaker.set(0);
   delay(400);
   chassis.moveTo(98, 12, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
-  chassis.pid(3, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 2);
+  chassis.pid(3, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
+  delay(400);
   chassis.pid(-50, 90, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);// INCREASE POWER WHEN DONE
   delay(500);
 
