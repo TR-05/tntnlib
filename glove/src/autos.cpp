@@ -115,8 +115,9 @@ void awp()
   chassis.moveTo(115, 128, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
   chassis.moveTo(97, 125, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
   chassis.pid(10, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 3);
+  delay(500);
   chassis.pid(-50, 90, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  delay(400);
+  delay(500);
 
 
   //contest ball in neutral
