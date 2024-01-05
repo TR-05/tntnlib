@@ -80,6 +80,7 @@ int updateFlywheel()
 
 void stopAuto()
 {
+  printTime();
   chassis.stateMachineOff();
   delay(20);
   chassis.tank(0, 0);
@@ -87,7 +88,6 @@ void stopAuto()
   intake.spinVolts(0);
   visionControl = false;
   rpm = 0;
-  printTime();
   delay(100000);
 }
 void programming_skills()
@@ -206,8 +206,8 @@ void awp()
   chassis.turnToHeading(90, false, 12, akp, aki, akd, 5);
 
   // grab third and forth balls and push
-  Path path2(94.4, 44.1, 89.0, 44.4, 78.3, 42.6, 79.8, 67.4, 100);
-  chassis.follow(path2, true, 7, 12, lkp, lki, lkd, akp, aki, akd, 12, 9, 5);
+  Path path2(94.4, 44.1, 89.0, 44.4, 78.3, 42.6, 79.8, 69, 100);
+  chassis.follow(path2, true, 7, 12, lkp, lki, lkd, akp, aki, akd, 12, 9, 7);
   chassis.SwingOnLeftToHeading(-226.7, false, 12, akp * 1.6, aki, akd, 3);
   chassis.pid(-5, -226.7, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
   spaceMaker.set(true);
@@ -224,8 +224,8 @@ void awp()
   delay(300);
   chassis.turnToHeading(-50, false, 12, akp, aki, akd, 8);
   spaceMaker.set(true);
-  chassis.pid(-3, -50, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
-  delay(400);
+  chassis.pid(-5.5, -50, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
+  delay(700);
   chassis.turnToHeading(65, false, 12, akp, aki, akd, 5);
   spaceMaker.set(0);
   delay(400);
@@ -234,8 +234,28 @@ void awp()
   delay(400);
   chassis.pid(-50, 90, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);// INCREASE POWER WHEN DONE
   delay(500);
-  chassis.moveTo(116, 26.3, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
+  chassis.moveTo(116, 26.3, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
   chassis.turnToHeading(135, false, 12, akp, aki, akd, 5);
+  aligner.set(1);
+  spaceMaker.set(1);
+  chassis.autoTankPct(100, 100);
+  delay(1300);
+
+  // Aim for matchload
+  rpm = 3600;
+  chassis.autoTankVolts(6, -6);
+  delay(1000);
+  offset = -7.5;
+  visionControl = true;
+
+  // matchload 23 balls
+  loadMacro(10, 800, 300);
+  delay(500);
+  rpm = 0;
+  intake.spinVolts(-6);
+  visionControl = false;
+  delay(10);
+  chassis.stateMachineOn();
 
   stopAuto();
 

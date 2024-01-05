@@ -17,7 +17,7 @@ float leftDrivePower = 0, rightDrivePower = 0;
 float kVision = 20;
 float minArea = 0;
 
-float offset = 0;
+float offset = -7.5;
 void screenPrint()
 {
     Brain.Screen.clearScreen(vex::color::cyan);
@@ -43,27 +43,28 @@ float visionX()
         cameraObjectHeight = vision1.largestObject.height;
         // use area for certainty?
         float area = cameraObjectHeight * cameraObjectWidth;
-        visionOutput = cameraObjectX * kVision;
+        visionOutput = cameraObjectX * kVision + offset;
         if (area < minArea)
             visionOutput = 0;
-        return visionOutput + offset;
+        return visionOutput;
     }
     visionOutput = 0;
     return 0;
 }
 float visionPower()
 {
-    angularPID.setGains(0, 0, angularSettings.kP, angularSettings.kI, angularSettings.kD);
+    angularPID.setGains(0, 0, angularSettings.kP*3, angularSettings.kI*1.5, angularSettings.kD);
+    angularPID.setIntegral(15, 4);
     // angularPID.reset();
     float visionChange = visionX();
     Pose current = chassis.getPose();
     screenPrint();
 
     // calculate error
-    float error = visionChange - (offset);
+    float error = visionChange;
     float output = angularPID.update(error, 0);
     // cap the speed
-    output = clamp(output, -3.5, 3.5);
+    output = clamp(output, -6, 6);
     float volts = output;
     if (visionChange != 0) ;//printf("visionOutput: %.2f, Volts: %.2f\n", visionOutput, volts);
     else {
