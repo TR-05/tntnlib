@@ -193,7 +193,7 @@ void awp()
   left_intake_piston.set(true);
   right_intake_piston.set(true);
   intake.spinVolts(4);
-  chassis.moveTo(81.24, 47.5, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
+  chassis.moveTo(80.5, 47.5, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
   delay(250);
   left_intake_piston.set(false);
   right_intake_piston.set(false);
@@ -234,6 +234,8 @@ void awp()
   delay(400);
   chassis.pid(-50, 90, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);// INCREASE POWER WHEN DONE
   delay(500);
+  chassis.moveTo(116, 26.3, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
+  chassis.turnToHeading(135, false, 12, akp, aki, akd, 5);
 
   stopAuto();
 

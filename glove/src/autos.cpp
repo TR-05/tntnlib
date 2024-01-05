@@ -58,10 +58,11 @@ void stopAuto()
   delay(20);
   chassis.tank(0, 0);
   intake.stop(vex::brakeType::coast);
+  printTime();
 }
 void programming_skills()
 {
-  startAuto(131, 54, 0);
+  startAuto(131.75, 54, 0);
   Path path1(131, 59, 129.6, 123.6, 132.8, 136.4, 98.2, 136.5, 100);
   chassis.setOffset(0, 8);
   chassis.follow(path1, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 10);
@@ -79,7 +80,14 @@ void programming_skills()
   chassis.pid(4.5, 15, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 3);
   delay(500);
   chassis.turnToHeading(15, false, 12, akp, aki, akd, 1);
-  printTime();
+  delay(1000);
+ chassis.moveTo(70.9, 91, true, 12, 12, lkp, lki, lkd, akp*1.3, aki, akd * 1.25, 12, 2);
+  Path path3(71.1,90.7,  76.6,92.4,  92.7,94.2,  85.0,108.9,  100);
+  chassis.follow(path3, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
+  chassis.turnToHeading(-15, false, 12, akp, aki, akd, 1);
+  delay(45000);
+  stopAuto();
+  delay(100000);
   return;
 }
 
@@ -106,21 +114,40 @@ void awp()
   chassis.setOffset(0, 0);
   chassis.moveTo(115, 128, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
   chassis.moveTo(97, 125, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
-  delay(1000);
+  chassis.pid(10, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 3);
+  chassis.pid(-50, 90, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(400);
 
-  Path path2(104.5, 126.1, 125.6, 126.4, 129.0, 102.5, 71.4, 95.6, 100);
+
+  //contest ball in neutral
   chassis.setOffset(0, 8);
   intake.spinVolts(12);
+  Path path2(104.5, 126.1, 125.6, 126.4, 129.0, 102.5, 71.4, 95.6, 100);
   chassis.follow(path2, false, 12, 12, lkp * .6, lki, lkd, akp, aki, akd, 12, 18, 5);
   left_wing.set(true);
   chassis.turnToHeading(0, false, 12, akp, aki, akd, 5);
-  left_wing.set(true);
+  right_wing.set(true);
   intake.spinVolts(-12);
   delay(400);
+  chassis.pid(24, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 8);
+  delay(400);
+  right_wing.set(false);
+  left_wing.set(false);
+  chassis.moveTo(85, 95.6, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  chassis.turnToHeading(180, false, 12, akp, aki, akd, 5);
+  intake.spinVolts(2);
+  chassis.moveTo(83, 74, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5); // grab ball 1
+  chassis.pid(-15, 180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
+  chassis.moveTo(80.6, 112, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5); // go into goal
+  intake.spinVolts(-12);
+  chassis.pid(-10, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
+  intake.spinVolts(2);
+  chassis.moveTo(93, 76, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5); // grab ball 2
+  chassis.pid(-5, 180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
+  chassis.moveTo(80.6, 112, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  intake.spinVolts(-12);
   delay(500);
   stopAuto();
   delay(100000);
-
-  printTime();
   return;
 }
