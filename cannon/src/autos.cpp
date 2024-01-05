@@ -193,7 +193,7 @@ void awp()
   left_intake_piston.set(true);
   right_intake_piston.set(true);
   intake.spinVolts(4);
-  chassis.moveTo(81.24, 49.05, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
+  chassis.moveTo(81.24, 48.5, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
   delay(250);
   left_intake_piston.set(false);
   right_intake_piston.set(false);
@@ -205,27 +205,34 @@ void awp()
   spaceMaker.set(false);
   chassis.turnToHeading(90, false, 12, akp, aki, akd, 5);
 
-  Path path2(94.4,44.1,  89.0,44.4,  78.3,42.6,  79.8,67.4,  100);
+  // grab third and forth balls and push
+  Path path2(94.4, 44.1, 89.0, 44.4, 78.3, 42.6, 79.8, 67.4, 100);
   chassis.follow(path2, true, 7, 12, lkp, lki, lkd, akp, aki, akd, 12, 9, 5);
-  chassis.SwingOnLeftToHeading(-226.7, false, 12, akp*1.6, aki, akd, 3);
+  chassis.SwingOnLeftToHeading(-226.7, false, 12, akp * 1.6, aki, akd, 3);
   chassis.pid(-5, -226.7, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
   spaceMaker.set(true);
   delay(400);
   chassis.pid(4, -226.7, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
   chassis.turnToHeading(-180, false, 12, akp, aki, akd, 5);
   spaceMaker.set(false);
-  
   chassis.pid(-8, -180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
   delay(1000);
-  Path path3(84.1,64.5,  90.7,40.0,  106.0,48.1,  116.9,24.2,  100);
-  chassis.follow(path3, false, 10, 12, lkp*.7, lki, lkd, akp, aki, akd, 12, 12, 5);
+
+  // complete awp triball
+  Path path3(84.1, 64.5, 90.7, 40.0, 106.0, 48.1, 118.5, 26, 100);
+  chassis.follow(path3, false, 10, 12, lkp * .7, lki, lkd, akp, aki, akd, 12, 18, 5);
   delay(300);
-  chassis.turnToHeading(-45, false, 12, akp, aki, akd, 5);
+  chassis.turnToHeading(-50, false, 12, akp, aki, akd, 5);
   spaceMaker.set(true);
+  chassis.pid(-3, -50, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 1);
   delay(400);
-  chassis.turnToHeading(15, false, 12, akp, aki, akd, 5);
+  chassis.turnToHeading(65, false, 12, akp, aki, akd, 5);
   spaceMaker.set(0);
-  chassis.turnToHeading(60, false, 12, akp, aki, akd, 5);
+  delay(400);
+  chassis.moveTo(98, 12, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
+  chassis.pid(3, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 2);
+  chassis.pid(-50, 90, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);// INCREASE POWER WHEN DONE
+  delay(500);
 
   stopAuto();
 
