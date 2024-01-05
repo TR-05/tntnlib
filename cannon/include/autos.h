@@ -2,6 +2,7 @@
 #include "../tntnlibrary/include/api.h"
 
 extern float startTime, endTime, totalTime;
+extern float shotCount;
 extern tntnlib::ControllerSettings angularSettings;
 extern tntnlib::MotorGroup intake;
 extern tntnlib::MotorGroup flywheel;
