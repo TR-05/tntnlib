@@ -52,8 +52,8 @@ void pre_auton()
 /* runs on comp switch autonomous */
 void autonomous()
 {
-  //awp();
-  programming_skills();
+  awp();
+  //programming_skills();
 }
 
 /* runs on comp switch driver */
@@ -63,7 +63,7 @@ void usercontrol()
   chassis.stateMachineOff();
   if (Controller.ButtonLeft.pressing())
   {
-    vex::wait(2300, vex::msec);
+    vex::wait(2600, vex::msec);
     autonomous();
   }
 

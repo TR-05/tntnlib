@@ -62,7 +62,7 @@ void stopAuto()
 }
 void programming_skills()
 {
-  startAuto(131.75, 54+24, 0);
+  startAuto(131.75, 54+0, 0);
   Path path1(131, 59, 129.6, 123.6, 132.8, 136.4, 98.2, 136.5, 100);
   chassis.setOffset(0, 8);
   chassis.follow(path1, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 10);
@@ -75,11 +75,16 @@ void programming_skills()
   delay(500);
   Path path2(98.2, 131.9, 142.8, 116.6, 72.3, 69.7, 55.0, 104, 100);
   chassis.follow(path2, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
+  left_wing.set(1);
+  right_wing.set(1);
+
   delay(500);
   chassis.turnToHeading(15, false, 12, akp, aki, akd, 3);
   chassis.pid(7, 15, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  delay(500);
+  left_wing.set(0);
+  right_wing.set(0);
   delay(25000);
+  printTime();
   chassis.moveTo(70.9, 91, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
   Path path3(71.1, 90.7, 76.6, 92.4, 92.7, 94.2, 83, 106, 100);
   chassis.follow(path3, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
@@ -95,11 +100,12 @@ void programming_skills()
 void awp()
 {
   startAuto(131, 54, 0);
-
+  chassis.breakOutTime = 3.5;
   Path path1(131, 59, 133.3, 104.5, 131.3, 115.2, 121.2, 123.3, 100);
   chassis.setOffset(0, 0);
   chassis.follow(path1, false, 12, 12, lkp * .6, lki, lkd, akp, aki, akd, 12, 12, 20);
   right_wing.set(true);
+  left_wing.set(true);
   Pose fake(path1.x3, path1.y3, 0);
   do
   {
@@ -111,59 +117,67 @@ void awp()
   chassis.turnToHeading(-45, false, 12, akp, aki, akd, 5);
   chassis.pid(-5, -45, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
   right_wing.set(false);
+  left_wing.set(false);
   chassis.turnToHeadingUnbounded(110, false, 12, akp, aki, akd, 6);
   chassis.setOffset(0, 0);
   chassis.moveTo(115, 127, true, 10, 12, lkp, lki, lkd, akp, aki, akd * 1.25, .4, 9);
-  chassis.moveTo(97, 126, true, 12, 12, lkp, lki, lkd, akp, aki, akd * 1.25, 12, 10); // shove 1
-  chassis.pid(10, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, 3);
+  chassis.moveTo(90, 126, true, 12, 12, lkp*1.4, lki, lkd, akp, aki, akd * 1.25, 12, 20); // shove 1
+  delay(400);
+  chassis.pid(6, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, 0);
   delay(500);
-  chassis.pid(-50, 90, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  delay(500);
+  chassis.pid(-50, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(900);
 
 
   // contest ball in neutral and shove it
   chassis.setOffset(0, 8);
   intake.spinVolts(12);
-  Path path2(104.5,126.1,  143.7,128.7,  130.8,108.0,  71.4,95.6,  100);
+Path path2(104.5,126.1,  143.7,134.2,  132.2,105.7,  71.7,94.8,  100);
   chassis.follow(path2, false, 12, 12, lkp * .6, lki, lkd, akp, aki, akd * 1.25, .4, 22, 6);
+  chassis.setOffset(0, 8);
   left_wing.set(true);
   chassis.turnToHeading(0, false, 12, akp, aki, akd, 6);
   right_wing.set(true);
   intake.spinVolts(-12);
-  chassis.pid(18, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 8);
-  delay(200);
+  chassis.pid(23, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(900);
   right_wing.set(false);
   left_wing.set(false);
 
 
   // grab extra 2 balls from 24
-  chassis.moveTo(85, 95.6, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5); // back out of goal
+  chassis.moveTo(86, 95.6, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5); // back out of goal
   chassis.turnToHeading(180, false, 12, akp, aki, akd*1.6, 10);
   intake.spinVolts(4);
-  chassis.moveTo(83, 76, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5); // grab ball 1
+  chassis.moveTo(85, 77, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5); // grab ball 1
   chassis.pid(-15, 180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 5);
-  chassis.moveTo(80.6, 113, false, 12, 12, lkp, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 5); // go into goal
+  chassis.moveTo(80.6, 116, false, 12, 12, lkp, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 10); // go into goal
   intake.spinVolts(-12);
+  delay(400);
   chassis.pid(-10, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 5);
   intake.spinVolts(4);
-  chassis.moveTo(93, 77, false, 12, 12, lkp, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 5); // grab ball 2
+  chassis.moveTo(97.5, 76, false, 12, 12, lkp, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 8); // grab ball 2
+  delay(400);
   chassis.pid(-10, 180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 5);
-  chassis.moveTo(84, 111, false, 12, 12, lkp, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 5);
+  chassis.moveTo(83, 109, false, 12, 12, lkp, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 3);
   intake.spinVolts(-12);
-  chassis.turnToHeading(-15, false, 12, akp, aki, akd, 5);
-  chassis.pid(4, -15, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  chassis.turnToHeading(-20, false, 12, akp, aki, akd, 5);
+  chassis.pid(6, -20, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
 
+  //stopAuto();
   // get awp pole touch
   printTime();
-  while (getTime() < 42.5)
+  while (getTime() < 42)
   {
     wait(10, vex::msec);
   }
-  chassis.moveTo(89, 90, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
-  chassis.turnToHeading(100, false, 12, akp, aki, akd, 5);
-  right_wing.set(true);
-  chassis.moveTo(109.5, 83, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
-  chassis.turnToHeading(60, false, 12, akp, aki, akd, 5);
+  chassis.moveTo(89, 82.5, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  chassis.turnToHeading(97, false, 12, akp, aki, akd, 5);
+  //right_wing.set(true);
+  chassis.pid(50, 97, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(1000);
+//  chassis.moveTo(109.5, 83, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  //chassis.turnToHeading(60, false, 12, akp, aki, akd, 5);
 
   stopAuto();
   delay(100000);

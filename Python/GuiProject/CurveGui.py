@@ -11,7 +11,7 @@ def resize_image(event):
 
 
 colors = ["cyan", "orange", "yellow", "green", "blue", "purple", "red", "magenta"]
-curves = [curveClass.Curve("c0", 61.4, 40.1 , 74.0, 29.4, 85.2, 60.1, 107, 19, 30, colors[0]) for i in range(1)]
+curves = [curveClass.Curve("c0", 104.5,126.1,  143.7,128.7,  130.8,108.0,  71.4,95.6, 30, colors[0]) for i in range(1)]
 #curves[0] = curveClass.Curve("c0", 12, 12, 49, 65, 95, 65, 132, 12, 30, colors[0])
 i = 1;
 
