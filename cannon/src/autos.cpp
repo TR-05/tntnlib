@@ -98,7 +98,7 @@ void programming_skills()
   rpm = 0;
 
   // Score Preload
-  chassis.pid(-50, -90, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  chassis.pid(-50, -90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
   delay(400);
 
   // Go to matchload
@@ -110,7 +110,7 @@ void programming_skills()
   left_intake_piston.set(1);
   right_intake_piston.set(1);
   chassis.autoTankPct(100, 100);
-  delay(1300);
+  delay(1500);
 
   // Aim for matchload
   rpm = 3600;
@@ -119,10 +119,10 @@ void programming_skills()
   intake.spinVolts(0);
   delay(900);
   offset = 20;
-  visionControl = true;
-
+  //visionControl = true;
+  chassis.turnToHeading(-154, false, 12, akp, aki, akd, 0);
   // matchload 23 balls
-  loadMacro(10, 800, 300);
+  loadMacro(23, 800, 300);
   delay(500);
   rpm = 0;
   intake.spinVolts(-6);
@@ -139,30 +139,54 @@ void programming_skills()
   delay(800);
 
   // grab ball with spacemaker
-  Path path1(14.1, 15.6, 29.4, 47.2, 54.1, 41.2, 61.1, 46.1, 100);
-  chassis.follow(path1, true, 12, 12, lkp * 1.1, lki, lkd, akp, aki, akd, 12, 15, 20);
-  spaceMaker.set(1);
-  chassis.moveTo(path1.x3, path1.y3, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  Path path1(14.1, 15.6, 29.4, 47.2, 54.1, 41.2, 61.1, 40.1, 100);
+  chassis.follow(path1, true, 12, 12, lkp * 1.1, lki, lkd, akp, aki, akd, 12, 15, 5);
+  //spaceMaker.set(1);
+  //chassis.moveTo(path1.x3, path1.y3, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  chassis.turnToHeading(90, false, 12, akp, aki, akd, 12);
+
+  /*
   chassis.turnToHeading(180, false, 12, akp, aki, akd, 8);
   // push 2 balls over
-  chassis.pid(-13, 180, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 12, 6);
-  delay(250);
+  chassis.pid(-13, 180, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(600);
   chassis.pid(7, 180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
   spaceMaker.set(0);
   delay(200);
   // second
   chassis.pid(-50, 180, false, 10, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
   delay(650);
+*/
 
   intake.spinVolts(7);
   aligner.set(1);
-  Path path3(61.9, 50.7, 74.0, 29.4, 85.2, 60.1, 125.3, 6.0, 100);
-  chassis.follow(path3, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 18, 20);
+  Path path3(61.4,40.1,  84.7,37.7,  98.2,38.0,  107,19,  100);
+  chassis.follow(path3, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 18, 5);
+  chassis.turnToHeading(135, false, 12, akp, aki, akd, 5);
+  aligner.set(1);
+  spaceMaker.set(1);
   chassis.autoTankPct(100, 100);
-  delay(1000);
-  chassis.turnToHeading(152, false, 12, akp, aki, akd, 0);
-  delay(1000);
+  delay(1500);
 
+  // Aim for matchload
+  rpm = 3600;
+  chassis.autoTankVolts(6, -6);
+  delay(1000);
+  offset = -7.5;
+  visionControl = true;
+
+  printTime();
+  while (getTime() < 60)
+  {
+    loadMacro(1, 800, 300);
+    shotCount += 1;
+  }
+  delay(500);
+  rpm = 0;
+  intake.spinVolts(-6);
+  visionControl = false;
+  delay(10);
+  chassis.stateMachineOn();
   printTime();
   return;
 }
@@ -183,7 +207,7 @@ void awp()
   left_intake_piston.set(false);
   right_intake_piston.set(false);
   spaceMaker.set(true);
-  chassis.pid(-5, -90, false, 12, 12, lkp*1.3, lki, lkd, akp, aki, akd, 12, 3);
+  chassis.pid(-5, -90, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 3);
   chassis.turnToHeading(-180, false, 12, akp, aki, akd, 5);
   intake.spinVolts(12);
   delay(800);
@@ -198,7 +222,7 @@ void awp()
   left_intake_piston.set(false);
   right_intake_piston.set(false);
   delay(300);
-  chassis.pid(-16, -85, false, 12, 12, lkp*1.3, lki, lkd, akp, aki, akd, 12, 4);
+  chassis.pid(-16, -85, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 4);
   intake.spinVolts(0);
   chassis.turnToHeading(-185, false, 12, akp, aki, akd, 5);
   intake.spinVolts(12);
@@ -210,17 +234,17 @@ void awp()
   Path path2(94.4, 44.1, 89.0, 44.4, 78.3, 43.5, 79.8, 69, 100);
   chassis.follow(path2, true, 7, 12, lkp, lki, lkd, akp, aki, akd, 12, 9, 7);
   chassis.SwingOnLeftToHeading(-226.7, false, 12, akp * 1.6, aki, akd, 5);
-  chassis.pid(-5, -226.7, false, 12, 12, lkp*1.3, lki, lkd, akp, aki, akd, 12, 3);
+  chassis.pid(-5, -226.7, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 3);
   spaceMaker.set(true);
   delay(400);
-  chassis.pid(6, -226.7, false, 12, 12, lkp*1.3, lki, lkd, akp, aki, akd, 12, 3);
+  chassis.pid(6, -226.7, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 3);
   chassis.turnToHeading(-180, false, 12, akp, aki, akd, 6);
   spaceMaker.set(false);
-  chassis.pid(-8, -180, false, 12, 12, lkp*1.3, lki, lkd, akp, aki, akd, 1, 0);
+  chassis.pid(-8, -180, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 1, 0);
   delay(700);
 
   // complete awp triball
-  Path path3(84.1,64.5,  90.7,40.0,  103.7,43.8,  118.5,26,  100);
+  Path path3(84.1, 64.5, 90.7, 40.0, 103.7, 43.8, 118.5, 26, 100);
   chassis.follow(path3, false, 10, 12, lkp * 1.0, lki, lkd, akp, aki, akd, 12, 18, 3);
   delay(300);
   chassis.turnToHeading(-50, false, 12, akp, aki, akd, 8);
@@ -232,7 +256,7 @@ void awp()
   delay(300);
   chassis.moveTo(96, 11, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
   chassis.pid(5, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 3);
-  chassis.pid(-50, 90, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);// INCREASE POWER WHEN DONE
+  chassis.pid(-50, 90, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0); // INCREASE POWER WHEN DONE
   delay(500);
   chassis.moveTo(116, 26.3, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 4);
   chassis.turnToHeading(135, false, 12, akp, aki, akd, 5);
@@ -270,13 +294,12 @@ void awp()
   delay(600);
   chassis.autoTankPct(-100, -100);
   delay(800);
-    chassis.autoTankPct(0, 0);
+  chassis.autoTankPct(0, 0);
   chassis.moveTo(105, 48, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
   chassis.turnToHeading(226, false, 12, akp, aki, akd, 6);
   chassis.moveTo(114, 58.6, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
   chassis.turnToHeading(226, false, 12, akp, aki, akd, 6);
   spaceMaker.set(1);
-
 
   stopAuto();
 

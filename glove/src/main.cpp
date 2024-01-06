@@ -52,8 +52,8 @@ void pre_auton()
 /* runs on comp switch autonomous */
 void autonomous()
 {
-   awp();
-  // programming_skills();
+  //awp();
+  programming_skills();
 }
 
 /* runs on comp switch driver */
