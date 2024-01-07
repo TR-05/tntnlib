@@ -122,6 +122,7 @@ void programming_skills()
   //visionControl = true;
   chassis.turnToHeading(-154, false, 12, akp, aki, akd, 0);
   // matchload 23 balls
+  delay(2500);
   loadMacro(23, 800, 300);
   delay(500);
   rpm = 0;
@@ -160,8 +161,9 @@ void programming_skills()
 
   intake.spinVolts(7);
   aligner.set(1);
-  Path path3(61.4,40.1,  84.7,37.7,  98.2,38.0,  107,19,  100);
-  chassis.follow(path3, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 18, 5);
+  Path path3(61.4,40.1,  84.7,37.7,  98.2,38.0, 113,24,  100);
+  chassis.follow(path3, false, 7.5, 12, lkp*.8, lki, lkd, akp*1.3, aki, akd, .4, 13, 5);
+  delay(300);
   chassis.turnToHeading(135, false, 12, akp, aki, akd, 5);
   aligner.set(1);
   spaceMaker.set(1);
@@ -173,7 +175,8 @@ void programming_skills()
   chassis.autoTankVolts(6, -6);
   delay(1000);
   offset = -7.5;
-  visionControl = true;
+  //visionControl = true;
+  chassis.turnToHeading(154, false, 12, akp, aki, akd, 0);
 
   printTime();
   while (getTime() < 60)
@@ -203,18 +206,18 @@ void awp()
   right_intake_piston.set(true);
   intake.spinVolts(5);
   chassis.follow(path1, false, 12, 12, lkp, lki, lkd, akp * 0.7, aki, akd, 12, 25, 5);
-  rpm = 2100;
+  rpm = 2200;
   left_intake_piston.set(false);
   right_intake_piston.set(false);
   intake.spinVolts(3);
   spaceMaker.set(true);
   chassis.pid(-5, -90, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 3);
-  chassis.turnToHeading(-182, false, 12, akp, aki, akd, 5);
+  chassis.turnToHeading(-200, false, 12, akp, aki, akd, 5);
   intake.spinVolts(12);
   delay(800);
 
   // grab second ball and pass it
-  rpm = 2100;
+  rpm = 2200;
   chassis.turnToHeading(-90, false, 12, akp, aki, akd, 10);
   left_intake_piston.set(true);
   right_intake_piston.set(true);
@@ -225,7 +228,7 @@ void awp()
   delay(300);
   chassis.pid(-16, -85, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 4);
   intake.spinVolts(0);
-  chassis.turnToHeading(-187, false, 12, akp, aki, akd, 5);
+  chassis.turnToHeading(-200, false, 12, akp, aki, akd, 5);
   intake.spinVolts(12);
   delay(600);
   spaceMaker.set(false);
@@ -245,12 +248,13 @@ void awp()
   delay(700);
 
   // complete awp triball
-  Path path3(84.1, 64.5, 90.7, 40.0, 103.7, 43.8, 116.5, 26, 100);
+  Path path3(84.1, 64.5, 90.7, 40.0, 103.7, 43.8, 118.5, 27, 100);
   chassis.follow(path3, false, 8, 12, lkp * 1.0, lki, lkd, akp, aki, akd, 12, 18, 5);
   delay(300);
-  chassis.turnToHeading(-50, false, 12, akp, aki, akd, 8);
+  chassis.turnToHeading(-52, false, 12, akp, aki, akd, 3);
   spaceMaker.set(true);
-  chassis.pid(-8, -50, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
+  delay(300);
+  chassis.pid(-8, -52, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
   delay(700);
   chassis.turnToHeading(65, false, 12, akp, aki, akd, 5);
   spaceMaker.set(0);
