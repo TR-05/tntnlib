@@ -98,8 +98,6 @@ float MotorGroup::getVolts()
 
 float MotorGroup::getPower(float rpm)
 {
-    if (rpm == 0)
-        return 0;   
     error = targetRPM - getRPM();
     if (error > bangBangMargin)
     {

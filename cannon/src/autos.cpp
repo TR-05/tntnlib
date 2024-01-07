@@ -57,12 +57,29 @@ void startAuto(float x, float y, float theta)
 }
 float shotCount = 0;
 float rpm = 0;
+float intakeVolts = 0;
 float visionPow = 0;
 bool visionControl = false;
 int updateFlywheel()
 {
   while (true)
   {
+
+    if (intakeVolts != 0)
+    {
+      if (intake.getCurrent() > 1.2)
+      {
+        intake.spinVolts(-12);
+      }
+      else
+      {
+        intake.spinVolts(intakeVolts);
+      }
+    }
+
+    else
+      intake.stop(vex::brakeType::coast);
+
     if (rpm != 0)
       flywheel.spinRPM(rpm);
     else
@@ -85,14 +102,14 @@ void stopAuto()
   delay(20);
   chassis.tank(0, 0);
   flywheel.stop(vex::brakeType::coast);
-  intake.spinVolts(0);
+  intakeVolts = (0);
   visionControl = false;
   rpm = 0;
   delay(100000);
 }
 void programming_skills()
 {
-
+  chassis.breakOutTime = 10;
   startAuto(34.6, 13.2, -90);
   vex::task fly(updateFlywheel);
   rpm = 0;
@@ -106,7 +123,7 @@ void programming_skills()
   aligner.set(0);
   chassis.turnToHeading(-135, false, 12, akp, aki, akd, 5);
   spaceMaker.set(1);
-  intake.spinVolts(7);
+  intakeVolts = (7);
   left_intake_piston.set(1);
   right_intake_piston.set(1);
   chassis.autoTankPct(100, 100);
@@ -116,17 +133,17 @@ void programming_skills()
   rpm = 3600;
   chassis.autoTankVolts(-6, 6);
   delay(100);
-  intake.spinVolts(0);
+  intakeVolts = (0);
   delay(900);
   offset = 20;
-  //visionControl = true;
+  // visionControl = true;
   chassis.turnToHeading(-154, false, 12, akp, aki, akd, 0);
   // matchload 23 balls
   delay(2500);
   loadMacro(23, 800, 300);
   delay(500);
   rpm = 0;
-  intake.spinVolts(-6);
+  intakeVolts = (-6);
   visionControl = false;
   delay(10);
   chassis.stateMachineOn();
@@ -134,7 +151,7 @@ void programming_skills()
   // exit matchload and raise spaceMaker
   spaceMaker.set(0);
   chassis.turnToHeading(-135, false, 12, akp, aki, akd, 0);
-  intake.spinVolts(0);
+  intakeVolts = (0);
   delay(600);
   chassis.autoTankPct(-100, -100);
   delay(800);
@@ -142,8 +159,8 @@ void programming_skills()
   // grab ball with spacemaker
   Path path1(14.1, 15.6, 29.4, 47.2, 54.1, 41.2, 61.1, 40.1, 100);
   chassis.follow(path1, true, 12, 12, lkp * 1.1, lki, lkd, akp, aki, akd, 12, 15, 5);
-  //spaceMaker.set(1);
-  //chassis.moveTo(path1.x3, path1.y3, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  // spaceMaker.set(1);
+  // chassis.moveTo(path1.x3, path1.y3, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
   chassis.turnToHeading(90, false, 12, akp, aki, akd, 12);
 
   /*
@@ -159,10 +176,10 @@ void programming_skills()
   delay(650);
 */
 
-  intake.spinVolts(7);
+  intakeVolts = (7);
   aligner.set(1);
-  Path path3(61.4,40.1,  84.7,37.7,  98.2,38.0, 113,24,  100);
-  chassis.follow(path3, false, 7.5, 12, lkp*.8, lki, lkd, akp*1.3, aki, akd, .4, 13, 5);
+  Path path3(61.4, 40.1, 84.7, 37.7, 98.2, 38.0, 113, 24, 100);
+  chassis.follow(path3, false, 7.5, 12, lkp * .8, lki, lkd, akp * 1.3, aki, akd, .4, 13, 5);
   delay(300);
   chassis.turnToHeading(135, false, 12, akp, aki, akd, 5);
   aligner.set(1);
@@ -175,7 +192,7 @@ void programming_skills()
   chassis.autoTankVolts(6, -6);
   delay(1000);
   offset = -7.5;
-  //visionControl = true;
+  // visionControl = true;
   chassis.turnToHeading(154, false, 12, akp, aki, akd, 0);
 
   printTime();
@@ -186,7 +203,7 @@ void programming_skills()
   }
   delay(500);
   rpm = 0;
-  intake.spinVolts(-6);
+  intakeVolts = (-6);
   visionControl = false;
   delay(10);
   chassis.stateMachineOn();
@@ -196,6 +213,7 @@ void programming_skills()
 
 void awp()
 {
+  chassis.breakOutTime = 10;
   startAuto(129.9, 38.0, -90);
   vex::task fly(updateFlywheel);
   rpm = 0;
@@ -204,16 +222,16 @@ void awp()
   Path path1(129.9, 38.0, 114.3, 38.3, 104.3, 41.8, 89, 46.5, 100);
   left_intake_piston.set(true);
   right_intake_piston.set(true);
-  intake.spinVolts(5);
+  intakeVolts = (5);
   chassis.follow(path1, false, 12, 12, lkp, lki, lkd, akp * 0.7, aki, akd, 12, 25, 5);
   rpm = 2200;
   left_intake_piston.set(false);
   right_intake_piston.set(false);
-  intake.spinVolts(3);
+  intakeVolts = (3);
   spaceMaker.set(true);
   chassis.pid(-5, -90, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 3);
   chassis.turnToHeading(-200, false, 12, akp, aki, akd, 5);
-  intake.spinVolts(12);
+  intakeVolts = (12);
   delay(800);
 
   // grab second ball and pass it
@@ -221,15 +239,15 @@ void awp()
   chassis.turnToHeading(-90, false, 12, akp, aki, akd, 10);
   left_intake_piston.set(true);
   right_intake_piston.set(true);
-  intake.spinVolts(4);
+  intakeVolts = (4);
   chassis.moveTo(80, 48, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 4);
   left_intake_piston.set(false);
   right_intake_piston.set(false);
   delay(300);
   chassis.pid(-16, -85, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 4);
-  intake.spinVolts(0);
+  intakeVolts = (0);
   chassis.turnToHeading(-200, false, 12, akp, aki, akd, 5);
-  intake.spinVolts(12);
+  intakeVolts = (12);
   delay(600);
   spaceMaker.set(false);
   chassis.turnToHeading(90, false, 12, akp, aki, akd, 5);
@@ -260,7 +278,7 @@ void awp()
   spaceMaker.set(0);
   delay(300);
   chassis.moveTo(108, 9, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
-  chassis.moveTo(94, 8, true, 12, 12, lkp*1.5, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
+  chassis.moveTo(94, 8, true, 12, 12, lkp * 1.5, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
 
   chassis.pid(5, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 3);
   chassis.pid(-50, 85, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0); // INCREASE POWER WHEN DONE
@@ -278,7 +296,7 @@ void awp()
   delay(1000);
   offset = -7.5;
   chassis.turnToHeading(154, false, 12, akp, aki, akd, 0);
-  //visionControl = true;
+  // visionControl = true;
 
   // matchload 10 balls
   // get awp pole touch
@@ -290,7 +308,7 @@ void awp()
   }
   delay(500);
   rpm = 0;
-  intake.spinVolts(-6);
+  intakeVolts = (-6);
   visionControl = false;
   delay(10);
   chassis.stateMachineOn();
@@ -298,7 +316,7 @@ void awp()
   // exit matchload and raise spaceMaker
   spaceMaker.set(0);
   chassis.turnToHeading(135, false, 12, akp, aki, akd, 0);
-  intake.spinVolts(0);
+  intakeVolts = (0);
   delay(600);
   chassis.autoTankPct(-100, -100);
   delay(800);

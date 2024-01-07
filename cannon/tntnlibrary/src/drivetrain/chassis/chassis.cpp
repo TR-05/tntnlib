@@ -153,8 +153,13 @@ void Chassis::waitUntilDone()
 
 void Chassis::waitUntilError(float &error, float margin)
 {
+    float initialT = Brain.timer(vex::msec) / 1000.0;
+    float time = 0;
     do
     {
+        time = Brain.timer(vex::msec) / 1000.0 - initialT;
+        if (time > this->breakOutTime)
+            break;
         wait(10, vex::msec);
     } while (fabs(error) > margin && margin != 0);
 }

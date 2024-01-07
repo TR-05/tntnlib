@@ -289,7 +289,7 @@ namespace tntnlib
         ControllerSettings angularSettings;
         Drivetrain drivetrain;
         OdomSensors sensors;
-
+        float breakOutTime = 5;
     private:
         /**
          * @brief Chassis update function. Updates chassis motion and odometry
