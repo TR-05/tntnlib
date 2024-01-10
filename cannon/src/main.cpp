@@ -7,15 +7,14 @@ using namespace tntnlib;
 vex::competition Competition;
 vex::brain Brain;
 
-vex::vision::signature SIG_1 (1, 6553, 7539, 7046, -2279, -1725, -2002, 7.000, 0);
-vex::vision::signature SIG_2 (2, 0, 0, 0, 0, 0, 0, 3.000, 0);
-vex::vision::signature SIG_3 (3, 0, 0, 0, 0, 0, 0, 3.000, 0);
-vex::vision::signature SIG_4 (4, 0, 0, 0, 0, 0, 0, 3.000, 0);
-vex::vision::signature SIG_5 (5, 0, 0, 0, 0, 0, 0, 3.000, 0);
-vex::vision::signature SIG_6 (6, 0, 0, 0, 0, 0, 0, 3.000, 0);
-vex::vision::signature SIG_7 (7, 0, 0, 0, 0, 0, 0, 3.000, 0);
-vex::vision vision1 ( vex::PORT5, 9, SIG_1, SIG_2, SIG_3, SIG_4, SIG_5, SIG_6, SIG_7 );
-
+vex::vision::signature SIG_1(1, 6553, 7539, 7046, -2279, -1725, -2002, 7.000, 0);
+vex::vision::signature SIG_2(2, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision::signature SIG_3(3, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision::signature SIG_4(4, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision::signature SIG_5(5, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision::signature SIG_6(6, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision::signature SIG_7(7, 0, 0, 0, 0, 0, 0, 3.000, 0);
+vex::vision vision1(vex::PORT5, 9, SIG_1, SIG_2, SIG_3, SIG_4, SIG_5, SIG_6, SIG_7);
 
 /* tntnlib robot Config */
 MotorGroup leftMotors(vex::gearSetting::ratio6_1, 300, 7, -8, -9, 10);
@@ -45,7 +44,7 @@ int logger()
   {
     Pose current(chassis.getPose(false));
     // chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0
-     //printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
+    // printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
     printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f, V:%.2f, S:%.0f,\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0, visionOutput, shotCount);
     Brain.Screen.clearLine();
     Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
@@ -66,7 +65,7 @@ void pre_auton()
 /* runs on comp switch autonomous */
 void autonomous()
 {
-  //awp();
+  // awp();
   programming_skills();
 }
 
@@ -148,13 +147,13 @@ void usercontrol()
     offset = -7.5;
     float pow = visionPower();
     if (!down.state)
-    { 
+    {
       pow = 0;
     }
     chassis.tank(Controller.Axis3.position() * .12 + pow, Controller.Axis2.position() * .12 - pow, 0); // tank (the best drive style)
-    //printf("LD: %.2f, RD: %.2f, F: %.2f\n", leftMotors.getCurrent(), rightMotors.getCurrent(), flywheel.getCurrent());
-    // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade
-    //chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); // split arcade
+    // printf("LD: %.2f, RD: %.2f, F: %.2f\n", leftMotors.getCurrent(), rightMotors.getCurrent(), flywheel.getCurrent());
+    //  chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade
+    // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); // split arcade
     vex::wait(25.0, vex::msec);
   }
 }

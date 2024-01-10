@@ -60,6 +60,8 @@ float rpm = 0;
 float intakeVolts = 0;
 float visionPow = 0;
 bool visionControl = false;
+float loopTime = 200;
+int loopIterater = 0;
 int updateFlywheel()
 {
   while (true)
@@ -67,12 +69,14 @@ int updateFlywheel()
 
     if (intakeVolts != 0)
     {
-      if (intake.getCurrent() > 1.2)
+      if (intake.getCurrent() > 1.2 or loopIterater * 10 <= loopTime)
       {
+        loopIterater += 1;
         intake.spinVolts(-12);
       }
       else
       {
+        loopIterater = 0;
         intake.spinVolts(intakeVolts);
       }
     }
@@ -327,7 +331,8 @@ void awp()
   chassis.turnToHeading(-85, false, 12, akp, aki, akd, 6);
   spaceMaker.set(1);
   delay(300);
-  chassis.turnToHeading(-110, false, 4, akp, aki, akd, 0);
+  chassis.autoTankVolts(-4, 4);
+  //chassis.turnToHeading(-110, false, 4, akp, aki, akd, 0);
   delay(500);
   stopAuto();
 

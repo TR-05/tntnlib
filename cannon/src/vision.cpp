@@ -57,7 +57,6 @@ float visionPower()
     angularPID.setIntegral(15, 4);
     // angularPID.reset();
     float visionChange = visionX();
-    Pose current = chassis.getPose();
     screenPrint();
 
     // calculate error
