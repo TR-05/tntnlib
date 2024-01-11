@@ -9,4 +9,5 @@ extern vex::digital_out right_wing;
 float getTime();
 void programming_skills();
 void awp();
+void ElimAwp();
 

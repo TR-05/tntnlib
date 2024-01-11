@@ -54,6 +54,7 @@ void autonomous()
 {
   awp();
   //programming_skills();
+  //ElimAwp();
 }
 
 /* runs on comp switch driver */

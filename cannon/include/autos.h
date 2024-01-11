@@ -14,6 +14,7 @@ extern vex::digital_out spaceMaker;
 float getTime();
 void programming_skills();
 void awp();
+void elimAwp();
 void singleLoadMacro();
 void loadMacro(int times, int bigDelay, int smallDelay);
 

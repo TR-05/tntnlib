@@ -58,20 +58,21 @@ void pre_auton()
 {
   printf("Entered pre_auton\n");
   chassis.initialize(true, 0, 0, 0);
-  flywheel.initializeVeloController(11, 0, 0, 1, 1, 2, 0);
+  flywheel.initializeVeloController(11, 0, 0, 1, 1, .4, 0);
   vex::task log(logger);
 }
 
 /* runs on comp switch autonomous */
 void autonomous()
 {
-  // awp();
-  programming_skills();
+  awp();
+  //elimAwp();
+  //programming_skills();
 }
 
 void singleLoadMacro(int delay)
 {
-  intake.spinVolts(12);
+  //intake.spinVolts(12);
   left_intake_piston.set(0);
   right_intake_piston.set(0);
   vex::wait(delay, vex::msec);
@@ -154,7 +155,7 @@ void usercontrol()
     // printf("LD: %.2f, RD: %.2f, F: %.2f\n", leftMotors.getCurrent(), rightMotors.getCurrent(), flywheel.getCurrent());
     //  chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade
     // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); // split arcade
-    vex::wait(25.0, vex::msec);
+    vex::wait(10.0, vex::msec);
   }
 }
 
