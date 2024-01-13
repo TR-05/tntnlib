@@ -191,7 +191,7 @@ void awp()
 {
   startAuto(131, 54, 0);
   chassis.breakOutTime = 3.5;
-  Path path1(131,59,  133.3,104.5,  129.6,112.0,  123,117.3,  100);
+  Path path1(131,59,  133.3,104.5,  129.6,112.0,  122,118.3,  100);
   chassis.setOffset(0, 0);
   chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 16, 20);
   right_wing.set(true);
@@ -214,7 +214,7 @@ void awp()
   chassis.turnToHeadingUnbounded(110, false, 12, akp, aki, akd, 6);
   chassis.setOffset(0, 0);
   chassis.moveTo(115, 128, true, 10, 12, lkp, lki, lkd, akp, aki, akd * 1.25, .4, 9);
-  chassis.moveTo(90, 128, true, 12, 12, lkp * 1.4, lki, lkd, akp, aki, akd * 1.25, 12, 20); // shove 1
+  chassis.moveTo(90, 126.5, true, 12, 12, lkp * 1.4, lki, lkd, akp, aki, akd * 1.25, 12, 20); // shove 1
   delay(400);
   chassis.pid(6, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, 0);
   delay(500);
@@ -264,16 +264,22 @@ void awp()
   // stopAuto();
   //  get awp pole touch
   printTime();
-  while (getTime() < 42)
+  while (getTime() < 40.25)
   {
     wait(10, vex::msec);
   }
-  chassis.moveTo(110, 85, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
-  chassis.turnToHeading(-6, false, 12, akp, aki, akd, 5);
+  chassis.moveTo(110, 93, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  chassis.turnToHeading(170, false, 12, akp, aki, akd, 5);
   // right_wing.set(true);
-  chassis.pid(-50, -6, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  delay(1000);
-  chassis.turnToHeading(28, false, 12, akp * 1.5, aki, akd, 0);
+  intake.spinVolts(4);
+  chassis.pid(50, 170, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(750);
+  chassis.pid(-6, 190, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 12, 3);
+  chassis.turnToHeading(-8, false, 12, akp, aki, akd, 5);
+  chassis.pid(-50, -8, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(800);
+  intake.spinVolts(-4);
+  chassis.turnToHeading(27.5, false, 12, akp * 1.5, aki, akd, 0);
   
   delay(500);
   //  chassis.moveTo(109.5, 83, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
