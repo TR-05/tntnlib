@@ -121,12 +121,13 @@ void programming_skills() {
     rpm = 0;
 
     // Score Preload
+    delay(3000);
     chassis.pid(-50, -90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
     delay(400);
 
     // Go to matchload
-    chassis.moveTo(24.5, 26, false, 8, 8, lkp, lki, lkd, akp * 1.3, aki,
-                   akd * 1.25, 12, 2);
+    chassis.moveTo(24.5, 26, false, 8,  10, lkp*1.3, lki, lkd, akp * 1.5, aki,
+                   akd * 1.25, 12, 3);
     aligner.set(0);
     chassis.turnToHeading(-135, false, 12, akp, aki, akd, 5);
     spaceMaker.set(1);

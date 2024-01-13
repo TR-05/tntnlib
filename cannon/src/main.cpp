@@ -65,9 +65,9 @@ void pre_auton()
 /* runs on comp switch autonomous */
 void autonomous()
 {
-  awp();
+  //awp();
   //elimAwp();
-  //programming_skills();
+  programming_skills();
 }
 
 void singleLoadMacro(int delay)
