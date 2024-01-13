@@ -423,7 +423,7 @@ void awp() {
     intakeVolts = (3.5);
     chassis.autoTankPct(100, 100);
     left_intake_piston.set(true);
-    right_intake_piston.set(false);
+    right_intake_piston.set(true);
     delay(1600);
 
     // Aim for matchload
