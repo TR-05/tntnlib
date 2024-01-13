@@ -4,12 +4,12 @@
 		"json": 2
 	},
 	"project": {
-		"name": "15 AWP",
+		"name": "15 Prog",
 		"description": "TNTNLib 1.0",
 		"creationDate": "10/12/2023, 2:25:47 PM",
 		"platform": "V5",
 		"language": "cpp",
-		"slot": 1,
+		"slot": 8,
 		"sdkVersion": "V5_20220726_10_00_00",
 		"cpp": {
 			"includePath": [],
