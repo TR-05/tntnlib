@@ -58,7 +58,7 @@ void pre_auton()
 {
   printf("Entered pre_auton\n");
   chassis.initialize(true, 0, 0, 0);
-  flywheel.initializeVeloController(11, 0, 0, 1, 1, .4, 0);
+  flywheel.initializeVeloController(11, 0, 0, 1, 1, 2.0, 0);
   vex::task log(logger);
 }
 
@@ -72,7 +72,7 @@ void autonomous()
 
 void singleLoadMacro(int delay)
 {
-  //intake.spinVolts(12);
+  // intake.spinVolts(12);
   left_intake_piston.set(0);
   right_intake_piston.set(0);
   vex::wait(delay, vex::msec);
@@ -96,26 +96,29 @@ void usercontrol()
   chassis.stateMachineOff();
 
   bool flywheelOn = false;
-  float rpm = 0;
+  float FWrpm = 0;
   // User control code here, inside the loop
   if (Controller.ButtonLeft.pressing())
   {
     vex::wait(2400, vex::msec);
     autonomous();
   }
+  aligner.set(1);
+  left_intake_piston.set(1);
+  right_intake_piston.set(1);
   while (1)
   {
     updateButtons();
 
-    if (a.newPress())
+    if (a.state)
     {
-      rpm = 3600;
+      FWrpm = 3800;
       flywheelOn = true;
     }
 
-    if (b.newPress())
+    if (b.state)
     {
-      rpm = 2600;
+      FWrpm = 2450;
       flywheelOn = true;
     }
     if (l2.newPress())
@@ -123,7 +126,7 @@ void usercontrol()
 
     if (flywheelOn)
     {
-      flywheel.spinRPM(rpm);
+      flywheel.spinRPM(FWrpm);
     }
     else
     {
