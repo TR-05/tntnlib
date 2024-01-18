@@ -145,7 +145,6 @@ void awp()
   }
   chassis.moveTo(110, 93, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
   chassis.turnToHeading(170, false, 12, akp, aki, akd, 5);
-  // right_wing.set(true);
   intake.spinVolts(4);
   chassis.pid(50, 170, false, 6, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
   delay(750);
@@ -155,11 +154,7 @@ void awp()
   intake.spinVolts(-8);
   delay(800);
   chassis.turnToHeading(27.5, false, 12, akp * 1.5, aki, akd, 0);
-  
   delay(500);
-  //  chassis.moveTo(109.5, 83, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
-  // chassis.turnToHeading(60, false, 12, akp, aki, akd, 5);
-
   stopAuto();
   delay(100000);
   return;
