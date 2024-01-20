@@ -3,7 +3,7 @@
 #include "../tntnlibrary/include/api.h"
 #include "autos.h"
 #include "vex.h"
-#include "vision.h"
+// #include "vision.h"
 using namespace tntnlib;
 vex::competition Competition;
 vex::brain Brain;
@@ -46,9 +46,18 @@ int logger()
         Pose current(chassis.getPose(false));
         // chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0
         // printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
-        printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f, V:%.2f, S:%.0f,\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0, visionOutput, shotCount);
-        Brain.Screen.clearLine();
-        Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
+        printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f, V:%.2f, S:%.0f,\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0, 0.0, shotCount);
+        Brain.Screen.clearScreen(vex::color::yellow);
+        Brain.Screen.setPenColor(vex::color::black);
+        Brain.Screen.setFillColor(vex::color::yellow);
+        Brain.Screen.setFont(vex::fontType::prop60);
+        Brain.Screen.setCursor(1, 1);
+        Brain.Screen.print("X:%6.2f", current.x);
+        Brain.Screen.setCursor(2, 1);
+        Brain.Screen.print("Y:%6.2f", current.y);
+        Brain.Screen.setCursor(3, 1);
+        Brain.Screen.print("H:%6.2f", current.theta);
+
         vex::wait(50, vex::msec);
     }
     return 0;
@@ -67,8 +76,8 @@ void pre_auton()
 void autonomous()
 {
     // awp();
-    // elimAwp();
-    programming_skills();
+    elimAwp();
+    // programming_skills();
 }
 
 void singleLoadMacro(int delay)
@@ -149,13 +158,13 @@ void usercontrol()
             loadMacro(60, 950, 350);
 
         intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
-        offset = -7.5;
-        float pow = visionPower();
+        // offset = -7.5;
+        float pow = 0; // visionPower()
         if (!down.state)
         {
             pow = 0;
         }
-        chassis.tank(Controller.Axis3.position() * .12 + pow, Controller.Axis2.position() * .12 - pow, 0);  // tank (the best drive style)
+        chassis.tank(Controller.Axis3.position() * .12 + pow, Controller.Axis2.position() * .12 - pow, 0); // tank (the best drive style)
         // printf("LD: %.2f, RD: %.2f, F: %.2f\n", leftMotors.getCurrent(), rightMotors.getCurrent(), flywheel.getCurrent());
         //  chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade
         // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); // split arcade

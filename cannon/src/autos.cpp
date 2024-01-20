@@ -1,7 +1,7 @@
 #include "autos.h"
 
 #include "vex.h"
-#include "vision.h"
+//#include "vision.h"
 using namespace tntnlib;
 
 void delay(float ms) { vex::wait(ms, vex::msec); }
@@ -107,7 +107,7 @@ int updateFlywheel()
             flywheel.stop(vex::brakeType::coast);
         if (visionControl)
         {
-            visionPow = visionPower();
+            visionPow = 0; //visionPower();
             chassis.stateMachineOff();
             chassis.tank(visionPow, -visionPow);
         }
@@ -156,7 +156,7 @@ void programming_skills()
     delay(100);
     intakeVolts = (0);
     delay(900);
-    offset = 20;
+    //offset = 20;
     // visionControl = true;
     chassis.turnToHeading(-153.5, false, 12, akp, aki, akd, 0);
     // matchload 23 balls
@@ -199,7 +199,7 @@ void programming_skills()
     rpm = 3800;
     chassis.autoTankVolts(6, -6);
     delay(1000);
-    offset = -7.5;
+    //offset = -7.5;
     chassis.turnToHeading(155, false, 12, akp, aki, akd, 0);
     intakeVolts = (12);
 
