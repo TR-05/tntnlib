@@ -9,7 +9,7 @@ vex::brain Brain;
 /* tntnlib robot Config */
 MotorGroup leftMotors(vex::gearSetting::ratio6_1, 450, -7, 8, -9, -10);
 MotorGroup rightMotors(vex::gearSetting::ratio6_1, 450, 1, 2, -3, 4);
-MotorGroup intake(vex::gearSetting::ratio6_1, 600, -11);
+MotorGroup intake(vex::gearSetting::ratio6_1, 600, -13);
 /* tracking wheels and gyro */
 TrackingWheel horizontal(Brain.ThreeWirePort.A, Omniwheel::NEW_275, 6.287188, 1);
 TrackingWheel vertical(Brain.ThreeWirePort.C, Omniwheel::NEW_275, -0.006111, 1);
@@ -52,6 +52,8 @@ void pre_auton()
 /* runs on comp switch autonomous */
 void autonomous()
 {
+  //safeAWP();
+  //safeElim();
   //awp();
   programming_skills();
   //ElimAwp();
@@ -60,6 +62,7 @@ void autonomous()
 /* runs on comp switch driver */
 void usercontrol()
 {
+  autonomous();
   printf("Entered Driver\n");
   chassis.stateMachineOff();
   if (Controller.ButtonLeft.pressing())

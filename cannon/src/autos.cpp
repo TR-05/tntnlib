@@ -259,11 +259,12 @@ void awp()
     return;
 }
 
+vex::task flywheelIntakeControl(updateFlywheel);
 void baseMatchAuto()
 {
     chassis.breakOutTime = 10;
     startAuto(129.9, 38.0, -90);
-    vex::task fly(updateFlywheel);
+    flywheelIntakeControl = vex::task(updateFlywheel);
     rpm = 0;
 
     // Grab first triball and pass it
@@ -272,18 +273,18 @@ void baseMatchAuto()
     right_intake_piston.set(true);
     intakeVolts = (5);
     chassis.follow(path1, false, 12, 12, lkp, lki, lkd, akp * 0.7, aki, akd, .4, 25, 3);
-    rpm = 1750;
+    rpm = 2050;
     left_intake_piston.set(false);
     right_intake_piston.set(false);
     intakeVolts = (3);
     spaceMaker.set(true);
     chassis.pid(-5, -90, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 3);
-    chassis.turnToHeading(-200, false, 12, akp, aki, akd, 5);
+    chassis.turnToHeading(-190, false, 12, akp, aki, akd, 5);
     intakeVolts = (12);
     delay(800);
 
     // grab second ball and pass it
-    rpm = 1750;
+    rpm = 2050;
     chassis.turnToHeading(-90, false, 12, akp, aki, akd, 10);
     left_intake_piston.set(true);
     right_intake_piston.set(true);
@@ -294,7 +295,7 @@ void baseMatchAuto()
     delay(300);
     chassis.pid(-16, -85, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 4);
     intakeVolts = (0);
-    chassis.turnToHeading(-200, false, 12, akp, aki, akd, 5);
+    chassis.turnToHeading(-190, false, 12, akp, aki, akd, 5);
     intakeVolts = (12);
     delay(600);
     spaceMaker.set(false);
@@ -325,12 +326,12 @@ void baseMatchAuto()
     chassis.turnToHeading(65, false, 12, akp, aki, akd, 5);  // flick the ball out
     spaceMaker.set(0);
     delay(300);
-    chassis.moveTo(108, 9, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
+    chassis.moveTo(108, 12, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);
     chassis.moveTo(94, 8, true, 12, 12, lkp * 1.5, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 10);  // first shove
 
-    chassis.pid(4, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
+    chassis.pid(4, 95, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
     delay(500);
-    chassis.pid(-50, 85, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);  // second shove
+    chassis.pid(-50, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);  // second shove
     delay(500);
 
     // Go to matchload

@@ -46,7 +46,7 @@ int logger()
         Pose current(chassis.getPose(false));
         // chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0
         // printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
-        printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f, V:%.2f, S:%.0f,\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0, 0.0, shotCount);
+        //printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f, V:%.2f, S:%.0f,\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0, 0.0, shotCount);
         Brain.Screen.clearScreen(vex::color::yellow);
         Brain.Screen.setPenColor(vex::color::black);
         Brain.Screen.setFillColor(vex::color::yellow);
@@ -75,9 +75,9 @@ void pre_auton()
 /* runs on comp switch autonomous */
 void autonomous()
 {
-    // awp();
+    //awp();
     elimAwp();
-    // programming_skills();
+     //programming_skills();
 }
 
 void singleLoadMacro(int delay)
@@ -102,6 +102,8 @@ void loadMacro(int times, int bigDelay, int smallDelay)
 /* runs on comp switch driver */
 void usercontrol()
 {
+        //autonomous();
+
     printf("Entered Driver\n");
     chassis.stateMachineOff();
 
@@ -128,7 +130,7 @@ void usercontrol()
 
         if (b.state)
         {
-            FWrpm = 2450;
+            FWrpm = 2750;
             flywheelOn = true;
         }
         if (l2.newPress())
@@ -165,7 +167,7 @@ void usercontrol()
             pow = 0;
         }
         chassis.tank(Controller.Axis3.position() * .12 + pow, Controller.Axis2.position() * .12 - pow, 0); // tank (the best drive style)
-        // printf("LD: %.2f, RD: %.2f, F: %.2f\n", leftMotors.getCurrent(), rightMotors.getCurrent(), flywheel.getCurrent());
+        printf("R: %.2f, R2:%.2f, V: %.2f, C: %.2f\n", flywheel.getRPM(), intake.getRPM(), flywheel.getVolts(), flywheel.getCurrent());
         //  chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade
         // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); // split arcade
         vex::wait(10.0, vex::msec);
