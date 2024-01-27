@@ -10,4 +10,5 @@ float getTime();
 void programming_skills();
 void awp();
 void ElimAwp();
-
+void safeAWP();
+void safeElim();
