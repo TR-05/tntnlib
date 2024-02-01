@@ -36,8 +36,10 @@ int logger()
     Pose current(chassis.getPose(false));
     // printf("SX: %.2f, SR: %.2f, IMU: %.2f ", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
     // printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
+    printf("%.2f,%.2f,%.2f,%.2f\n", current.x, current.y, current.theta, getTime());
+    std::cout << std::flush;
     // Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
-    vex::wait(20, vex::msec);
+    vex::wait(50, vex::msec);
   }
   return 0;
 }
@@ -66,7 +68,7 @@ void usercontrol()
   while (1)
   {
     updateButtons();
-    float pow = visionPower();
+    float pow = 0; //visionPower();
     if (Controller.ButtonR1.pressing())
     { 
       pow = 0;
