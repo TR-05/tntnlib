@@ -5,4 +5,7 @@ glove/.vscode/c_cpp_properties.json
 glove/.vscode/settings.json
 cannon/.vscode/c_cpp_properties.json
 cannon/.vscode/launch.json
-cannon/.vscode/settings.json
+cannon/.vscode/
+glove/.vscode/
+cannon/build/
+glovel/build/
