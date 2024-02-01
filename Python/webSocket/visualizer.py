@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 # Create a figure and an axis
 fig, ax = plt.subplots()
 
-time = 20
+time = 5
 refreshTime = 50/1000
 num = int(time / refreshTime)
 
@@ -71,4 +71,4 @@ def update():
 
     # Redraw the plot
     plt.draw()
-    plt.pause(0.05)
+    plt.pause(0.01)
