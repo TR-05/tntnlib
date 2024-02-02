@@ -49,13 +49,10 @@ float MotorGroup::getRPM()
         total += motor.velocity(vex::percentUnits::pct);
         motorCount++;
     }
-    double fakeraw = (total / motorCount) * (outputRPM/100.0);
-    double rawOutput = total / motorCount;
-    double stableVelo = rawOutput / inputRPM;
-    rawOutput = rawOutput * (outputRPM / inputRPM); // converts to output RPM
+    double rawOutput = (total / motorCount) * (outputRPM/100.0);
     lastRPMEmaOutput = ema(rawOutput, lastRPMEmaOutput, .2);
     currentRPM = lastRPMEmaOutput;
-    return fakeraw;
+    return currentRPM;
 }
 
 float MotorGroup::getWatts()

@@ -54,8 +54,8 @@ void autonomous()
 {
   //safeAWP();
   //safeElim();
-  //awp();
-  programming_skills();
+  awp();
+  //programming_skills();
   //ElimAwp();
 }
 

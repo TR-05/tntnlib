@@ -75,8 +75,8 @@ void pre_auton()
 /* runs on comp switch autonomous */
 void autonomous()
 {
-    //awp();
-    elimAwp();
+    awp();
+    //elimAwp();
      //programming_skills();
 }
 
