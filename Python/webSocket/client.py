@@ -18,17 +18,15 @@ t = 0
 async def update_data():
     while True:
         # Add a new value to the data
-        global x, y, h, t, start_time
+        global x, y, h, t, start_time, visualizer
         end_time = time.time()  # Save the current time at the end of the program
-        #t= end_time - start_time
-        #h = 90* math.sin(t)
-        #data.append(random.random())
-        visualizer.tData.append(t)
-        visualizer.yData.append(h)
-
+        t = end_time - start_time
+        h = 90* math.sin(t)
+        #t = 1
+        h = 2
+        visualizer.updateLine1(t, h)
         # Update the plot
         visualizer.update()
-
         # Wait for a bit
         await asyncio.sleep(0.001)
 

@@ -11,14 +11,22 @@ num = int(time / refreshTime)
 
 # Initialize your data
 tData = np.linspace(-time, 0, num).tolist()
-yData = [0.01]*num
+yData = tData
+
+dataMatrix = np.array([[tData], [tData], [tData], [tData]])
+
 # Create a line object that will be updated
 line, = ax.plot(yData)
 
 # Initialize the maximum y-value
 max_y = 0
 
-
+def updateLine1(newX, newY):
+    global backUptData, backUpyData, unrelatedData
+    #backUptData.append(newX)
+    #backUpyData.append(newX+1)
+    dataMatrix[0].append(newX)
+    dataMatrix[1].append(newY)
 
 
 class Line:
@@ -33,7 +41,7 @@ class Line:
     def update_line(self):
         global tData
         self.line.set_xdata(tData)
-        self.line.set_ydata([self.height]*num)
+        self.line.set_ydata([self.height]*len(tData))
 
 # Example usage
 xAxis = Line(0)
@@ -43,21 +51,11 @@ lTarget= Line(-90)
 
 
 def limitData():
-    global num, time
-    ''' while (tData[-1] - tData[0] > (time+.2)):
-        num = num - 1
-        #print("t", tData[-1] - tData[0])
-        #print ("num", num)
-        while len(tData) > num:
-            tData.pop(0)
-        while len(yData) > num:
-            yData.pop(0)'''
-    while len(tData) > num:
-        tData.pop(0)
-    while len(yData) > num:
-        yData.pop(0)
-    line.set_ydata(yData)
-    line.set_xdata(tData)
+    global num, time, tData, yData, backUptData, backUpyData, unrelatedData
+    tData = dataMatrix[0][-100:]
+    yData = dataMatrix[1][-100:]
+    print(f"tData ({dataMatrix[0][-1]:.3f}, {dataMatrix[0][-2]:.3f}, {dataMatrix[0][-3]:.3f}, {dataMatrix[0][-4]:.3f}, {dataMatrix[0][-5]:.3f}, {dataMatrix[0][-6]:.3f})")
+    line.set_data(tData, yData)
 
 def update():
     global max_y  # Declare max_y as global so we can modify it
