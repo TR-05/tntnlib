@@ -9,26 +9,30 @@ import time
 start_time = time.time()  # Save the current time at the start of the program
 
 
+t = 0
+d1 = 0
+d2 = 0
+d3 = 0
 x = 0
 y = 0
-h = 0
-t = 0
-
 # Define an asynchronous function that updates the data
 async def update_data():
     while True:
         # Add a new value to the data
-        global x, y, h, t, start_time, visualizer
+        global t, d1, d2, d3, x, y, start_time, visualizer
         end_time = time.time()  # Save the current time at the end of the program
         t = end_time - start_time
-        h = 90* math.sin(t)
-        #t = 1
-        h = 2
-        visualizer.updateLine1(t, h)
+        d1 = -3.6* (math.sin(t * (1/4 * math.pi)))
+        d2 = .9* (math.sin(t * (1/4 * math.pi)))
+        d3 = 1.8* abs(math.sin(t * (1/4 * math.pi)))
+        x = 144 * abs(math.sin(t * (1/4 * math.pi)))
+        y = 144 * abs(math.cos(t * (1/4 * math.pi)))
+
+        visualizer.updateLine1(t, d1, d2, d3, x, y)
         # Update the plot
         visualizer.update()
         # Wait for a bit
-        await asyncio.sleep(0.001)
+        await asyncio.sleep(visualizer.refreshTime)
 
 
 def is_float_sequence(s):
@@ -55,8 +59,8 @@ async def hello():
                 # Convert the values to float (since they seem to be decimal numbers)
                 values_list = [float(value) for value in values_list]
                 # Assign the values to a preset list of variables
-                global x, y, h, t
-                x, y, h, t = values_list
+                global d1, d2, d3, t
+                d1, d2, d3, t = values_list
             else:
                 #print("Invalid input")
                 #print(values_string)
