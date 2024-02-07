@@ -37,18 +37,22 @@ async def update_data():
 
 def is_float_sequence(s):
     # The regular expression pattern for a sequence of four floats, including negative floats
+    #pattern = r'-?\d*(\.\d+)?, -?\d*(\.\d+)?, -?\d*(\.\d+)?, -?\d*(\.\d+)?'
     pattern = r'-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?'
-    output = re.search(pattern, s).group(0)
+    output = re.search(pattern, s)
+    if output != None:
+        output = output.group(0)
     if output:
         return output
     else: return None
 
 async def hello():
-    uri = "ws://localhost:7071/vexcode/device"
+    uri = "ws://localhost:7071/vexrobotics.vexcode/device"
     async with websockets.connect(uri) as websocket:
         while True: 
+            #print("Connected to server")
             greeting = await websocket.recv()
-            print("yo")
+            #print("yo")
             values_string = greeting.decode('utf-8')
             checked_string = is_float_sequence(values_string)
             if checked_string != None:    
@@ -61,7 +65,7 @@ async def hello():
                 values_list = [float(value) for value in values_list]
                 # Assign the values to a preset list of variables
                 global d1, d2, d3, t, x, y
-                t, d1, d2, d3, x , y = values_list
+                t, d1, d2, d3, x, y = values_list
             else:
                 print("Invalid input")
                 print(values_string)

@@ -3340,14 +3340,15 @@ Linker script and memory map
                 0x03800598                tntnlib::Chassis::~Chassis()
  *fill*         0x038005b4        0x4 
  .text._Z6loggerv
-                0x038005b8       0xe0 build/src/main.o
+                0x038005b8       0xd8 build/src/main.o
                 0x038005b8                logger()
  .text._Z9pre_autonv
-                0x03800698       0x8c build/src/main.o
-                0x03800698                pre_auton()
+                0x03800690       0x90 build/src/main.o
+                0x03800690                pre_auton()
  .text._Z10autonomousv
-                0x03800724        0x4 build/src/main.o
-                0x03800724                autonomous()
+                0x03800720        0x4 build/src/main.o
+                0x03800720                autonomous()
+ *fill*         0x03800724        0x4 
  .text._Z11usercontrolv
                 0x03800728       0xc0 build/src/main.o
                 0x03800728                usercontrol()
@@ -4536,8 +4537,8 @@ Linker script and memory map
  *(.rodata)
  *(.rodata.*)
  .rodata.str1.1
-                0x03809848       0x71 build/src/main.o
- *fill*         0x038098b9        0x3 
+                0x03809848       0x72 build/src/main.o
+ *fill*         0x038098ba        0x2 
  .rodata..Lswitch.table._ZN7tntnlib10MotorGroupC2IJiiEEEN3vex11gearSettingEfDpT_
                 0x038098bc        0xc build/src/main.o
  .rodata.str1.1

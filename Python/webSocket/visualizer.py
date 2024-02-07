@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-
+img = plt.imread("match field.png")
 # Create a figure and an axis
 fig, axs = plt.subplots(nrows=2, ncols=2)
-
-
+axs[1,1].imshow(img, extent=[0, 144, 0, 144])
 
 #axs[0].set_title('Data over time')
 axs[0,0].set_xlabel('Time (s)')
@@ -26,7 +25,7 @@ axs[1,1].grid(True)
 #ax.annotate('Peak', xy=(1.5, 1), xytext=(3, 1.5), arrowprops=dict(facecolor='black', shrink=0.05))
 #ax.legend()
 
-time = 20
+time = 5
 refreshTime = 10/1000
 num = int(time / refreshTime)
 
@@ -44,7 +43,7 @@ backUpP3Data = np.linspace(0, 0, num).tolist()
 xData = [0]
 yData = [0]
 
-coords, = axs[1,1].plot(xData, yData, 'o', color='black', markersize=1)
+coords, = axs[1,1].plot(xData, yData, linestyle='solid', color='black', linewidth=2)
 
 def updateLine1(newT, newP1, newP2, newP3, x, y):
     global backUptData, backUpP1Data
@@ -75,7 +74,8 @@ class Line:
 class dataOverTimeLine:
     def __init__(self, plotx, ploty):
         global num, tData
-        self.line, = axs[plotx,ploty].plot(tData, np.linspace(0, 0, num).tolist(), linestyle='solid', color='red', linewidth=2)
+        #self.line, = axs[plotx,ploty].plot(tData, np.linspace(0, 0, num).tolist(), 'o', color='red', markersize=2)
+        self.line, = axs[plotx,ploty].plot(tData, np.linspace(0, 0, num).tolist(),linestyle='solid', color='red', linewidth=2)
         self.max_y = 5
         self.min_y = -5
     def update_line(self, data):
