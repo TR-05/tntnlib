@@ -50,7 +50,7 @@ float MotorGroup::getRPM()
         motorCount++;
     }
     double rawOutput = (total / motorCount) * (outputRPM/100.0);
-    lastRPMEmaOutput = ema(rawOutput, lastRPMEmaOutput, .2);
+    lastRPMEmaOutput = ema(rawOutput, lastRPMEmaOutput, 1.0);
     currentRPM = lastRPMEmaOutput;
     return currentRPM;
 }

@@ -76,8 +76,8 @@ class dataOverTimeLine:
     def __init__(self, plotx, ploty):
         global num, tData
         self.line, = axs[plotx,ploty].plot(tData, np.linspace(0, 0, num).tolist(), linestyle='solid', color='red', linewidth=2)
-        self.max_y = 0
-        self.min_y = 0
+        self.max_y = 5
+        self.min_y = -5
     def update_line(self, data):
         global tData
         self.line.set_xdata(tData)
@@ -122,7 +122,7 @@ def limitData():
     p2Data = backUpP2Data[-num:]
     p3Data = backUpP3Data[-num:]
 
-    print(num)
+    #print(num)
     #print(f"tData ({backUptData[-1]:.3f}, {backUptData[-2]:.3f}, {backUptData[-3]:.3f}, {backUptData[-4]:.3f}, {backUptData[-5]:.3f}, {backUptData[-6]:.3f})")
     line1.update_line(p1Data)
     line2.update_line(p2Data)
