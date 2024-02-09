@@ -73,7 +73,7 @@ namespace tntnlib
         float targetRPM = 0;
         float currentRPM = 0;
         std::vector<vex::motor> motors;
-
+        float smoothing = 1.0;
     private:
         float inputRPM = 0;
         float outputRPM = 0;

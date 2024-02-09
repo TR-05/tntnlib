@@ -9,8 +9,8 @@ time = 20
 refreshTime = 10/1000
 num = int(time / refreshTime)
 
-bot = mpimg.imread("logo2.png")
-scale_factor = 0.01
+bot = mpimg.imread("logo4.png")
+scale_factor = 0.8
 bot = zoom(bot, (scale_factor, scale_factor, 1))
 
 
@@ -18,7 +18,7 @@ img = plt.imread("match field.png")
 img = np.clip(img, 0, 1)
 # Create a figure and an axis
 fig, axs = plt.subplots(nrows=2, ncols=2)
-axs[1,1].imshow(img, extent=[0, 144, 0, 144])
+axs[1,1].imshow(img, extent=[0, 144, 0, 144], zorder=0)
 m, n = 2, 2
 # Define the labels for each subplot
 x_labels = [['Time (s)', 'Time (s)'], ['Time (s)', 'x (inch)']]
@@ -46,7 +46,7 @@ backUpP3Data = np.linspace(0, 0, num).tolist()
 xData = [0]
 yData = [0]
 heading = 0
-coords, = axs[1,1].plot(xData, yData, linestyle='solid', color='black', linewidth=2)
+coords, = axs[1,1].plot(xData, yData, linestyle='solid', color='black', linewidth=2, zorder=1)
 
 def updateLine1(newT, newP1, newP2, newP3, x, y, h):
     global backUptData, backUpP1Data, heading
@@ -57,8 +57,7 @@ def updateLine1(newT, newP1, newP2, newP3, x, y, h):
     backUpP3Data.append(newP3)
     xData.append(x)
     yData.append(y)
-    coords.set_xdata(xData)
-    coords.set_ydata(yData)
+
 
 class Line:
     def __init__(self, height, plotx, ploty):
@@ -136,12 +135,13 @@ def limitData():
 
 square = patches.Rectangle((0.5, 0.5), 0.1, 0.1, angle=heading, fill=False)
 trans = transforms.Affine2D().rotate_deg(heading).translate(0, 0)
-bot_image = axs[1, 1].imshow(np.clip(bot, 0, 1), transform=trans + axs[1, 1].transData)
+bot_image = axs[1, 1].imshow(np.clip(bot, 0, 1), transform=trans + axs[1, 1].transData, zorder=2)
 
 def update():
     global max_y, min_y # Declare max_y as global so we can modify it
     global num, time, square, bot_image
     limitData()
+
     for x_axis in x_axes:
         x_axis.update_line()
     for target in targets:
@@ -178,8 +178,12 @@ def update():
     # Create the square
     trans = transforms.Affine2D().rotate_deg(heading).translate(lower_left_x, lower_left_y)
     # Display the image at the specified location and rotation
+
+    coords.set_xdata(xData)
+    coords.set_ydata(yData)
+
     bot_image.remove()
-    bot_image = axs[1, 1].imshow(np.clip(bot, 0, 1), transform=trans + axs[1, 1].transData)
+    bot_image = axs[1, 1].imshow(np.clip(bot, 0, 1), transform=trans + axs[1, 1].transData, zorder=2)
 
     square = patches.Rectangle((lower_left_x, lower_left_y), length, width, angle=heading, 
                            edgecolor='black', facecolor='gray')

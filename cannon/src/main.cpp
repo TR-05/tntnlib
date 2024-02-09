@@ -47,7 +47,7 @@ int logger()
         // chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0
         // printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
         //printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f, V:%.2f, S:%.0f,\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0, 0.0, shotCount);
-        printf("%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\n", getTime(), flywheel.getRPM(), flywheel.getVolts(), 0.0, current.x, current.y);
+        printf("%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n", getTime(), flywheel.getRPM(), flywheel.getVolts(), 0.0, current.x, current.y, current.theta);
         std::cout << std::flush;
 
         Brain.Screen.clearScreen(vex::color::yellow);
@@ -71,7 +71,7 @@ void pre_auton()
 {
     printf("Entered pre_auton\n");
     chassis.initialize(true, 0, 0, 0);
-    flywheel.initializeVeloController(11, 0, 0, 1, 1, 2.0, 0);
+    flywheel.initializeVeloController(11, 12, 0, 0, 0, .3, 0);
     vex::task log(logger);
 }
 

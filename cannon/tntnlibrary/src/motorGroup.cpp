@@ -50,7 +50,7 @@ float MotorGroup::getRPM()
         motorCount++;
     }
     double rawOutput = (total / motorCount) * (outputRPM/100.0);
-    lastRPMEmaOutput = ema(rawOutput, lastRPMEmaOutput, .2);
+    lastRPMEmaOutput = ema(rawOutput, lastRPMEmaOutput, this->smoothing);
     currentRPM = lastRPMEmaOutput;
     return currentRPM;
 }
@@ -96,7 +96,7 @@ float MotorGroup::getVolts()
 
 float MotorGroup::getPower(float rpm)
 {
-    error = targetRPM - getRPM();
+    error = (targetRPM - getRPM()) / this->outputRPM;
     if (error > bangBangMargin)
     {
         return 12;
