@@ -54,6 +54,7 @@ async def hello():
     #uri = "ws://0.0.0.0:7071/vexrobotics.vexcode/device"
     uri = "ws://localhost:7071/vexrobotics.vexcode/device"
     async with websockets.connect(uri) as websocket:
+        print("Connected to server successfully")
         while True: 
             #print("Connected to server")
             greeting = await websocket.recv()

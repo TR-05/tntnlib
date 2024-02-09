@@ -15,6 +15,7 @@ bot = zoom(bot, (scale_factor, scale_factor, 1))
 
 
 img = plt.imread("match field.png")
+img = np.clip(img, 0, 1)
 # Create a figure and an axis
 fig, axs = plt.subplots(nrows=2, ncols=2)
 axs[1,1].imshow(img, extent=[0, 144, 0, 144])
@@ -135,7 +136,7 @@ def limitData():
 
 square = patches.Rectangle((0.5, 0.5), 0.1, 0.1, angle=heading, fill=False)
 trans = transforms.Affine2D().rotate_deg(heading).translate(0, 0)
-bot_image = axs[1, 1].imshow(bot, transform=trans + axs[1, 1].transData)
+bot_image = axs[1, 1].imshow(np.clip(bot, 0, 1), transform=trans + axs[1, 1].transData)
 
 def update():
     global max_y, min_y # Declare max_y as global so we can modify it
@@ -178,7 +179,7 @@ def update():
     trans = transforms.Affine2D().rotate_deg(heading).translate(lower_left_x, lower_left_y)
     # Display the image at the specified location and rotation
     bot_image.remove()
-    bot_image = axs[1, 1].imshow(bot, transform=trans + axs[1, 1].transData)
+    bot_image = axs[1, 1].imshow(np.clip(bot, 0, 1), transform=trans + axs[1, 1].transData)
 
     square = patches.Rectangle((lower_left_x, lower_left_y), length, width, angle=heading, 
                            edgecolor='black', facecolor='gray')
