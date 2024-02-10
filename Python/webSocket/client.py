@@ -22,7 +22,7 @@ async def update_data():
         # Add a new value to the data
         global t, d1, d2, d3, x, y, start_time, visualizer
         end_time = time.time()  # Save the current time at the end of the program
-        t = end_time - start_time
+        '''t = end_time - start_time
         d1 = 3600* abs(math.sin(t * (1/4 * math.pi)))
         d2 = 12 * abs(math.sin(t * (1/4 * math.pi)))
         d3 = 1.8* abs(math.sin(t * (1/4 * math.pi)))
@@ -30,7 +30,7 @@ async def update_data():
         y = 144 * abs(math.cos(t * (1/4 * math.pi)))
         newxterm = 144 * abs(math.sin(t * (1/4 * math.pi)))/abs(math.sin(t * (1/4 * math.pi)))*math.cos(t*math.pi/4)* math.pi/4
         newyterm = -144 * abs(math.cos(t * (1/4 * math.pi)))/abs(math.cos(t * (1/4 * math.pi)))*math.sin(t*math.pi/4)* math.pi/4
-        h = math.atan2(newyterm, newxterm) * 180 / math.pi - 90
+        h = math.atan2(newyterm, newxterm) * 180 / math.pi - 90'''
         visualizer.updateLine1(t, d1, d2, d3, x, y, h)
         # Update the plot
         visualizer.update()
@@ -40,8 +40,8 @@ async def update_data():
 
 def is_float_sequence(s):
     # The regular expression pattern for a sequence of four floats, including negative floats
-    #pattern = r'-?\d*(\.\d+)?, -?\d*(\.\d+)?, -?\d*(\.\d+)?, -?\d*(\.\d+)?'
-    pattern = r'-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?'
+    pattern = r'-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?'
+    #pattern = r'-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?,-?\d*(\.\d+)?'
     output = re.search(pattern, s)
     if output != None:
         output = output.group(0)
@@ -71,7 +71,7 @@ async def hello():
                 values_list = [float(value) for value in values_list]
                 # Assign the values to a preset list of variables
                 global d1, d2, d3, t, x, y, h
-                t, d1, d2, d3, x, y, h = values_list
+                t, d1, d2, d3 = values_list
             else:
                 print("Invalid input")
                 print(values_string)
