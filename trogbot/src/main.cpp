@@ -16,14 +16,14 @@ vex::vision::signature SIG_1 (1, 4241, 4645, 4444, -1031, -683, -856, 2.800, 0);
 vex::vision vision1(vex::PORT13, 18, SIG_1);
 
 /* tntnlib robot Config */
-MotorGroup leftMotors(vex::gearSetting::ratio6_1, 360, -8, -10);
-MotorGroup rightMotors(vex::gearSetting::ratio6_1, 360, 18, 19);
+MotorGroup leftMotors("leftDT", vex::gearSetting::ratio6_1, 360, -8, -10);
+MotorGroup rightMotors("rightDt", vex::gearSetting::ratio6_1, 360, 18, 19);
 TrackingWheel horizontal(Brain.ThreeWirePort.G, Omniwheel::NEW_275, 0.002292, 1);
 TrackingWheel vertical(Brain.ThreeWirePort.E, Omniwheel::NEW_275, -0.253611, 1);
 Gyro imu(1, 1.010357);
 /* chassis and controllers (DO NOT CHANGE NAMES) */
-ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
-ControllerSettings angularSettings(.25, 0.01, 2.0, 2, 15, 12);
+//ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
+//ControllerSettings angularSettings(.25, 0.01, 2.0, 2, 15, 12);
 Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::OLD_325, 360, 8);
 OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);

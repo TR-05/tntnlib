@@ -13,8 +13,8 @@ class MotorGroup
 {
    public:
     template <typename... Ports>
-    MotorGroup(vex::gearSetting gear, float outputRPM, Ports... ports)
-        : outputRPM(outputRPM)
+    MotorGroup(std::string name, vex::gearSetting gear, float outputRPM, Ports... ports)
+        : name(name), outputRPM(outputRPM)
     {
         if (gear == vex::gearSetting::ratio6_1)
         {
@@ -56,11 +56,13 @@ class MotorGroup
     void resetPosition();
     void driverTwoButton(bool in, bool out, float inVolts, float outVolts);
     void driverToggle(bool input, float inVolts);
+    std::string getName() const { return name; }  // Add a method to get the name
 
     float targetRPM = 0;
     float currentRPM = 0;
+    std::string name;  // Add a name member
     std::vector<vex::motor> motors;
-
+    
    private:
     float inputRPM = 0;
     float outputRPM = 0;

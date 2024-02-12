@@ -8,19 +8,7 @@ namespace tntnlib
 {
 namespace stateMachine
 {
-/**
- * @brief Struct containing constants for a drivetrain
- *
- * The constants are stored in a struct so that they can be easily passed to the chassis class
- * Set a constant to 0 and it will be ignored
- *
- * @param leftMotors pointer to the left motors
- * @param rightMotors pointer to the right motors
- * @param trackWidth the track width of the robot
- * @param wheelDiameter the diameter of the wheel used on the drivetrain
- * @param rpm the rpm of the wheels
- * @param chasePower higher values make the robot move faster but causes more overshoot on turns
- */
+
 struct Drivetrain
 {
     Drivetrain(MotorGroup *leftMotors, MotorGroup *rightMotors,
@@ -40,6 +28,19 @@ struct Drivetrain
     float rpm;
 };
 
-std::vector<MotorGroup> robotMotors;
+template <typename... MotorGroup>
+void initialize(MotorGroup... groups)
+{
+    std::array<MotorGroups*, sizeof...(MotorGroups)> groupsArray = {&groups...};
+    int size = groupsArray.size();
+    robotMotors.resize(size);
+    for (int i = 0; i < size; i++)
+    {
+        robotMotors[i] = groupsArray[i]; 
+        printf("Created %s on slot %d\n", robotMotors[i]->getName().c_str(), i);
+    }
+}
+
+std::vector<MotorGroup*> robotMotors;
 }  // namespace stateMachine
 }  // namespace tntnlib
