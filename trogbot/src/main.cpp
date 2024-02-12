@@ -5,6 +5,10 @@
 
 #include <iostream>
 using namespace tntnlib;
+
+vex::thread chassisThread;
+vex::thread loggerThread;
+
 vex::competition Competition;
 vex::brain Brain;
 
@@ -48,7 +52,7 @@ int logger()
 void pre_auton()
 {
   Brain.Screen.clearScreen(vex::color(255, 20, 0));
-  vex::task log(logger);
+  loggerThread = vex::thread(logger);
   printf("Entered pre_auton\n");
   chassis.initialize(true, 24, 24, 0);
 }
@@ -56,6 +60,8 @@ void pre_auton()
 /* runs on comp switch autonomous */
 void autonomous()
 {
+  loggerThread.interrupt();
+  loggerThread = vex::thread(logger);
   programming_skills();
 }
 
