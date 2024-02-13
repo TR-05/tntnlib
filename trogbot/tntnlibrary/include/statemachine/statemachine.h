@@ -19,28 +19,28 @@ struct Drivetrain
           wheelDiameter(wheelDiameter),
           rpm(rpm)
     {
-    }
+    } 
 
     MotorGroup *leftMotors;
     MotorGroup *rightMotors;
     float trackWidth;
     float wheelDiameter;
     float rpm;
-};
+}; Drivetrain drivetrain;
 
 template <typename... MotorGroup>
 void initialize(MotorGroup... groups)
 {
-    std::array<MotorGroups*, sizeof...(MotorGroups)> groupsArray = {&groups...};
+    std::array<MotorGroups *, sizeof...(MotorGroups)> groupsArray = {&groups...};
     int size = groupsArray.size();
-    robotMotors.resize(size);
+    robotMotors.resize(size, groupsArray[0]);
     for (int i = 0; i < size; i++)
     {
-        robotMotors[i] = groupsArray[i]; 
+        robotMotors[i] = groupsArray[i];
         printf("Created %s on slot %d\n", robotMotors[i]->getName().c_str(), i);
     }
 }
 
-std::vector<MotorGroup*> robotMotors;
+std::vector<MotorGroup *> robotMotors;
 }  // namespace stateMachine
 }  // namespace tntnlib

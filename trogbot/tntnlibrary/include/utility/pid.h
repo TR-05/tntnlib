@@ -21,8 +21,11 @@ class FAPID
      * @param kP proportional gain, multiplied by error and added to output
      * @param kI integral gain, multiplied by total error and added to output
      * @param kD derivative gain, multiplied by change in error and added to output
+     * @param kImax maximum total error
+     * @param kIstart minimum error to start integrating
+     * @param slew maximum change in output per update
      */
-    FAPID(float kF, float kA, float kP, float kI, float kD);
+    FAPID(float kF, float kA, float kP, float kI, float kD, float kImax, float kIstart, float slew);
 
     void setGains(float kF, float kA, float kP, float kI, float kD, float kImax, float kIstart, float slew);
 
