@@ -5,27 +5,27 @@
 
 #include <iostream>
 using namespace tntnlib;
-
-vex::thread chassisThread;
-vex::thread loggerThread;
-
 vex::competition Competition;
 vex::brain Brain;
+
+vex::thread loggerThread;
+vex::thread chassisThread;
 
 vex::vision::signature SIG_1 (1, 4241, 4645, 4444, -1031, -683, -856, 2.800, 0);
 vex::vision vision1(vex::PORT13, 18, SIG_1);
 
 /* tntnlib robot Config */
-MotorGroup leftMotors("leftDT", vex::gearSetting::ratio6_1, 360, -8, -10);
-MotorGroup rightMotors("rightDt", vex::gearSetting::ratio6_1, 360, 18, 19);
-TrackingWheel horizontal(Brain.ThreeWirePort.G, 2.75, 0.002292, 1);
-TrackingWheel vertical(Brain.ThreeWirePort.E, 2.75, -0.253611, 1);
+MotorGroup leftMotors(vex::gearSetting::ratio6_1, 360, -8, -10);
+MotorGroup rightMotors(vex::gearSetting::ratio6_1, 360, 18, 19);
+TrackingWheel horizontal(Brain.ThreeWirePort.G, Omniwheel::NEW_275, 0.002292, 1);
+TrackingWheel vertical(Brain.ThreeWirePort.E, Omniwheel::NEW_275, -0.253611, 1);
 Gyro imu(1, 1.010357);
 /* chassis and controllers (DO NOT CHANGE NAMES) */
-FAPID linearPID(0.6, 0, 3.5, 0, 0, 3, 0, 0);
-FAPID angularPID(0.25, 0.01, 2.0, 2, 15, 4, 0, 0);
-stateMachine::Drivetrain stateMachine::drivetrain(&leftMotors, &rightMotors, 10.0, 3.25, 360);
-Odometry odom(&vertical, nullptr, &horizontal, nullptr, &imu);
+ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
+ControllerSettings angularSettings(.25, 0.01, 2.0, 2, 15, 12);
+Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::OLD_325, 360, 8);
+OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
+Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
 // MotorGroup intake(vex::gearSetting::ratio6_1, 360, -8, -10);
 
 /* End of tntnlib Robot Config */
@@ -36,10 +36,10 @@ int logger()
 {
   while (true)
   {
-    Pose current(odom.getPose());
+    Pose current(chassis.getPose(false));
     // printf("SX: %.2f, SR: %.2f, IMU: %.2f ", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
-    // printf("  X: %.2xf,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
-    printf("%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n", getTime(), leftMotors.getRPM(), rightMotors.getRPM(), 0.0, current.x, current.y, current.theta);
+     printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0);
+    //printf("%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n", getTime(), leftMotors.getRPM(), rightMotors.getRPM(), 0.0, current.x, current.y, current.theta);
     std::cout << std::flush;
     // Brain.Screen.print("X:%6.2f, Y:%6.2f, H:%6.2f", current.x, current.y, current.theta);
     vex::wait(50, vex::msec);
@@ -47,26 +47,44 @@ int logger()
   return 0;
 }
 
+int chassisLoop()
+{
+  while (true)
+  {
+    chassis.update();
+    vex::wait(10, vex::msec);
+  }
+  return 0;
+}
+
+void resetThreads()
+{
+  loggerThread.interrupt();
+  loggerThread = vex::thread(logger);
+  chassisThread.interrupt();
+  chassisThread = vex::thread(chassisLoop);
+}
+
 /* runs when program first starts */
 void pre_auton()
 {
   Brain.Screen.clearScreen(vex::color(255, 20, 0));
-  loggerThread = vex::thread(logger);
   printf("Entered pre_auton\n");
   chassis.initialize(true, 24, 24, 0);
+  resetThreads();
 }
 
 /* runs on comp switch autonomous */
 void autonomous()
 {
-  loggerThread.interrupt();
-  loggerThread = vex::thread(logger);
+  resetThreads();
   programming_skills();
 }
 
 /* runs on comp switch driver */
 void usercontrol()
 {
+  resetThreads();
   printf("Entered Driver\n");
   chassis.stateMachineOff();
   // intake.setBrakeType(vex::brakeType::brake);
