@@ -29,14 +29,17 @@ namespace tntnlib
 {
 
     /**
-     * @brief  Default drive curve. Modifies  the input with an exponential curve. If the input is 127, the function
-     * will always output 127, no matter the value of scale, likewise for -127. This curve was inspired by team 5225, the
-     * Pilons. A Desmos graph of this curve can be found here: https://www.desmos.com/calculator/rcfjjg83zx
+     * @brief  Trevors custom curve, takes an input from +-100 and returns a curved value from +-12
+     * set gain to 1, min to 0, fullstick to 12, and deadband to 0 for a linear curve
+     * recommended values are gain:3 min:1, fullstick:12, deadband:3
      * @param input value from -127 to 127
-     * @param scale how steep the curve should be.
+     * @param gain how steep the curve should be.  1-4 is a good range for this value.
+     * @param min the minimum value to be outputted. This is for deadbands.
+     * @param fullStick at what point should it output max. 9-12 is a good range for this value.
+     * @param deadband the deadband of the input in percent. 0-10 is a good range for this value.
      * @return The new value to be used.
      */
-    float defaultDriveCurve(float input, float scale);
+    float sherbertCurve(float input, float gain, float min, float fullStick, float deadband);
 
     /**
      * @brief Chassis class
@@ -236,10 +239,12 @@ namespace tntnlib
          * control scheme one joystick axis controls one half of the robot, and another joystick axis controls another.
          * @param left speed of the left side of the drivetrain. Takes an input from -12 to 12.
          * @param right speed of the right side of the drivetrain. Takes an input from -12 to 12.
-         * @param curveGain control how steep the drive curve is. The larger the number, the steeper the curve. A value
-         * of 0 disables the curve entirely.
+         * @param gain how steep the curve should be.  1-4 is a good range for this value.
+         * @param min the minimum value to be outputted. This is for deadbands.
+         * @param fullStick at what point should it output max. 80-100 is a good range for this value.
+         * @param deadband the deadband of the input in percent. 0-10 is a good range for this value.
          */
-        void tank(int left, int right, float curveGain = 0.0);
+        void tank(int left, int right, float gain, float min, float fullStick, float deadband);
 
         /**
          * @brief Control the robot during the driver using the arcade drive control scheme. In this control scheme one
@@ -250,7 +255,7 @@ namespace tntnlib
          * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
          * curve, refer to the `defaultDriveCurve` documentation.
          */
-        void arcade(int throttle, int turn, float curveGain = 0.0);
+        void arcade(int throttle, int turn, float gain, float min, float fullStick, float deadband);
 
         /**
          * @brief Control the robot during the driver using the curvature drive control scheme. This control scheme is
@@ -262,7 +267,6 @@ namespace tntnlib
          * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
          * curve, refer to the `defaultDriveCurve` documentation.
          */
-        void curvature(int throttle, int turn, float cureGain = 0.0);
         void update();
         void stateMachineOn();
         void stateMachineOff();
@@ -290,6 +294,7 @@ namespace tntnlib
         Drivetrain drivetrain;
         OdomSensors sensors;
         float breakOutTime = 5;
+
     private:
         /**
          * @brief Chassis update function. Updates chassis motion and odometry

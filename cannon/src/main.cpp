@@ -185,7 +185,7 @@ void usercontrol()
 
         intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
         printf("hello: %.2f\n ", getTime());
-        chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 3, 1, 90, 3); // tank (the best drive style)
+        chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 1, 0, 100, 3); // tank (the best drive style)
         //printf("R: %.2f, R2:%.2f, V: %.2f, C: %.2f\n", flywheel.getRPM(), intake.getRPM(), flywheel.getVolts(), flywheel.getCurrent());
         //  chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade
         // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 0); // split arcade

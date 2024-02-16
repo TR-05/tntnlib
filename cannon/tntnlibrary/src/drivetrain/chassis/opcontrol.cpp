@@ -9,7 +9,7 @@ namespace tntnlib {
  * @brief  Trevors custom curve, takes an input from +-100 and returns a curved value from +-12
  * set gain to 1, min to 0, fullstick to 12, and deadband to 0 for a linear curve
  * recommended values are gain:3 min:1, fullstick:12, deadband:3
- * @param input value from -127 to 127
+ * @param input value from -100 to 100
  * @param gain how steep the curve should be.  1-4 is a good range for this value.
  * @param min the minimum value to be outputted. This gives more control over the lower end of the curve.
  * @param fullStick at what percent stick should it output max. 80-100 is a good range for this value.
@@ -17,12 +17,14 @@ namespace tntnlib {
  * @return The new value to be used.
  */
 float sherbertCurve(float input, float gain, float min, float fullStick, float deadband) {
-    input = input / 12.0;
-    int sign = sgn(input);
-    if (input*100.0/12.0 < deadband && input*100.0/12.0 > -deadband) {
+    if (input < deadband && input > -deadband) {
         return 0;
     }
-    float output = (sign * (powf(fabs(input), gain)) / (powf(fullStick/12.0, gain - 1)) ) + min*sign;
+    input = input*.12;
+    int sign = sgn(input);
+    fullStick = fullStick*.12;
+    float output = (sign * (powf(fabs(input), gain)) / (powf(fullStick, gain - 1)) ) + min*sign;
+    //printf("input: %.2f, output: %.2f\n", input, output);
     if (fabs(output) > 12.0) {
         return 12.0 * sign;
     }
