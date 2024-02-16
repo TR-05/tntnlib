@@ -8,6 +8,9 @@ using namespace tntnlib;
 vex::competition Competition;
 vex::brain Brain;
 
+vex::thread loggerThread;
+vex::thread chassisThread;
+
 vex::vision::signature SIG_1(1, 6553, 7539, 7046, -2279, -1725, -2002, 7.000, 0);
 vex::vision::signature SIG_2(2, 0, 0, 0, 0, 0, 0, 3.000, 0);
 vex::vision::signature SIG_3(3, 0, 0, 0, 0, 0, 0, 3.000, 0);
@@ -66,18 +69,37 @@ int logger()
     return 0;
 }
 
+int chassisLoop()
+{
+  while (true)
+  {
+    chassis.update();
+    vex::wait(10, vex::msec);
+  }
+  return 0;
+}
+
+void resetThreads()
+{
+  loggerThread.interrupt();
+  loggerThread = vex::thread(logger);
+  chassisThread.interrupt();
+  chassisThread = vex::thread(chassisLoop);
+}
+
 /* runs when program first starts */
 void pre_auton()
 {
     printf("did not Entered pre_auton\n");
     chassis.initialize(true, 0, 0, 0);
     flywheel.initializeVeloController(11, 0, 0, 0, 0, 5000, 0);
-    //vex::task log(logger);
+    resetThreads();
 }
 
 /* runs on comp switch autonomous */
 void autonomous()
 {
+  resetThreads();
     awp();
     //elimAwp();
      //programming_skills();
@@ -105,8 +127,7 @@ void loadMacro(int times, int bigDelay, int smallDelay)
 /* runs on comp switch driver */
 void usercontrol()
 {
-        //autonomous();
-
+  resetThreads();
     printf("Entered Driver\n");
     chassis.stateMachineOff();
 

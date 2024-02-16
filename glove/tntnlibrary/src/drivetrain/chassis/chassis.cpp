@@ -34,15 +34,6 @@ std::unique_ptr<T> make_unique(Args &&...args)
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
-int odomLoop()
-{
-    while (1)
-    {
-        chassis.update();
-        vex::wait(10, vex::msec);
-    }
-    return 0;
-}
 
 void Chassis::initialize(bool calibrateIMU, float x, float y, float theta)
 {
@@ -50,16 +41,6 @@ void Chassis::initialize(bool calibrateIMU, float x, float y, float theta)
     odom.calibrate(calibrateIMU);
     Pose newPose(x, y, theta);
     Chassis::setPose(newPose);
-    // start the chassis task if it doesn't exist
-    if (task == nullptr)
-    {
-        task = make_unique<vex::task>(odomLoop);
-        printf("new chassis thead\n");
-    }
-    else
-    {
-        printf("thread already exists\n");
-    }
 }
 
 /**

@@ -6,6 +6,9 @@ using namespace tntnlib;
 vex::competition Competition;
 vex::brain Brain;
 
+vex::thread loggerThread;
+vex::thread chassisThread;
+
 /* tntnlib robot Config */
 MotorGroup leftMotors(vex::gearSetting::ratio6_1, 450, -7, 8, -9, -10);
 MotorGroup rightMotors(vex::gearSetting::ratio6_1, 450, 1, 2, -3, 4);
@@ -41,17 +44,37 @@ int logger()
   return 0;
 }
 
+
+int chassisLoop()
+{
+  while (true)
+  {
+    chassis.update();
+    vex::wait(10, vex::msec);
+  }
+  return 0;
+}
+
+void resetThreads()
+{
+  loggerThread.interrupt();
+  loggerThread = vex::thread(logger);
+  chassisThread.interrupt();
+  chassisThread = vex::thread(chassisLoop);
+}
+
 /* runs when program first starts */
 void pre_auton()
 {
-  vex::task log(logger);
   printf("Entered pre_auton\n");
   chassis.initialize(true, 0, 0, 0);
+  resetThreads();
 }
 
 /* runs on comp switch autonomous */
 void autonomous()
 {
+  resetThreads();
   //safeAWP();
   //safeElim();
   awp();
@@ -62,7 +85,7 @@ void autonomous()
 /* runs on comp switch driver */
 void usercontrol()
 {
-  autonomous();
+  resetThreads();
   printf("Entered Driver\n");
   chassis.stateMachineOff();
   if (Controller.ButtonLeft.pressing())
