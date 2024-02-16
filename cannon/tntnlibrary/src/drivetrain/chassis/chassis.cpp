@@ -240,7 +240,7 @@ void Chassis::tuneOffsets(float ang, float kp, float ki, float kd, float maxSpee
     Chassis::turnToHeadingUnbounded(ang, false, maxSpeed, kp, ki, kd, breakang);
     vex::wait(1000, vex::msec);
     stateMachineOff();
-    chassis.tank(0, 0, 0);
+    chassis.tank(0, 0, 1,0,100,0);
     while (!Brain.Screen.pressing())
         vex::wait(10, vex::msec);
     vex::wait(500, vex::msec);

@@ -1,23 +1,47 @@
 #include "../tntnlibrary/include/drivetrain/chassis/chassis.h"
+#include "../tntnlibrary/include/util.h"
 #include "vex.h"
 #include <math.h>
 
 namespace tntnlib {
 
 /**
- * @brief  Default drive curve. Modifies the input with an exponential curve. If the input is 127, the function
- * will always output 127, no matter the value of scale, likewise for -127. A scale of zero disable the curve
- * entirely. This curve was inspired by team 5225, the Pilons. A Desmos graph of this curve can be found
- * here: https://www.desmos.com/calculator/rcfjjg83zx
+ * @brief  Trevors custom curve, takes an input from +-100 and returns a curved value from +-12
+ * set gain to 1, min to 0, fullstick to 12, and deadband to 0 for a linear curve
+ * recommended values are gain:3 min:1, fullstick:12, deadband:3
  * @param input value from -127 to 127
- * @param scale how steep the curve should be.
+ * @param gain how steep the curve should be.  1-4 is a good range for this value.
+ * @param min the minimum value to be outputted. This gives more control over the lower end of the curve.
+ * @param fullStick at what percent stick should it output max. 80-100 is a good range for this value.
+ * @param deadband the deadband of the input in percent. 0-10 is a good range for this value.
  * @return The new value to be used.
  */
-float defaultDriveCurve(float input, float scale) {
-    if (scale != 0) {
-        return (powf(2.718, ( ( (fabs(input) - 12) * scale ) / 1000.0)) * input);
+float sherbertCurve(float input, float gain, float min, float fullStick, float deadband) {
+    input = input / 12.0;
+    int sign = sgn(input);
+    if (input*100.0/12.0 < deadband && input*100.0/12.0 > -deadband) {
+        return 0;
     }
-    return input;
+    float output = (sign * (powf(fabs(input), gain)) / (powf(fullStick/12.0, gain - 1)) ) + min*sign;
+    if (fabs(output) > 12.0) {
+        return 12.0 * sign;
+    }
+    return output;
+}
+
+
+/**
+ * @brief Control the robot during the driver using the arcade drive control scheme. In this control scheme one
+ * joystick axis controls the forwards and backwards movement of the robot, while the other joystick axis
+ * controls  the robot's turning
+ * @param throttle speed to move forward or backward. Takes an input from -12 to 12.
+ * @param turn speed to turn. Takes an input from -12 to 12.
+ * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
+ * curve, refer to the `defaultDriveCurve` documentation.
+ */
+void Chassis::tank(int left, int right, float gain, float min, float fullStick, float deadband) {
+    drivetrain.leftMotors->spinVolts(sherbertCurve(left, gain, min, fullStick, deadband));
+    drivetrain.rightMotors->spinVolts(sherbertCurve(right, gain, min, fullStick, deadband));
 }
 
 /**
@@ -29,49 +53,8 @@ float defaultDriveCurve(float input, float scale) {
  * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
  * curve, refer to the `defaultDriveCurve` documentation.
  */
-void Chassis::tank(int left, int right, float curveGain) {
-    drivetrain.leftMotors->spinVolts(defaultDriveCurve(left, curveGain));
-    drivetrain.rightMotors->spinVolts(defaultDriveCurve(right, curveGain));
-}
-
-/**
- * @brief Control the robot during the driver using the arcade drive control scheme. In this control scheme one
- * joystick axis controls the forwards and backwards movement of the robot, while the other joystick axis
- * controls  the robot's turning
- * @param throttle speed to move forward or backward. Takes an input from -12 to 12.
- * @param turn speed to turn. Takes an input from -12 to 12.
- * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
- * curve, refer to the `defaultDriveCurve` documentation.
- */
-void Chassis::arcade(int throttle, int turn, float curveGain) {
-    drivetrain.leftMotors->spinVolts(defaultDriveCurve(throttle+turn, curveGain));
-    drivetrain.rightMotors->spinVolts(defaultDriveCurve(throttle-turn, curveGain));
-}
-
-/**
- * @brief Control the robot during the driver using the curvature drive control scheme. This control scheme is
- * very similar to arcade drive, except the second joystick axis controls the radius of the curve that the
- * drivetrain makes, rather than the speed. This means that the driver can accelerate in a turn without changing
- * the radius of that turn. This control scheme defaults to arcade when forward is zero.
- * @param throttle speed to move forward or backward. Takes an input from -127 to 127.
- * @param turn speed to turn. Takes an input from -127 to 127.
- * @param curveGain the scale inputted into the drive curve function. If you are using the default drive
- * curve, refer to the `defaultDriveCurve` documentation.
- */
-void Chassis::curvature(int throttle, int turn, float curveGain) {
-    // If we're not moving forwards change to arcade drive
-    if (throttle == 0) {
-        arcade(throttle, turn, curveGain);
-        return;
-    }
-
-    float leftPower = throttle + (abs(throttle) * turn) / 127.0;
-    float rightPower = throttle - (abs(throttle) * turn) / 127.0;
-
-    leftPower = defaultDriveCurve(leftPower, curveGain);
-    rightPower = defaultDriveCurve(rightPower, curveGain);
-
-    drivetrain.leftMotors->spinVolts(leftPower);
-    drivetrain.rightMotors->spinVolts(rightPower);
+void Chassis::arcade(int throttle, int turn, float gain, float min, float fullStick, float deadband) {
+    drivetrain.leftMotors->spinVolts(sherbertCurve(throttle+turn, gain, min, fullStick, deadband));
+    drivetrain.rightMotors->spinVolts(sherbertCurve(throttle-turn, gain, min, fullStick, deadband));
 }
 } // namespace tntnlib

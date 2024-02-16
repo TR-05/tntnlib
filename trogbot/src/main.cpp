@@ -96,7 +96,7 @@ void usercontrol()
     { 
       pow = 0;
     }
-    chassis.tank(Controller.Axis3.position() * .12 + pow, Controller.Axis2.position() * .12 - pow, 0); // tank (the best drive style)
+    chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 3, 1, 90, 3); // tank (the best drive style)
     // intake.driverTwoButton(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), 12, -12);
     // flywheel.spinVolts(6);
     // intake.driverToggle(Controller.ButtonA.pressing(), 3);
