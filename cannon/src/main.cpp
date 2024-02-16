@@ -92,6 +92,12 @@ void pre_auton()
 {
     printf("did not Entered pre_auton\n");
     chassis.initialize(true, 0, 0, 0);
+    /*
+    float bangBangMargin = 2.0;
+    float integral = 0;
+    float lastError = 0;
+    float kV = 11.75, kP = 0, kI = .075, kAcc = 1, kDec = 1;
+    */
     flywheel.initializeVeloController(11, 0, 0, 0, 0, 5000, 0);
     resetThreads();
 }
