@@ -96,28 +96,29 @@ float MotorGroup::getVolts()
 
 float MotorGroup::getPower(float rpm)
 {
-    error = targetRPM - getRPM();
-    if (error > bangBangMargin)
+
+  float error = (rpm - getRPM()) / 3600;
+  if (error > bangBangMargin)
+  {
+    integral = 0;
+    return 12;
+  }
+  else
+  {
+    integral += error;
+    if (sgn(error) != sgn(lastError) && sgn(error) == 1)
     {
-        return 12;
+      integral /= 2;
     }
+    lastError = error;
+    float power = (kV * rpm / 3600.0) + kP * error + kI * integral;
+    if (sgn(power) == sgn(getRPM()))
+      power *= kAcc;
     else
-    {
-        integral += error;
-        if (sgn(error) != sgn(lastError) && sgn(error) == 1)
-        {
-            integral /= 2;
-        }
-        lastError = error;
-        float power = kV * targetRPM + kP * error + kI * integral;
-        if (sgn(power) == sgn(getRPM()))
-            power *= kAcc;
-        else
-            power *=kDec;
-        power = clamp(power, -12, 12);
-        //printf("power: %.2f integral: %.2f kI: %.2f rpm: %.3f\n", power, integral, kI, getRPM());
-        return power;
-    }
+      power *= kDec;
+    //printf("\n\ncurRpm: %.2f power: %.2f integral: %.2f kI: %.2f rpm: %.3f\n", rpm, power, integral, kI, getRPM());
+    return power;
+  }
 }
 
 void MotorGroup::setBrakeType(vex::brakeType type)

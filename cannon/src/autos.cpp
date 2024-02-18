@@ -69,7 +69,7 @@ int updateFlywheel()
 {
     while (true)
     {
-        if (intakeVolts != 0)
+       /* if (intakeVolts != 0)
         {
             if (intake.getCurrent() > 1.8)
                 stallCounter++;
@@ -109,8 +109,8 @@ int updateFlywheel()
         {
             visionPow = 0; //visionPower();
             chassis.stateMachineOff();
-            chassis.tank(visionPow, -visionPow);
-        }
+            chassis.tank(visionPow, -visionPow, 1, 0, 100, 0);
+        }*/
         vex::wait(10, vex::msec);
     }
     return 0;
@@ -121,7 +121,7 @@ void stopAuto()
     printTime();
     chassis.stateMachineOff();
     delay(20);
-    chassis.tank(0, 0);
+    chassis.tank(0, 0, 1, 0, 100, 0);
     flywheel.stop(vex::brakeType::coast);
     intakeVolts = (0);
     visionControl = false;

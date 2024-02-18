@@ -33,8 +33,8 @@ Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, tntnlib::Omniwheel::NEW_4
 OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
 // Flywheel flywheel(vex::gearSetting::ratio6_1, 3600, 11, 0, 0.0, 2, -12, 11, 20, -19);
-MotorGroup flywheel(vex::gearSetting::ratio6_1, 3600, -12, 11, 20, -19);
-MotorGroup intake(vex::gearSetting::ratio6_1, 600, -13, 17);
+MotorGroup flywheel(vex::gearSetting::ratio6_1, 3600, -1, 2, -9, 10);
+MotorGroup intake(vex::gearSetting::ratio6_1, 600, 3, -8);
 /* End of tntnlib Robot Config */
 
 vex::digital_out left_intake_piston(Brain.ThreeWirePort.A);
@@ -81,18 +81,18 @@ int chassisLoop()
 
 void resetThreads()
 {
-  loggerThread.interrupt();
+  /*loggerThread.interrupt();
   loggerThread = vex::thread(logger);
   chassisThread.interrupt();
-  chassisThread = vex::thread(chassisLoop);
+  chassisThread = vex::thread(chassisLoop);*/
 }
 
 /* runs when program first starts */
 void pre_auton()
 {
     printf("did not Entered pre_auton\n");
-    chassis.initialize(true, 0, 0, 0);
-    flywheel.initializeVeloController(11.75, 0, 0.075, 1, 1, 2.0, 1.0);
+   // chassis.initialize(true, 0, 0, 0);
+    //flywheel.initializeVeloController(11.75, 0, 0.075, 1, 1, 0, 1.0);
     resetThreads();
 }
 
@@ -184,7 +184,6 @@ void usercontrol()
             ;//loadMacro(60, 950, 350);
 
         intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
-        printf("hello: %.2f\n ", getTime());
         chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 1, 0, 100, 3); // tank (the best drive style)
         //printf("R: %.2f, R2:%.2f, V: %.2f, C: %.2f\n", flywheel.getRPM(), intake.getRPM(), flywheel.getVolts(), flywheel.getCurrent());
         //  chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis4.position() *.12, 0); //single stick arcade

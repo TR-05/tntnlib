@@ -58,7 +58,7 @@ void stopAuto()
 {
   chassis.stateMachineOff();
   delay(20);
-  chassis.tank(0, 0);
+  chassis.tank(0, 0, 1, 0, 100, 0);
   intake.stop(vex::brakeType::coast);
   printTime();
 }
