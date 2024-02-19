@@ -20,12 +20,12 @@ vex::vision::signature SIG_5(5, 0, 0, 0, 0, 0, 0, 3.000, 0);
 vex::vision::signature SIG_6(6, 0, 0, 0, 0, 0, 0, 3.000, 0);
 vex::vision::signature SIG_7(7, 0, 0, 0, 0, 0, 0, 3.000, 0);
 vex::vision vision1(vex::PORT5, 9, SIG_1, SIG_2, SIG_3, SIG_4, SIG_5, SIG_6, SIG_7);
-
 /* tntnlib robot Config */
+vex::triport Expander1(vex::PORT4);
 MotorGroup leftMotors(vex::gearSetting::ratio6_1, 300, -11, -12, 13, 14);
 MotorGroup rightMotors(vex::gearSetting::ratio6_1, 300, 20, 19, -18, -17);
-TrackingWheel horizontal(Brain.ThreeWirePort.G, tntnlib::Omniwheel::NEW_275, 3.545208, -1);
-TrackingWheel vertical(Brain.ThreeWirePort.E, tntnlib::Omniwheel::NEW_275, 0.596979, -1);
+TrackingWheel horizontal(Expander1.G, tntnlib::Omniwheel::NEW_275, 3.545208, -1);
+TrackingWheel vertical(Expander1.E, tntnlib::Omniwheel::NEW_275, 0.596979, -1);
 Gyro imu(15, 1.010357);
 /* chassis and controllers (DO NOT CHANGE NAMES) */
 ControllerSettings linearSettings(.6, 0, 3.5, 2, 2, 12);
