@@ -58,13 +58,6 @@ void startAuto(float x, float y, float theta)
     lkd = chassis.linearSettings.kD;
 }
 float shotCount = 0;
-float rpm = 0;
-float intakeVolts = 0;
-float visionPow = 0;
-bool visionControl = false;
-float loopTime = 200;
-int loopIterater = 0;
-int stallCounter = 0;
 int updateFlywheel()
 {
     while (true)
@@ -115,7 +108,6 @@ int updateFlywheel()
     }
     return 0;
 }
-
 void stopAuto()
 {
     printTime();
@@ -123,18 +115,16 @@ void stopAuto()
     delay(20);
     chassis.tank(0, 0, 1, 0, 100, 0);
     flywheel.stop(vex::brakeType::coast);
-    intakeVolts = (0);
-    visionControl = false;
-    rpm = 0;
+    intakeVolts = 0;
+    FWrpm = 0;
     delay(100000);
 }
 void programming_skills()
 {
     chassis.breakOutTime = 10;
     startAuto(34.6, 13.2, -90);
-    vex::task fly(updateFlywheel);
-    rpm = 0;
-
+    FWrpm = 0;
+    intakeVolts = 0;
     // Score Preload
     chassis.pid(-50, -90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
     delay(400);
@@ -151,7 +141,7 @@ void programming_skills()
     delay(1500);
 
     // Aim for matchload
-    rpm = 3800;
+    FWrpm = 3800;
     chassis.autoTankVolts(-6, 6);
     delay(100);
     intakeVolts = (0);
@@ -164,9 +154,8 @@ void programming_skills()
     intakeVolts = (12);
     loadMacro(26, 600, 300);
     delay(500);
-    rpm = 0;
-    intakeVolts = (-6);
-    visionControl = false;
+    FWrpm = 0;
+    intakeVolts = -6;
     delay(10);
     chassis.stateMachineOn();
 
@@ -196,7 +185,7 @@ void programming_skills()
     delay(1700);
 
     // Aim for matchload
-    rpm = 3800;
+    FWrpm = 3800;
     chassis.autoTankVolts(6, -6);
     delay(1000);
     //offset = -7.5;
@@ -234,9 +223,8 @@ void awp()
         shotCount += 1;
     }
     delay(500);
-    rpm = 0;
-    intakeVolts = (-6);
-    visionControl = false;
+    FWrpm = 0;
+    intakeVolts = -6;
     delay(10);
     chassis.stateMachineOn();
 
@@ -259,21 +247,19 @@ void awp()
     return;
 }
 
-vex::task flywheelIntakeControl(updateFlywheel);
 void baseMatchAuto()
 {
     chassis.breakOutTime = 10;
     startAuto(129.9, 38.0, -90);
-    flywheelIntakeControl = vex::task(updateFlywheel);
-    rpm = 0;
-
+    FWrpm = 0;
+    intakeVolts = 0;
     // Grab first triball and pass it
     Path path1(129.9, 38.0, 114.3, 38.3, 104.3, 41.8, 89, 47, 100);
     left_intake_piston.set(true);
     right_intake_piston.set(true);
     intakeVolts = (5);
     chassis.follow(path1, false, 12, 12, lkp, lki, lkd, akp * 0.7, aki, akd, .4, 25, 3);
-    rpm = 2050;
+    FWrpm = 2050;
     left_intake_piston.set(false);
     right_intake_piston.set(false);
     intakeVolts = (3);
@@ -284,7 +270,7 @@ void baseMatchAuto()
     delay(800);
 
     // grab second ball and pass it
-    rpm = 2050;
+    FWrpm = 2050;
     chassis.turnToHeading(-90, false, 12, akp, aki, akd, 10);
     left_intake_piston.set(true);
     right_intake_piston.set(true);
@@ -346,7 +332,7 @@ void baseMatchAuto()
     delay(1600);
 
     // Aim for matchload
-    rpm = 3800;
+    FWrpm = 3800;
     chassis.autoTankVolts(6, -6);
     delay(1000);
     chassis.turnToHeading(154, false, 12, akp, aki, akd, 0);

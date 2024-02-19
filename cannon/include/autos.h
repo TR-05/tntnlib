@@ -3,8 +3,8 @@
 
 extern float startTime, endTime, totalTime;
 extern float shotCount;
-extern bool taskFlyIntControl;
-extern float intakeVoltTarg;
+extern float FWrpm, intakeVolts;
+
 extern vex::task flywheelIntakeControl;
 extern tntnlib::ControllerSettings angularSettings;
 extern tntnlib::MotorGroup intake;
