@@ -58,56 +58,6 @@ void startAuto(float x, float y, float theta)
     lkd = chassis.linearSettings.kD;
 }
 float shotCount = 0;
-int updateFlywheel()
-{
-    while (true)
-    {
-       /* if (intakeVolts != 0)
-        {
-            if (intake.getCurrent() > 1.8)
-                stallCounter++;
-            else
-            {
-                stallCounter = 0;
-            }
-            // printf("count:%d\n", stallCounter);
-            // printf("loop:%d\n", loopIterater);
-            if (stallCounter > 17)
-            {
-                loopIterater = 0;
-                stallCounter = 0;
-            }
-
-            if (loopIterater < 10)
-            {
-                loopIterater++;
-                intake.spinVolts(-12);
-                // printf("stall\n");
-            }
-            else
-            {
-                // loopIterater = 11;
-                intake.spinVolts(intakeVolts);
-            }
-        }
-
-        else
-            intake.stop(vex::brakeType::coast);
-
-        if (rpm != 0)
-            flywheel.spinRPM(rpm);
-        else
-            flywheel.stop(vex::brakeType::coast);
-        if (visionControl)
-        {
-            visionPow = 0; //visionPower();
-            chassis.stateMachineOff();
-            chassis.tank(visionPow, -visionPow, 1, 0, 100, 0);
-        }*/
-        vex::wait(10, vex::msec);
-    }
-    return 0;
-}
 void stopAuto()
 {
     printTime();
