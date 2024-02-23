@@ -26,7 +26,7 @@ MotorGroup leftMotors(vex::gearSetting::ratio6_1, 300, -11, -12, 13, 14);
 MotorGroup rightMotors(vex::gearSetting::ratio6_1, 300, 20, 19, -18, -17);
 TrackingWheel horizontal(Expander1.G, tntnlib::Omniwheel::NEW_275, 3.545208, -1);
 TrackingWheel vertical(Expander1.E, tntnlib::Omniwheel::NEW_275, 0.596979, -1);
-Gyro imu(15, 1.010357);
+Gyro imu(5, 1.010357);
 /* chassis and controllers (DO NOT CHANGE NAMES) */
 ControllerSettings linearSettings(.6, 0, 3.5, 2, 2, 12);
 ControllerSettings angularSettings(.6, 0.01, 4.5, 2, 15, 12);
@@ -132,7 +132,7 @@ void pre_auton()
 {
     printf("did not Entered pre_auton\n");
     chassis.initialize(true, 0, 0, 0);
-    flywheel.initializeVeloController(11.75, 0, 0.075, 1, 1, 2.0, 1.0);
+    flywheel.initializeVeloController(11.75, 20, 0.075, 1, 1, 0.0, 1.0);
     resetThreads();
 }
 
@@ -181,20 +181,19 @@ void usercontrol()
         updateButtons();
         left_intake_piston.set(l1.state);
         right_intake_piston.set(l1.state);
-        if (x.newPress())
+        if (right.newPress())
             aligner.set(!aligner);
         if (l2.newPress())
             spaceMaker.set(!spaceMaker);
         if (a.state)
-            FWrpm = 3800;
+            FWrpm = 3200;
         if (b.state)
             FWrpm = 2750;
         if (y.state)
             FWrpm = 2000;
         if (x.state)
             FWrpm = 0;
-        if (right.newPress())
-            ; // loadMacro(60, 950, 350);
+
         intakeVolts = Controller.ButtonR1.pressing() ? 12 : Controller.ButtonR2.pressing() ? -12
                                                                                            : 0;
         chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 1, 0, 100, 3); // tank (the best drive style)
