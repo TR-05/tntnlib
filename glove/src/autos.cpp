@@ -90,7 +90,7 @@ void programming_skills2()
 {
    startAuto(131, 54, 0);
   chassis.breakOutTime = 3.5;
-  Path path1(131,59,  133.3,104.5,  129.6,112.0,  122,118.3,  100);
+  Path path1(131,59,  133.3,104.5,  129.6,112.0,  105,126,  100);
   chassis.setOffset(0, 0);
   chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 16, 20);
   stopAuto();
