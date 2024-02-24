@@ -145,6 +145,21 @@ void Chassis::waitUntilError(float &error, float margin)
     } while (fabs(error) > margin && margin != 0);
 }
 
+void Chassis::LineWait(float x, float y, float margin, float maxTime)
+{
+    float initialT = Brain.timer(vex::msec) / 1000.0;
+    float time = 0;
+    Pose target(x, y, 0);
+    do
+    {
+        time = Brain.timer(vex::msec) / 1000.0 - initialT;
+        if (time > maxTime)
+            break;
+        wait(10, vex::msec);
+    } while (target.distance(chassis.getPose(false)) > margin && margin != 0);
+}
+
+
 /**
  * This function sets up the Turn controller
  *

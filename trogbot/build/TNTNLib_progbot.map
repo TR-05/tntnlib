@@ -166,7 +166,7 @@ Discarded input sections
  .ARM.exidx.text._ZN7tntnlib10MotorGroup8getVoltsEv
                 0x0000000000000000        0x8 build/tntnlibrary/src/motorGroup.o
  .text._ZN7tntnlib10MotorGroup8getPowerEf
-                0x0000000000000000      0x104 build/tntnlibrary/src/motorGroup.o
+                0x0000000000000000      0x12c build/tntnlibrary/src/motorGroup.o
  .ARM.exidx.text._ZN7tntnlib10MotorGroup8getPowerEf
                 0x0000000000000000        0x8 build/tntnlibrary/src/motorGroup.o
  .text._ZN7tntnlib10MotorGroup12setBrakeTypeEN3vex9brakeTypeE
@@ -174,7 +174,7 @@ Discarded input sections
  .ARM.exidx.text._ZN7tntnlib10MotorGroup12setBrakeTypeEN3vex9brakeTypeE
                 0x0000000000000000        0x8 build/tntnlibrary/src/motorGroup.o
  .text._ZN7tntnlib10MotorGroup7spinRPMEd
-                0x0000000000000000       0x38 build/tntnlibrary/src/motorGroup.o
+                0x0000000000000000       0x4c build/tntnlibrary/src/motorGroup.o
  .ARM.exidx.text._ZN7tntnlib10MotorGroup7spinRPMEd
                 0x0000000000000000        0x8 build/tntnlibrary/src/motorGroup.o
  .text._ZN7tntnlib10MotorGroup15driverTwoButtonEbbff
@@ -185,6 +185,8 @@ Discarded input sections
                 0x0000000000000000       0x50 build/tntnlibrary/src/motorGroup.o
  .ARM.exidx.text._ZN7tntnlib10MotorGroup12driverToggleEbf
                 0x0000000000000000        0x8 build/tntnlibrary/src/motorGroup.o
+ .rodata.str1.1
+                0x0000000000000000       0x40 build/tntnlibrary/src/motorGroup.o
  .llvm_addrsig  0x0000000000000000        0x3 build/tntnlibrary/src/motorGroup.o
  .text          0x0000000000000000        0x0 build/tntnlibrary/src/pid.o
  .text._ZN7tntnlib5FAPIDC2Efffff
@@ -276,6 +278,10 @@ Discarded input sections
  .text._ZN7tntnlib7Chassis13waitUntilDoneEv
                 0x0000000000000000       0x30 build/tntnlibrary/src/drivetrain/chassis/chassis.o
  .ARM.exidx.text._ZN7tntnlib7Chassis13waitUntilDoneEv
+                0x0000000000000000        0x8 build/tntnlibrary/src/drivetrain/chassis/chassis.o
+ .text._ZN7tntnlib7Chassis8LineWaitEffff
+                0x0000000000000000      0x130 build/tntnlibrary/src/drivetrain/chassis/chassis.o
+ .ARM.exidx.text._ZN7tntnlib7Chassis8LineWaitEffff
                 0x0000000000000000        0x8 build/tntnlibrary/src/drivetrain/chassis/chassis.o
  .text._ZN7tntnlib7Chassis10turnToPoseEffbfffff
                 0x0000000000000000       0x84 build/tntnlibrary/src/drivetrain/chassis/chassis.o
