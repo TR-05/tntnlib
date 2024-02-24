@@ -76,8 +76,9 @@ void autonomous()
     resetThreads();
     // safeAWP();
     // safeElim();
-    awp();
+    //awp();
     // programming_skills();
+    programming_skills2();
     // ElimAwp();
 }
 

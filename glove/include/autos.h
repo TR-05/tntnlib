@@ -8,6 +8,7 @@ extern vex::digital_out right_wing;
 
 float getTime();
 void programming_skills();
+void programming_skills2();    
 void awp();
 void ElimAwp();
 void safeAWP();

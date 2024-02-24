@@ -39,7 +39,6 @@ void MotorGroup::resetPosition()
     }
 }
 
-
 float MotorGroup::getRPM()
 {
     double total = 0;
@@ -49,7 +48,7 @@ float MotorGroup::getRPM()
         total += motor.velocity(vex::percentUnits::pct);
         motorCount++;
     }
-    double rawOutput = (total / motorCount) * (outputRPM/100.0);
+    double rawOutput = (total / motorCount) * (outputRPM / 100.0);
     lastRPMEmaOutput = ema(rawOutput, lastRPMEmaOutput, 1.0);
     currentRPM = lastRPMEmaOutput;
     return currentRPM;
@@ -96,30 +95,32 @@ float MotorGroup::getVolts()
 
 float MotorGroup::getPower(float rpm)
 {
-    error = targetRPM - getRPM();
-    if (error > bangBangMargin)
+    float error = (rpm - getRPM()) / outputRPM;
+/*    if (error > bangBangMargin && bangBangMargin != 0)
     {
+        integral = 0;
         return 12;
     }
     else
-    {
+    {*/
+        float kpPow = 0;
+        if (error > 0)
+            kpPow = kP * error;
         integral += error;
         if (sgn(error) != sgn(lastError) && sgn(error) == 1)
         {
             integral /= 2;
         }
         lastError = error;
-        float power = kV * targetRPM + kP * error + kI * integral;
+        float power = (kV * rpm / outputRPM) + kpPow + kI * integral;
         if (sgn(power) == sgn(getRPM()))
             power *= kAcc;
         else
-            power *=kDec;
-        power = clamp(power, -12, 12);
-        //printf("power: %.2f integral: %.2f kI: %.2f rpm: %.3f\n", power, integral, kI, getRPM());
+            power *= kDec;
+         printf("\n\ncurRpm: %.2f power: %.2f integral: %.2f kI: %.2f error: %.3f\n", rpm, power, integral, kI, error);
         return power;
-    }
+   // }
 }
-
 void MotorGroup::setBrakeType(vex::brakeType type)
 {
     brakeType = type;
@@ -167,8 +168,15 @@ void MotorGroup::spinPct(float pct)
 
 void MotorGroup::spinRPM(double rpm)
 {
-    targetRPM = rpm / outputRPM;
-    spinVolts(getPower(targetRPM));
+    targetRPM = rpm;
+    if (rpm == 0)
+    {
+        stop(brakeType);
+    }
+    else
+    {
+        spinVolts(getPower(targetRPM));
+    }
 }
 
 void MotorGroup::driverTwoButton(bool in, bool out, float inVolts, float outVolts)

@@ -86,6 +86,49 @@ void touchAWP()
 
 }
 
+void programming_skills2()
+{
+   startAuto(131, 54, 0);
+  chassis.breakOutTime = 3.5;
+  Path path1(131,59,  133.3,104.5,  129.6,112.0,  122,118.3,  100);
+  chassis.setOffset(0, 0);
+  chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 16, 20);
+  stopAuto();
+
+
+  right_wing.set(true);
+  left_wing.set(true);
+  Pose fake(path1.x3, path1.y3, 0);
+  chassis.LineWait(path1.x3, path1.y3, 30, 3000);
+  do
+  {
+    wait(10, vex::msec);
+  } while (fabs(chassis.getPose().distance(fake)) > 10);
+  delay(700);
+  intake.spinVolts(-12);
+  chassis.pid(5, -38, false, 5, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(700);
+  chassis.turnToHeading(-95, false, 12, akp, aki, akd, 5);
+  right_wing.set(false);
+  left_wing.set(false);
+  chassis.turnToHeading(-45, false, 12, akp, aki, akd, 5);
+  chassis.pid(-5, -45, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
+
+  chassis.turnToHeadingUnbounded(110, false, 12, akp, aki, akd, 6);
+  chassis.setOffset(0, 0);
+  chassis.moveTo(115, 128, true, 10, 12, lkp, lki, lkd, akp, aki, akd * 1.25, .4, 12);
+  chassis.moveTo(90, 126, true, 12, 12, lkp * 1.4, lki, lkd, akp, aki, akd * 1.25, 12, 20); // shove 1
+  delay(400);
+  chassis.pid(6, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, 0);
+  delay(500);
+  chassis.pid(-50, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(900);
+
+
+}
+
+
+
 void programming_skills()
 {
   startAuto(131.75, 54 + 0, 0);
