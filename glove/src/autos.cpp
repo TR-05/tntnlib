@@ -46,6 +46,7 @@ void startAuto(float x, float y, float theta)
   chassis.initialize(false, x, y, theta);
   chassis.setOffset(0, 0);
   chassis.stateMachineOn();
+  chassis.breakOutTime = 100000;
   akp = chassis.angularSettings.kP;
   aki = chassis.angularSettings.kI;
   akd = chassis.angularSettings.kD;
@@ -83,28 +84,88 @@ void touchAWP()
   delay(500);
   stopAuto();
   delay(100000);
-
 }
 
 void programming_skills2()
 {
-   startAuto(131, 54, 0);
+  startAuto(131, 54, 0);
   chassis.breakOutTime = 3.5;
-  Path path1(131,59,  133.3,104.5,  129.6,112.0,  102,126,  100);
+  Path path1(131, 59, 135.9, 111.2, 138.2, 139.1, 98, 126, 100);
   chassis.setOffset(0, 0);
   chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 16, 0);
-  delay(500);
+  delay(1050);
   right_wing.set(true);
   left_wing.set(true);
-  delay(500);
+  delay(550);
+  right_wing.set(false);
+  left_wing.set(false);
+
   intake.spinVolts(-12);
-  chassis.LineWait(path1.x3, path1.y3, 5, 3000);
-  Path path2(98.2, 131.9, 142.8, 116.6, 72.3, 69.7, 55.0, 104, 100);
+  chassis.LineWait(path1.x3, path1.y3, 10, 3000);
+  delay(450);
+  Path path2(98.2, 131.9, 142.8, 116.6, 89.9, 90.4, 58.2, 101.4, 100);
   chassis.follow(path2, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
+  chassis.turnToHeading(19, false, 12, akp, aki, akd, 3);
+  chassis.pid(10, 19, false, 8, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  right_wing.set(1);
+  left_wing.set(0);
+  delay(750);
+  chassis.pid(4, 19, false, 2, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  while (getTime() < 28)
+  {
+    delay(10);
+  }
+  right_wing.set(0);
+  left_wing.set(0);
+  chassis.moveTo(67, 85, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  right_wing.set(1);
+  left_wing.set(1);
+  chassis.moveTo(71, 114, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 0);
+  delay(1000);
+  right_wing.set(0);
+  left_wing.set(0);
+  chassis.moveTo(90, 80, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 3);
 
+  chassis.turnToPose(84, 105, false, 12, akp, aki, akd, 3);
+  chassis.moveTo(84, 105, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 7);
+  chassis.turnToHeading(-19, false, 12, akp, aki, akd, 3);
+  chassis.pid(10, -19, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  right_wing.set(0);
+  left_wing.set(1);
+  delay(750);
+  chassis.pid(4, -19, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  while (getTime() < 54.9)
+  {
+    delay(10);
+  }
+  chassis.SwingOnRightToHeading(15, 0, 12, akp * 1.6, aki, akd, 0);
+  delay(400);
+  right_wing.set(0);
+  left_wing.set(0);
+  Path path3(84, 105, 88.7, 98.2, 100.5, 86.4, 111.5, 95, 100);
+  chassis.follow(path3, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
+
+  //  chassis.moveTo(108.5, 88.5, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  chassis.turnToHeading(174, false, 12, akp, aki, akd, 20);
+  delay(200);
+  intake.spinVolts(12);
+  chassis.pid(40, 174, false, 10, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(700);
+  chassis.autoTankVolts(7.5, 8);
+  delay(1200);
+  chassis.autoTankVolts(0, 0);
+  delay(200);
+  hang.set(1);
+  while (getTime() < 59.85)
+  {
+    delay(10);
+  }
+  hang.set(0);
+
+  stopAuto();
+  delay(100000);
+  return;
 }
-
-
 
 void programming_skills()
 {
@@ -136,12 +197,12 @@ void programming_skills()
   {
     delay(10);
   }
-    printTime();
+  printTime();
   chassis.moveTo(63, 91.6, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
   chassis.turnToPose(65, 107, false, 12, akp, aki, akd, 7);
   left_wing.set(1);
   right_wing.set(1);
-  chassis.moveTo(65, 110, false, 12, 12, lkp*1.3, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 8);
+  chassis.moveTo(65, 110, false, 12, 12, lkp * 1.3, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 8);
   delay(300);
 
   chassis.moveTo(70.9, 91, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
@@ -183,7 +244,6 @@ void ElimAwp()
   return;
 }
 
-
 void awp()
 {
   baseMatchAuto();
@@ -193,9 +253,9 @@ void awp()
 
 void baseMatchAuto()
 {
-   startAuto(131, 54, 0);
+  startAuto(131, 54, 0);
   chassis.breakOutTime = 3.5;
-  Path path1(131,59,  133.3,104.5,  129.6,112.0,  122,118.3,  100);
+  Path path1(131, 59, 133.3, 104.5, 129.6, 112.0, 122, 118.3, 100);
   chassis.setOffset(0, 0);
   chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 16, 20);
   right_wing.set(true);
@@ -225,8 +285,6 @@ void baseMatchAuto()
   chassis.pid(-50, 90, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
   delay(900);
 
-
-
   // contest ball in neutral and shove it
   chassis.setOffset(0, 8);
   intake.spinVolts(12);
@@ -254,7 +312,6 @@ void baseMatchAuto()
   chassis.moveTo(80.6, 116, false, 12, 12, lkp, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 10); // go into goal
   intake.spinVolts(-12);
 
-
   chassis.turnToHeading(-20, false, 12, akp, aki, akd, 5);
   chassis.pid(6, -20, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
 
@@ -263,14 +320,12 @@ void baseMatchAuto()
   printTime();
 }
 
-
-
 void safeBaseMatchAuto()
 {
-  
-   startAuto(131, 54, 0);
+
+  startAuto(131, 54, 0);
   chassis.breakOutTime = 3.5;
-  Path path1(131,59,  133.3,104.5,  129.6,112.0,  122,118.3,  100);
+  Path path1(131, 59, 133.3, 104.5, 129.6, 112.0, 122, 118.3, 100);
   chassis.setOffset(0, 0);
   chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 16, 20);
   right_wing.set(true);
@@ -305,12 +360,11 @@ void safeBaseMatchAuto()
   intake.spinVolts(12);
   chassis.breakOutTime = 10;
 
-  Path path2(104.5,126.1,  154.9,128.4,  108.0,99.9,  84.4,106.0,  100);
+  Path path2(104.5, 126.1, 154.9, 128.4, 108.0, 99.9, 84.4, 106.0, 100);
   chassis.follow(path2, false, 12, 12, lkp * .6, lki, lkd, akp, aki, akd * 1.25, .4, 22, 6);
   chassis.turnToPose(80.6, 116, false, 12, akp, aki, akd, 5);
   chassis.moveTo(80.6, 116, false, 12, 12, lkp, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 10); // go into goal
   intake.spinVolts(-12);
-
 
   chassis.turnToHeading(-20, false, 12, akp, aki, akd, 5);
   chassis.pid(7, -20, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);

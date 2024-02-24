@@ -3,8 +3,7 @@
 
 extern float startTime, endTime, totalTime;
 extern tntnlib::MotorGroup intake;
-extern vex::digital_out left_wing;
-extern vex::digital_out right_wing;
+extern vex::digital_out left_wing, right_wing, hang;
 
 float getTime();
 void programming_skills();
