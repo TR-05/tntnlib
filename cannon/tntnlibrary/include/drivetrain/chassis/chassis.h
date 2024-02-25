@@ -126,7 +126,7 @@ namespace tntnlib
          * @param margin the static margin
          */
         void waitUntilError(float &error, float margin);
-
+        void LineWait(float x, float y, float margin, float maxTime);
         void moveToSettings(float akp, float aki, float akd, float lkp, float lki, float lkd, float slew);
 
         /**

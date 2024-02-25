@@ -111,7 +111,7 @@ void programming_skills2()
   left_wing.set(0);
   delay(750);
   chassis.pid(4, 19, false, 2, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  while (getTime() < 28)
+  while (getTime() < 23)
   {
     delay(10);
   }
@@ -142,7 +142,7 @@ void programming_skills2()
   delay(400);
   right_wing.set(0);
   left_wing.set(0);
-  Path path3(84, 105, 88.7, 98.2, 100.5, 86.4, 111.5, 95, 100);
+  Path path3(84, 105, 88.7, 98.2, 100.5, 84, 110.75, 91, 100);
   chassis.follow(path3, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
 
   //  chassis.moveTo(108.5, 88.5, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
