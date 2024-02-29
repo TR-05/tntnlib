@@ -47,6 +47,7 @@ vex::digital_out spaceMakerR(Brain.ThreeWirePort.D);
 /* data logger idk where to put :/ */
 int logger()
 {
+  printf("%d\n", Brain.Screen.drawImageFromFile("dumbo.png", 120, 0));
     while (true)
     {
         Pose current(chassis.getPose(false));
@@ -54,19 +55,8 @@ int logger()
         // printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
         //printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f, V:%.2f, S:%.0f,\n", current.x, current.y, current.theta, getTime(), totalTime / 1000.0, 0.0, shotCount);
         printf("%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n", getTime(), flywheel.getRPM(), flywheel.getVolts(), 0.0, current.x, current.y, current.theta);
-        std::cout << std::flush;
-
-        Brain.Screen.clearScreen(vex::color::yellow);
-        Brain.Screen.setPenColor(vex::color::black);
-        Brain.Screen.setFillColor(vex::color::yellow);
-        Brain.Screen.setFont(vex::fontType::prop60);
-        Brain.Screen.setCursor(1, 1);
-        Brain.Screen.print("X:%6.2f", current.x);
-        Brain.Screen.setCursor(2, 1);
-        Brain.Screen.print("Y:%6.2f", current.y);
-        Brain.Screen.setCursor(3, 1);
-        Brain.Screen.print("H:%6.2f", current.theta);
-
+        std::cout << std::flush;   
+        screenReadout();
         vex::wait(50, vex::msec);
     }
     return 0;

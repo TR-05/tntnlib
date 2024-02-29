@@ -18,4 +18,5 @@
 #include "../tntnlibrary/include/drivetrain/chassis/chassis.h"
 #include "../tntnlibrary/include/motorGroup.h"
 #include "../tntnlibrary/include/defaultDevices.h"
+#include "../tntnlibrary/include/screenReadout.h"
 #include "../tntnlibrary/include/opcontrol/controller.h"
