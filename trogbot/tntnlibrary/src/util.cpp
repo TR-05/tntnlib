@@ -1,20 +1,15 @@
-/**
- * @file src/tntnlib/util.cpp
- * @author Trevor Ruttan
- * @brief Pose class declarations
- * @version 0.0
- * @date 2023-10-12
- *
- * @copyright Copyright (c) 2023
- *
- */
-
 #include <math.h>
 #include <vector>
 #include <string.h>
 #include "../tntnlibrary/include/drivetrain/pose.h"
 #include "../tntnlibrary/include/util.h"
 #include "../tntnlibrary/include/defaultDevices.h"
+
+namespace tntnlib
+{
+
+void delay(float ms) { vex::wait(ms, vex::msec); }
+
 
 /**
  * @brief Slew rate limiter
@@ -24,7 +19,7 @@
  * @param maxChange maximum change. No maximum if set to 0
  * @return float - the limited value
  */
-float tntnlib::slew(float target, float current, float maxChange)
+float slew(float target, float current, float maxChange)
 {
     float change = target - current;
     if (maxChange == 0)
@@ -42,7 +37,7 @@ float tntnlib::slew(float target, float current, float maxChange)
  * @param rad radians
  * @return float degrees
  */
-float tntnlib::radToDeg(float rad) { return rad * 180 / M_PI; }
+float radToDeg(float rad) { return rad * 180 / M_PI; }
 
 /**
  * @brief Convert degrees to radians
@@ -50,10 +45,10 @@ float tntnlib::radToDeg(float rad) { return rad * 180 / M_PI; }
  * @param deg degrees
  * @return float radians
  */
-float tntnlib::degToRad(float deg) { return deg * M_PI / 180; }
+float degToRad(float deg) { return deg * M_PI / 180; }
 
-float tntnlib::degToStandardFormRad(float deg) { return M_PI_2 - (deg * M_PI / 180); }
-float tntnlib::StandardFormRadToDeg(float rad) { return (M_PI_2 - rad) * 180 / M_PI; }
+float degToStandardFormRad(float deg) { return M_PI_2 - (deg * M_PI / 180); }
+float StandardFormRadToDeg(float rad) { return (M_PI_2 - rad) * 180 / M_PI; }
 
 /**
  * @brief Calculate the error between 2 angles. Useful when calculating the error between 2 headings
@@ -63,7 +58,7 @@ float tntnlib::StandardFormRadToDeg(float rad) { return (M_PI_2 - rad) * 180 / M
  * @param radians true if angle is in radians, false if not. False by default
  * @return float wrapped angle
  */
-float tntnlib::angleError(float angle1, float angle2, bool radians)
+float angleError(float angle1, float angle2, bool radians)
 {
     float max = radians ? 2 * M_PI : 360;
     float half = radians ? M_PI : 180;
@@ -83,7 +78,7 @@ float tntnlib::angleError(float angle1, float angle2, bool radians)
  * @param x the number to get the sign of
  * @return int - -1 if negative, 1 if positive
  */
-int tntnlib::sgn(float x)
+int sgn(float x)
 {
     if (x < 0)
         return -1;
@@ -97,7 +92,7 @@ int tntnlib::sgn(float x)
  * @param values
  * @return float
  */
-float tntnlib::avg(std::vector<float> values)
+float avg(std::vector<float> values)
 {
     float sum = 0;
     for (float value : values)
@@ -115,12 +110,12 @@ float tntnlib::avg(std::vector<float> values)
  * @param smooth smoothing factor (0-1). 1 means no smoothing, 0 means no change
  * @return float - the smoothed output
  */
-float tntnlib::ema(float current, float previous, float smooth)
+float ema(float current, float previous, float smooth)
 {
     return (current * smooth) + (previous * (1 - smooth));
 }
 
-float tntnlib::clamp(float input, float min, float max)
+float clamp(float input, float min, float max)
 {
     float output;
     if (input > max)
@@ -134,20 +129,37 @@ float tntnlib::clamp(float input, float min, float max)
     return output;
 }
 
-float tntnlib::time(bool millis)
+float time(bool millis)
 {
     float t = Brain.timer(vex::msec);
     return millis ? t : t / 1000.0;
+}
+
+float getRunTime()
+{
+    return time() - startTime;
+}
+
+float startTimer()
+{
+    return startTime = time();
+}
+
+float startTime = 0;
+float totalRunTime = 0;
+void endTimer()
+{
+    totalRunTime = getRunTime();
 }
 /**
  * Finds the curvature of a circle which intersects 2 points, and is tangent to the first point
  *
  * Inspired by: https://www.chiefdelphi.com/t/paper-implementation-of-the-adaptive-pure-pursuit-controller/166552
  */
-float tntnlib::getCurvature(Pose p1, Pose p2)
+float getCurvature(Pose p1, Pose p2)
 {
     // calculate whether the pose is on the left or right side of the circle
-    float side = sgn(sin(p1.theta) * (p2.x - p1.x) - cos(p1.theta) * (p2.y - p1.y));
+    float side = tntnlib::sgn(sin(p1.theta) * (p2.x - p1.x) - cos(p1.theta) * (p2.y - p1.y));
     // calculate center point and radius
     float a = -tan(p1.theta);
     float c = tan(p1.theta) * p1.x - p1.y;
@@ -167,7 +179,7 @@ float tntnlib::getCurvature(Pose p1, Pose p2)
  * The function only calculates the square of the distance, because the exact distance is not needed.
  * It only needs to know what waypoint is closest.
  */
-tntnlib::Waypoint tntnlib::closestWaypoint(const std::vector<Waypoint> &waypoints, const Pose &target)
+Waypoint closestWaypoint(const std::vector<Waypoint> &waypoints, const Pose &target)
 {
     Waypoint closest = waypoints[0];
     float dist = pow(target.x - closest.x, 2) + pow(target.y - closest.y, 2);
@@ -195,11 +207,11 @@ tntnlib::Waypoint tntnlib::closestWaypoint(const std::vector<Waypoint> &waypoint
  * If there are no intersections, it returns the center of the circle.
  * If there are multiple intersections, it returns the first one.
  */
-tntnlib::Pose tntnlib::circleLineIntersect(Pose p1, Pose p2, Pose center, float radius)
+Pose circleLineIntersect(Pose p1, Pose p2, Pose center, float radius)
 {
     // uses the quadratic formula to calculate intersection points
-    tntnlib::Pose d = p2 - p1;
-    tntnlib::Pose f = p1 - center;
+    Pose d = p2 - p1;
+    Pose f = p1 - center;
     float a = d * d;
     float b = 2 * (f * d);
     float c = (f * f) - pow(radius, 2);
@@ -227,4 +239,7 @@ tntnlib::Pose tntnlib::circleLineIntersect(Pose p1, Pose p2, Pose center, float 
 
     // no intersection found
     return center;
+}
+
+
 }

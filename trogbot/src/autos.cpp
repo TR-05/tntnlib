@@ -4,14 +4,6 @@
 #include "../tntnlibrary/include/drivetrain/movements/turn.h"
 
 using namespace tntnlib;
-
-void delay(float ms)
-{
-  vex::wait(ms, vex::msec);
-}
-
-float startTime{0}, endTime{0}, totalTime{0};
-
 /* Example auto move functions
   chassis.tuneOffsets(3600, akp, aki, akd, 6, 2); //Tunes odom + imu constants: DISABLE TERMINAL PRINT then jig bot to a tile, run auto, once bot stops moving tap and hold brain screen
   chassis.pid(24, 60, 60, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2); //Moves forward 24 inches looking at xy point (60,60)
@@ -28,22 +20,10 @@ float lkp = chassis.linearSettings.kP;
 float lki = chassis.linearSettings.kI;
 float lkd = chassis.linearSettings.kD;
 
-void printTime()
-{
-  endTime = Brain.timer(vex::msec);
-  totalTime = endTime - startTime;
-  printf("Time: %.2f\n", totalTime / 1000.0);
-}
-
-float getTime()
-{
-  endTime = Brain.timer(vex::msec);
-  return (endTime - startTime) / 1000.0;
-}
 void startAuto(float x, float y, float theta)
 {
   printf("Entered Auto\n");
-  startTime = Brain.timer(vex::msec);
+  startTimer();
   chassis.initialize(false, x, y, theta);
   chassis.setOffset(0, 0);
   chassis.stateMachineOn();
@@ -106,6 +86,6 @@ void programming_skills()
   delay(500);
   chassis.SwingOnRightToHeading(145, 0, 12, akp * 1.6, aki, akd, 0);
 
-  printTime();
+  endTimer();
   return;
 }

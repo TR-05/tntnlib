@@ -2,15 +2,7 @@
 #include "vex.h"
 using namespace tntnlib;
 
-void delay(float ms)
-{
-  vex::wait(ms, vex::msec);
-}
-
 void baseMatchAuto();
-
-float startTime{0}, endTime{0}, totalTime{0};
-
 /* Example auto move functions
  chassis.tuneOffsets(3600, akp, aki, akd, 6, 2); //Tunes odom + imu constants: DISABLE TERMINAL PRINT then jig bot to a tile, run auto, once bot stops moving tap and hold brain screen
  chassis.pid(24, 60, 60, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2); //Moves forward 24 inches looking at xy point (60,60)
@@ -27,22 +19,10 @@ float lkp = chassis.linearSettings.kP;
 float lki = chassis.linearSettings.kI;
 float lkd = chassis.linearSettings.kD;
 
-void printTime()
-{
-  endTime = Brain.timer(vex::msec);
-  totalTime = endTime - startTime;
-  printf("Time: %.2f\n", totalTime / 1000.0);
-}
-
-float getTime()
-{
-  endTime = Brain.timer(vex::msec);
-  return (endTime - startTime) / 1000.0;
-}
 void startAuto(float x, float y, float theta)
 {
   printf("Entered Auto\n");
-  startTime = Brain.timer(vex::msec);
+  startTimer();
   chassis.initialize(false, x, y, theta);
   chassis.setOffset(0, 0);
   chassis.stateMachineOn();
@@ -61,12 +41,13 @@ void stopAuto()
   delay(20);
   chassis.tank(0, 0, 1, 0, 100, 0);
   intake.stop(vex::brakeType::coast);
-  printTime();
-}
+  endTimer();
+  printf("Time: %.2f\n", totalRunTime);
+  }
 
 void touchAWP()
 {
-  while (getTime() < 40.25)
+  while (getRunTime() < 40.25)
   {
     wait(10, vex::msec);
   }
@@ -111,7 +92,7 @@ void programming_skills2()
   left_wing.set(0);
   delay(750);
   chassis.pid(4, 19, false, 2, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  while (getTime() < 23)
+  while (getRunTime() < 23)
   {
     delay(10);
   }
@@ -134,7 +115,7 @@ void programming_skills2()
   left_wing.set(1);
   delay(750);
   chassis.pid(4, -19, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  while (getTime() < 54.9)
+  while (getRunTime() < 54.9)
   {
     delay(10);
   }
@@ -156,7 +137,7 @@ void programming_skills2()
   chassis.autoTankVolts(0, 0);
   delay(200);
   hang.set(1);
-  while (getTime() < 59.85)
+  while (getRunTime() < 59.85)
   {
     delay(10);
   }
@@ -193,11 +174,11 @@ void programming_skills()
   chassis.turnToHeading(15, false, 12, akp, aki, akd, 3);
   chassis.pid(7, 15, false, 2, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
   right_wing.set(1);
-  while (getTime() < 29.5)
+  while (getRunTime() < 29.5)
   {
     delay(10);
   }
-  printTime();
+  endTimer();
   chassis.moveTo(63, 91.6, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
   chassis.turnToPose(65, 107, false, 12, akp, aki, akd, 7);
   left_wing.set(1);
@@ -215,8 +196,8 @@ void programming_skills()
   chassis.pid(7, -15, false, 2, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
   left_wing.set(1);
   right_wing.set(1);
-  printTime();
-  while (getTime() < 57.5)
+  endTimer();
+  while (getRunTime() < 57.5)
   {
     delay(10);
   }
@@ -235,7 +216,7 @@ void programming_skills()
 void ElimAwp()
 {
   baseMatchAuto();
-  while (getTime() < 45.5)
+  while (getRunTime() < 45.5)
   {
     wait(10, vex::msec);
   }
@@ -317,7 +298,7 @@ void baseMatchAuto()
 
   // stopAuto();
   //  get awp pole touch
-  printTime();
+  endTimer();
 }
 
 void safeBaseMatchAuto()
@@ -371,7 +352,7 @@ void safeBaseMatchAuto()
 
   // stopAuto();
   //  get awp pole touch
-  printTime();
+  endTimer();
 }
 
 void safeAWP()
@@ -383,7 +364,7 @@ void safeAWP()
 void safeElim()
 {
   safeBaseMatchAuto();
-  while (getTime() < 45.5)
+  while (getRunTime() < 45.5)
   {
     wait(10, vex::msec);
   }
