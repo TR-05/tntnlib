@@ -100,7 +100,7 @@ line2 = dataOverTimeLine(1,0)
 line3 = dataOverTimeLine(0,1)
 
 # Predefined values for the first argument of each Line
-predefined_values = [[[0, 3200, 0], [0, 2, 0]], [[0, 12, 0], [0, 0, 0]]]
+predefined_values = [[[0, 2950, 0], [0, 2, 0]], [[0, 12, 0], [0, 0, 0]]]
 
 x_axes = []
 targets = []

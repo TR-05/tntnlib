@@ -87,39 +87,42 @@ float MotorGroup::getVolts()
     for (auto &motor : motors)
     {
         total += motor.voltage(vex::voltageUnits::volt);
+       // printf("%.2f ", motor.voltage(vex::voltageUnits::volt));
         motorCount++;
     }
+    //printf("\n");
     double rawOutput = total / motorCount;
     return rawOutput;
 }
 
 float MotorGroup::getPower(float rpm)
 {
-    float error = (rpm - getRPM()) / outputRPM;
-/*    if (error > bangBangMargin && bangBangMargin != 0)
+    rpmError = (rpm - getRPM()) / outputRPM;
+    float kpPow = 0;
+    //if (error > 0)
+    kpPow = kP * rpmError;
+    //test = kpPow;
+    integral += rpmError;
+    if (sgn(rpmError) != sgn(lastError) && sgn(rpmError) == 1)
     {
-        integral = 0;
-        return 12;
+        integral /= 2;
     }
+    lastError = rpmError;
+    float kpguy = rpmError;
+    if (sgn(kpguy) == -1)
+        kpguy = 0;
+    if (rpmError > .1)
+        kpguy = 12;
+    float power = (kV * rpm / outputRPM) + kpguy*0 + kI * integral;
+    if (sgn(power) == sgn(getRPM()))
+        power *= kAcc;
     else
-    {*/
-        float kpPow = 0;
-        if (error > 0)
-            kpPow = kP * error;
-        integral += error;
-        if (sgn(error) != sgn(lastError) && sgn(error) == 1)
-        {
-            integral /= 2;
-        }
-        lastError = error;
-        float power = (kV * rpm / outputRPM) + kpPow + kI * integral;
-        if (sgn(power) == sgn(getRPM()))
-            power *= kAcc;
-        else
-            power *= kDec;
-         printf("\n\ncurRpm: %.2f power: %.2f integral: %.2f kI: %.2f error: %.3f\n", rpm, power, integral, kI, error);
-        return power;
-   // }
+        power *= kDec;
+    //printf("\n\ncurRpm: %.2f power: %.2f integral: %.2f kI: %.2f error: %.3f\n", rpm, power, integral, kI, error);
+    test = kI * integral;
+    getVolts();
+    return power;
+    // }
 }
 void MotorGroup::setBrakeType(vex::brakeType type)
 {

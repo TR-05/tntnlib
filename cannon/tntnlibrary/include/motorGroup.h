@@ -72,6 +72,8 @@ namespace tntnlib
 
         float targetRPM = 0;
         float currentRPM = 0;
+        float rpmError = 0;
+        float test = 0;
         std::vector<vex::motor> motors;
 
     private:

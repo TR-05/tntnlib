@@ -90,7 +90,7 @@ void usercontrol()
     chassis.stateMachineOff();
     if (Controller.ButtonLeft.pressing())
     {
-        vex::wait(2600, vex::msec);
+        //vex::wait(2600, vex::msec);
         autonomous();
     }
 

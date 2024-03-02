@@ -73,7 +73,7 @@ void programming_skills2()
   chassis.breakOutTime = 3.5;
   Path path1(131, 59, 135.9, 111.2, 138.2, 139.1, 98, 126, 100);
   chassis.setOffset(0, 0);
-  chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 16, 0);
+  chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 18, 0);
   delay(1050);
   right_wing.set(true);
   left_wing.set(true);
@@ -83,7 +83,7 @@ void programming_skills2()
 
   intake.spinVolts(-12);
   chassis.LineWait(path1.x3, path1.y3, 10, 3000);
-  delay(450);
+  delay(350);
   Path path2(98.2, 131.9, 142.8, 116.6, 89.9, 90.4, 58.2, 101.4, 100);
   chassis.follow(path2, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
   chassis.turnToHeading(19, false, 12, akp, aki, akd, 3);
@@ -96,12 +96,13 @@ void programming_skills2()
   {
     delay(10);
   }
+  // shove 
   right_wing.set(0);
   left_wing.set(0);
-  chassis.moveTo(67, 85, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
+  chassis.moveTo(67, 85, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.5, 12, 5);
   right_wing.set(1);
   left_wing.set(1);
-  chassis.moveTo(71, 114, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 0);
+  chassis.moveTo(71, 118, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 0);
   delay(1000);
   right_wing.set(0);
   left_wing.set(0);
@@ -119,6 +120,29 @@ void programming_skills2()
   {
     delay(10);
   }
+
+  // double shove for funny ig
+  // shove 1
+  right_wing.set(0);
+  left_wing.set(0);
+  chassis.moveTo(67, 85, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.5, 12, 5);
+  right_wing.set(1);
+  left_wing.set(1);
+  chassis.moveTo(71, 118, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 0);
+  delay(1000);
+  right_wing.set(0);
+  left_wing.set(0);
+  //shove 2
+  chassis.moveTo(67, 85, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.5, 12, 5);
+  right_wing.set(1);
+  left_wing.set(1);
+  chassis.moveTo(71, 118, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 0);
+  delay(1000);
+  chassis.pid(-15, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+  delay(1000);
+
+  /* none working hang setup
+
   chassis.SwingOnRightToHeading(15, 0, 12, akp * 1.6, aki, akd, 0);
   delay(400);
   right_wing.set(0);
@@ -142,6 +166,7 @@ void programming_skills2()
     delay(10);
   }
   hang.set(0);
+  */
 
   stopAuto();
   delay(100000);
