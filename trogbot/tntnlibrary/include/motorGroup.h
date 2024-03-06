@@ -64,6 +64,7 @@ namespace tntnlib
         float getRPM();
         float getTipVelocity();
         void spinTipVelocity(float tipVelocity);
+        float voltsToTipVelocity(float volts);
         float getWatts();
         float getCurrent();
         float getVolts();
