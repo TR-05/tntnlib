@@ -63,11 +63,13 @@ namespace tntnlib
         void spinRPM(double rpm);
         float getRPM();
         float getTipVelocity();
+        void spinTipVelocity(float tipVelocity);
         float getWatts();
         float getCurrent();
         float getVolts();
         float getPower(float rpm);
         float position();
+        float tipVelocityToRPM(float tipVelocity);
         void resetPosition();
         void driverTwoButton(bool in, bool out, float inVolts, float outVolts);
         void driverToggle(bool input, float inVolts);

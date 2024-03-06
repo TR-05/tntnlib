@@ -105,6 +105,11 @@ float MotorGroup::getVolts()
     return rawOutput;
 }
 
+float MotorGroup::tipVelocityToRPM(float tipVelocity)
+{
+    return tipVelocity * 60 / (diameter * M_PI);
+}
+
 float MotorGroup::getPower(float rpm)
 {
     rpmError = (rpm - getRPM()) / outputRPM;
@@ -183,6 +188,19 @@ void MotorGroup::spinRPM(double rpm)
 {
     targetRPM = rpm;
     if (rpm == 0)
+    {
+        stop(brakeType);
+    }
+    else
+    {
+        spinVolts(getPower(targetRPM));
+    }
+}
+
+void MotorGroup::spinTipVelocity(float tipVelocity)
+{
+    targetRPM = tipVelocityToRPM(tipVelocity);
+    if (targetRPM == 0)
     {
         stop(brakeType);
     }
