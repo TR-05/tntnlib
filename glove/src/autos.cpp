@@ -125,10 +125,12 @@ void programming_skills2()
   // shove 1
   right_wing.set(0);
   left_wing.set(0);
+  intake.spinVolts(0);
   chassis.moveTo(67, 85, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.5, 12, 5);
   right_wing.set(1);
   left_wing.set(1);
   chassis.moveTo(71, 118, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 0);
+  intake.spinVolts(-12);
   delay(1000);
   right_wing.set(0);
   left_wing.set(0);

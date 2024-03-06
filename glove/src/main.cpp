@@ -85,6 +85,8 @@ void autonomous()
 /* runs on comp switch driver */
 void usercontrol()
 {
+        autonomous();
+
     resetThreads();
     printf("Entered Driver\n");
     chassis.stateMachineOff();

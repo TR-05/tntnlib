@@ -160,6 +160,8 @@ void loadMacro(int times, int bigDelay, int smallDelay)
 /* runs on comp switch driver */
 void usercontrol()
 {
+        autonomous();
+
     resetThreads();
     printf("Entered Driver\n");
     chassis.stateMachineOff();
@@ -168,7 +170,6 @@ void usercontrol()
     if (Controller.ButtonLeft.pressing())
     {
         //vex::wait(2400, vex::msec);
-        autonomous();
     }
     while (1)
     {
@@ -188,7 +189,7 @@ void usercontrol()
         }
 
         if (a.state)
-            FWrpm = 3200;
+            FWrpm = 3400; //3400
             //FWrpm = 2950;
         if (b.state)
             FWrpm = 2750;

@@ -56,11 +56,13 @@ namespace tntnlib
         }
         void initializeVeloController(float kV, float kP, float kI, float kAcc, float kDec, float bangBangMargin, float integralMargin);
         void setBrakeType(vex::brakeType type);
+        void setDiameter(float diameter);
         void spinVolts(float volts);
         void spinPct(float pct);
         void stop(vex::brakeType type);
         void spinRPM(double rpm);
         float getRPM();
+        float getTipVelocity();
         float getWatts();
         float getCurrent();
         float getVolts();
@@ -72,9 +74,11 @@ namespace tntnlib
 
         float targetRPM = 0;
         float currentRPM = 0;
+        float rpmError = 0;
+        float test = 0;
         std::vector<vex::motor> motors;
-
     private:
+        float diameter = 0;
         float inputRPM = 0;
         float outputRPM = 0;
         float lastRPMEmaOutput = 0;
@@ -83,6 +87,7 @@ namespace tntnlib
         float error = 0, lastError = 0, integral = 0;
         float bangBangMargin = 2.0, integralMargin = 0; //bangBangMargin initalizes to never activate unless changed by user
         float currentVoltage = 0;
+
         bool lastToggleInput = false;
         vex::brakeType brakeType = vex::brakeType::coast;
     };
