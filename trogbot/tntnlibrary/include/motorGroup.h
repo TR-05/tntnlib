@@ -77,8 +77,8 @@ namespace tntnlib
 
         float targetRPM = 0;
         float currentRPM = 0;
-        float rpmError = 0;
         float test = 0;
+        float smoothing = 1.0;
         std::vector<vex::motor> motors;
     private:
         float diameter = 0;
@@ -87,7 +87,7 @@ namespace tntnlib
         float lastRPMEmaOutput = 0;
         float lastWattEmaOutput = 0;
         float kV = 11, kP = 0, kI = 0, kAcc = 1, kDec = 1;
-        float error = 0, lastError = 0, integral = 0;
+        float rpmError = 0, lastError = 0, integral = 0;
         float bangBangMargin = 2.0, integralMargin = 0; //bangBangMargin initalizes to never activate unless changed by user
         float currentVoltage = 0;
 

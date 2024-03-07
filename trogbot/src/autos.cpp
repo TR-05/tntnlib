@@ -51,7 +51,15 @@ int vision()
 }
 void programming_skills()
 {
-  startAuto(23, 16, -90);
+  startAuto(0, 0, 0);
+  chassis.arcProfile(1, false, 35, 65, 0, 0, 100, lkp, lki, lkd, akp, aki, akd, 30, 0);
+  //chassis.pid(20, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2);
+  delay(3000);
+  chassis.turnToHeading(180, false, 12, akp, aki, akd, 1);
+  delay(500);
+    endTimer();
+  return;
+
   chassis.SwingOnLeftToHeading(-135, 0, 12, akp * 1.6, aki, akd, 0);
   delay(500);
   chassis.autoTankVolts(2.5, 2.5);

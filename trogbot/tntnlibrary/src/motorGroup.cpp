@@ -54,7 +54,7 @@ float MotorGroup::getRPM()
         motorCount++;
     }
     double rawOutput = (total / motorCount) * (outputRPM / 100.0);
-    lastRPMEmaOutput = ema(rawOutput, lastRPMEmaOutput, 1.0);
+    lastRPMEmaOutput = ema(rawOutput, lastRPMEmaOutput, this->smoothing);
     currentRPM = lastRPMEmaOutput;
     return currentRPM;
 }
@@ -117,30 +117,30 @@ float MotorGroup::tipVelocityToRPM(float tipVelocity)
 
 float MotorGroup::getPower(float rpm)
 {
-    rpmError = (rpm - getRPM()) / outputRPM;
+    float currentRPM = getRPM();
+    rpmError = (rpm - currentRPM) / outputRPM;
     float kpPow = 0;
     //if (error > 0)
     kpPow = kP * rpmError;
     //test = kpPow;
     integral += rpmError;
-    if (sgn(rpmError) != sgn(lastError) && sgn(rpmError) == 1)
+    if (sgn(rpmError) != sgn(lastError))
     {
         integral /= 2;
     }
     lastError = rpmError;
     float kpguy = rpmError;
-    if (sgn(kpguy) == -1)
-        kpguy = 0;
-    if (rpmError > .1)
-        kpguy = 12;
-    float power = (kV * rpm / outputRPM) + kpguy*0 + kI * integral;
-    if (sgn(power) == sgn(getRPM()))
+    if (fabs(rpmError) > .3)
+        kpguy = 12 * sgn(rpmError);
+    float power = (kV * rpm / outputRPM) + kpguy*kP + kI * integral;
+    if (sgn(power) == sgn(currentRPM))
         power *= kAcc;
     else
         power *= kDec;
-    //printf("\n\ncurRpm: %.2f power: %.2f integral: %.2f kI: %.2f error: %.3f\n", rpm, power, integral, kI, error);
+    //printf("\ntRPM: %.2f cRPM: %.2f v: %.2f kV: %.2fkI: %.2f e: %.4f kp: %.2f", rpm, currentRPM, power, (kV * rpm / outputRPM), integral*kI, rpmError, kpguy*kP);
     test = kI * integral;
     getVolts();
+    clamp(power, -12, 12);
     return power;
     // }
 }

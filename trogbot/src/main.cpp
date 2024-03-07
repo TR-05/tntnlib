@@ -23,7 +23,7 @@ Gyro imu(1, 1.010357);
 /* chassis and controllers (DO NOT CHANGE NAMES) */
 ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
 ControllerSettings angularSettings(.25, 0.01, 2.0, 2, 15, 12);
-Drivetrain drivetrain(&leftMotors, &rightMotors, 10.0, Omniwheel::OLD_325, 360, 8);
+Drivetrain drivetrain(&leftMotors, &rightMotors, 11.0, Omniwheel::OLD_325, 360, 8);
 OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
 // MotorGroup intake(vex::gearSetting::ratio6_1, 360, -8, -10);
@@ -72,7 +72,16 @@ void pre_auton()
 {
   printf("Entered pre_auton\n");
   chassis.initialize(true, 24, 24, 0);
+  leftMotors.initializeVeloController(10.5, 7, 0.15, 1.0, 1.0, 0.0, 1.0);
+  rightMotors.initializeVeloController(10.5, 7, 0.15, 1.0, 1.0, 0.0, 1.0);
+  rightMotors.smoothing = 0.8;
+  leftMotors.smoothing = 0.8;
+  rightMotors.setDiameter(3.25);
+  leftMotors.setDiameter(3.25);
   resetThreads();
+
+
+
 }
 
 /* runs on comp switch autonomous */
@@ -89,16 +98,37 @@ void usercontrol()
   printf("Entered Driver\n");
   chassis.stateMachineOff();
   // intake.setBrakeType(vex::brakeType::brake);
+
+    /*Profile profile(40, 65, 0, 0, 120);
+    int count = 0;
+    for (int i = 0; i <= profile.t*1000.0/10.0; i++)
+    {
+        count++;
+        if (count % 5 == 0)
+        {
+            printf("\n");
+        }
+        printf("(%.2f, %.2f),", i*10/1000.0, profile.V[i]);
+        delay(1);
+    }*/
+
+
+
   while (1)
   {
     updateButtons();
     float pow = 0; //visionPower();
     if (Controller.ButtonR1.pressing())
     { 
-      pow = 0;
+      chassis.drivetrain.rightMotors->spinTipVelocity(30);
+      //chassis.drivetrain.rightMotors->spinRPM(360);
+
+      
+    }
+    else {
+    chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 1, 0, 100, 3); // tank
     }
     //chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 2.6, 1.2, 100, 3); // tank
-    chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 1, 0, 100, 3); // tank
 
     // intake.driverTwoButton(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), 12, -12);
     // flywheel.spinVolts(6);
