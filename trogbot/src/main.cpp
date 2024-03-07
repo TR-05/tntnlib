@@ -23,7 +23,7 @@ Gyro imu(1, 1.010357);
 /* chassis and controllers (DO NOT CHANGE NAMES) */
 ControllerSettings linearSettings(.6, 0, 3.5, 0, 0, 12);
 ControllerSettings angularSettings(.25, 0.01, 2.0, 2, 15, 12);
-Drivetrain drivetrain(&leftMotors, &rightMotors, 11.0, Omniwheel::OLD_325, 360, 8);
+Drivetrain drivetrain(&leftMotors, &rightMotors, 11.75, Omniwheel::OLD_325, 360, 8);
 OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 Chassis chassis(drivetrain, linearSettings, angularSettings, sensors);
 // MotorGroup intake(vex::gearSetting::ratio6_1, 360, -8, -10);

@@ -9,9 +9,9 @@ namespace tntnlib
     /**
      * @brief Turn namespace
      */
-    namespace arcProfile
+    namespace arcPid
     {
-        void params(int direction, bool reversed, float arclength, float vMax, float vi, float vf, float a, float radius);
+        void params(float arclength, float radius, int direction, float lmaxSpeed, float breakDist);
         /**
          * @brief Update the movement
          *
@@ -24,8 +24,8 @@ namespace tntnlib
          */
         std::pair<float, float> update(Pose pose);
 
-        extern float arclength, startingVertical1Dist, startTimeMs;
-        extern float radius, vMax, breakOutError;
+        extern float arclength, startingVertical1Dist, startTimeMs, startTheta, endTheta;
+        extern float radius, lmaxSpeed, breakOutError;
         extern bool reversed;
         extern int direction; // must be 1 or -1
         extern tntnlib::Profile linearProfile;

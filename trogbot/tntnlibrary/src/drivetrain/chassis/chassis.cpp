@@ -312,15 +312,15 @@ void Chassis::pid(float dist, float x, float y, bool reversed, float lmaxSpeed, 
     waitUntilError(straightPid::breakOutError, breakDist);
 }
 
-void Chassis::arcProfile(int direction, bool reversed, float arclength, float vMax, float vi, float vf, float a, float lkp, float lki, float lkd, float akp, float aki, float akd, float radius, float breakDist)
+void Chassis::arcPid(float arclength, float radius, int direction, float lmaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist)
 {
-    tntnlib::arcProfile::params(direction, reversed, arclength, vMax, vi, vf, a, radius);
-    moveToSettings(akp, aki, akd, lkp, lki, lkd, 12);
+    tntnlib::arcPid::params(arclength, radius, direction, lmaxSpeed, breakDist);
+    moveToSettings(akp, aki, akd, lkp, lki, lkd, slew);
 
     motorControl = voltage;
     // setup the statemachine
-    autoChassis = arcProfileMode;
-    waitUntilError(arcProfile::breakOutError, breakDist);
+    autoChassis = arcPidMode;
+    waitUntilError(arcPid::breakOutError, breakDist);
 }
 
 /**
@@ -420,8 +420,8 @@ std::pair<float, float> Chassis::stateMachine()
         return {0, 0};
     case drivePidMode:
         return straightPid::update(this->getPose());
-    case arcProfileMode:
-        return arcProfile::update(this->getPose());
+    case arcPidMode:
+        return arcPid::update(this->getPose());
     case voltageMode:
         return {leftVolts, rightVolts};
     default:

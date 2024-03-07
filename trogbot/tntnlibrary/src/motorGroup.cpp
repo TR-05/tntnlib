@@ -66,7 +66,7 @@ float MotorGroup::getTipVelocity()
 
 float MotorGroup::voltsToTipVelocity(float volts)
 {
-    return volts * kV * diameter * M_PI / 60;
+    return (volts / kV) * outputRPM * diameter * M_PI / 60;
 }
 
 float MotorGroup::getWatts()

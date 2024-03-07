@@ -52,11 +52,16 @@ int vision()
 void programming_skills()
 {
   startAuto(0, 0, 0);
-  chassis.arcProfile(1, false, 35, 65, 0, 0, 100, lkp, lki, lkd, akp, aki, akd, 30, 0);
-  //chassis.pid(20, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2);
-  delay(3000);
-  chassis.turnToHeading(180, false, 12, akp, aki, akd, 1);
-  delay(500);
+  float r = 20;
+  float L = 2*M_PI*r / 4;
+  chassis.arcPid(L, r, -1, 10, lkp, lki, lkd*1.2, akp, aki, akd, .1, 2);
+  delay(350);
+  chassis.turnToHeading(90, false, 12, akp, aki, akd, 1);
+  delay(350);
+  chassis.arcPid(L, r, 1, 10, lkp, lki, lkd*1.2, akp, aki, akd, .1, 2);
+  delay(350);
+  chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
+  delay(200);
     endTimer();
   return;
 
