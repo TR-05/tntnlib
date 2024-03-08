@@ -32,7 +32,7 @@ vex::digital_out hang(Brain.ThreeWirePort.G);
 
 int logger()
 {
-  printf("%d\n", Brain.Screen.drawImageFromFile("melman.png", 120, 0));
+    printf("%d\n", Brain.Screen.drawImageFromFile("melman.png", 120, 0));
     while (true)
     {
         Pose current(chassis.getPose(false));
@@ -49,6 +49,42 @@ int chassisLoop()
     while (true)
     {
         chassis.update();
+        vex::wait(10, vex::msec);
+    }
+    return 0;
+}
+
+float loopTime = 200;
+int loopIterater = 0;
+int stallCounter = 0;
+bool antijam = false;
+float intakeVolts = 0;
+int intake_loop()
+{
+    while (true)
+    {
+
+        if (antijam)
+        {
+            if (intake.getCurrent() > 1.8)
+                stallCounter++;
+            else
+                stallCounter = 0;
+            if (stallCounter > 17)
+            {
+                loopIterater = 0;
+                stallCounter = 0;
+            }
+            if (loopIterater < 10)
+            {
+                loopIterater++;
+                intake.spinVolts(12);
+            }
+            else
+                intake.spinVolts(intakeVolts);
+        }
+        else
+            intake.spinVolts(intakeVolts);
         vex::wait(10, vex::msec);
     }
     return 0;
@@ -76,7 +112,7 @@ void autonomous()
     resetThreads();
     // safeAWP();
     // safeElim();
-    //awp();
+    // awp();
     // programming_skills();
     programming_skills2();
     // ElimAwp();
@@ -85,14 +121,14 @@ void autonomous()
 /* runs on comp switch driver */
 void usercontrol()
 {
-        autonomous();
+    autonomous();
 
     resetThreads();
     printf("Entered Driver\n");
     chassis.stateMachineOff();
     if (Controller.ButtonLeft.pressing())
     {
-        //vex::wait(2600, vex::msec);
+        // vex::wait(2600, vex::msec);
         autonomous();
     }
 
@@ -114,10 +150,11 @@ void usercontrol()
         else
             hang.set(0);
 
-        intake.driverTwoButton(Controller.ButtonR1.pressing(), Controller.ButtonR2.pressing(), 12, -12);
+        intakeVolts = Controller.ButtonR1.pressing() ? 12 : Controller.ButtonR2.pressing() ? -12
+                                                                                           : 0;
         intake.setBrakeType(vex::brakeType::brake);
         // chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 1, 0, 100, 3); // tank
-        chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 1, 0, 100, 3);  // single stick arcade
+        chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 1, 0, 100, 3); // single stick arcade
         // chassis.arcade(Controller.Axis3.position() *.12, Controller.Axis1.position() *.12, 1, 0, 100, 3); //split arcade
         vex::wait(10.0, vex::msec);
     }
