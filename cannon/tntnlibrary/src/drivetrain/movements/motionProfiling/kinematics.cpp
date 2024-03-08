@@ -9,6 +9,6 @@ float kinematic::accelerationTime(float deltaV, float a)
 
 float kinematic::accelerationDistance(float vi, float vf, float a)
 {
-    float t = accelerationTime(vi - vf, a);
+    float t = accelerationTime(vf - vi, a);
     return (vi*t + 0.5*a*t*t);
 }

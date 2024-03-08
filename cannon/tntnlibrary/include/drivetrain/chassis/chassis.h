@@ -24,6 +24,7 @@
 #include "../tntnlibrary/include/defaultDevices.h"
 #include "../tntnlibrary/include/drivetrain/pathing/cubicBezier.h"
 #include "../tntnlibrary/include/pid.h"
+#include "../tntnlibrary/include/drivetrain/movements/arcPid.h"
 
 namespace tntnlib
 {
@@ -177,6 +178,8 @@ namespace tntnlib
 
         void pid(float dist, float heading, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist);
         void pid(float dist, float x, float y, bool reversed, float lmaxSpeed, float amaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist);
+        void arcPid(float arclength, float radius, int direction, float lmaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist);
+
         /**
          * @brief Move the chassis towards the target pose
          *
@@ -278,7 +281,8 @@ namespace tntnlib
             followMode,
             drivePidMode,
             voltageMode,
-            velocityMode
+            velocityMode,
+            arcPidMode
         };
         moveState autoChassis = disabledMode;
         enum motorMoveType

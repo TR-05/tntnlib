@@ -312,6 +312,17 @@ void Chassis::pid(float dist, float x, float y, bool reversed, float lmaxSpeed, 
     waitUntilError(straightPid::breakOutError, breakDist);
 }
 
+void Chassis::arcPid(float arclength, float radius, int direction, float lmaxSpeed, float lkp, float lki, float lkd, float akp, float aki, float akd, float slew, float breakDist)
+{
+    tntnlib::arcPid::params(arclength, radius, direction, lmaxSpeed, breakDist);
+    moveToSettings(akp, aki, akd, lkp, lki, lkd, slew);
+
+    motorControl = voltage;
+    // setup the statemachine
+    autoChassis = arcPidMode;
+    waitUntilError(arcPid::breakOutError, breakDist);
+}
+
 /**
  * This function sets up the Boomerang controller
  *
@@ -409,6 +420,8 @@ std::pair<float, float> Chassis::stateMachine()
         return {0, 0};
     case drivePidMode:
         return straightPid::update(this->getPose());
+    case arcPidMode:
+        return arcPid::update(this->getPose());
     case voltageMode:
         return {leftVolts, rightVolts};
     default:

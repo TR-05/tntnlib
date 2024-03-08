@@ -18,6 +18,11 @@ void MotorGroup::initializeVeloController(float kV, float kP, float kI, float kA
     this->integralMargin = integralMargin;
 }
 
+void MotorGroup::setDiameter(float diameter)
+{
+    this->diameter = diameter;
+}
+
 float MotorGroup::position()
 {
     double total = 0;
@@ -49,9 +54,19 @@ float MotorGroup::getRPM()
         motorCount++;
     }
     double rawOutput = (total / motorCount) * (outputRPM / 100.0);
-    lastRPMEmaOutput = ema(rawOutput, lastRPMEmaOutput, 1.0);
+    lastRPMEmaOutput = ema(rawOutput, lastRPMEmaOutput, this->smoothing);
     currentRPM = lastRPMEmaOutput;
     return currentRPM;
+}
+
+float MotorGroup::getTipVelocity()
+{
+    return getRPM() * diameter * M_PI / 60;
+}
+
+float MotorGroup::voltsToTipVelocity(float volts)
+{
+    return (volts / kV) * outputRPM * diameter * M_PI / 60;
 }
 
 float MotorGroup::getWatts()
@@ -87,39 +102,47 @@ float MotorGroup::getVolts()
     for (auto &motor : motors)
     {
         total += motor.voltage(vex::voltageUnits::volt);
+       // printf("%.2f ", motor.voltage(vex::voltageUnits::volt));
         motorCount++;
     }
+    //printf("\n");
     double rawOutput = total / motorCount;
     return rawOutput;
 }
 
+float MotorGroup::tipVelocityToRPM(float tipVelocity)
+{
+    return tipVelocity * 60 / (diameter * M_PI);
+}
+
 float MotorGroup::getPower(float rpm)
 {
-    float error = (rpm - getRPM()) / outputRPM;
-/*    if (error > bangBangMargin && bangBangMargin != 0)
+    float currentRPM = getRPM();
+    rpmError = (rpm - currentRPM) / outputRPM;
+    float kpPow = 0;
+    //if (error > 0)
+    kpPow = kP * rpmError;
+    //test = kpPow;
+    integral += rpmError;
+    if (sgn(rpmError) != sgn(lastError))
     {
-        integral = 0;
-        return 12;
+        integral /= 2;
     }
+    lastError = rpmError;
+    float kpguy = rpmError;
+    if (fabs(rpmError) > .3)
+        kpguy = 12 * sgn(rpmError);
+    float power = (kV * rpm / outputRPM) + kpguy*kP + kI * integral;
+    if (sgn(power) == sgn(currentRPM))
+        power *= kAcc;
     else
-    {*/
-        float kpPow = 0;
-        if (error > 0)
-            kpPow = kP * error;
-        integral += error;
-        if (sgn(error) != sgn(lastError) && sgn(error) == 1)
-        {
-            integral /= 2;
-        }
-        lastError = error;
-        float power = (kV * rpm / outputRPM) + kpPow + kI * integral;
-        if (sgn(power) == sgn(getRPM()))
-            power *= kAcc;
-        else
-            power *= kDec;
-         printf("\n\ncurRpm: %.2f power: %.2f integral: %.2f kI: %.2f error: %.3f\n", rpm, power, integral, kI, error);
-        return power;
-   // }
+        power *= kDec;
+    //printf("\ntRPM: %.2f cRPM: %.2f v: %.2f kV: %.2fkI: %.2f e: %.4f kp: %.2f", rpm, currentRPM, power, (kV * rpm / outputRPM), integral*kI, rpmError, kpguy*kP);
+    test = kI * integral;
+    getVolts();
+    clamp(power, -12, 12);
+    return power;
+    // }
 }
 void MotorGroup::setBrakeType(vex::brakeType type)
 {
@@ -170,6 +193,19 @@ void MotorGroup::spinRPM(double rpm)
 {
     targetRPM = rpm;
     if (rpm == 0)
+    {
+        stop(brakeType);
+    }
+    else
+    {
+        spinVolts(getPower(targetRPM));
+    }
+}
+
+void MotorGroup::spinTipVelocity(float tipVelocity)
+{
+    targetRPM = tipVelocityToRPM(tipVelocity);
+    if (targetRPM == 0)
     {
         stop(brakeType);
     }
