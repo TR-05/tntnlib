@@ -239,14 +239,13 @@ void baseMatchAuto()
     FWrpm = 0;
     intakeVolts = 0;
     // Grab first triball and pass it
-    Path path1(129.9, 38.0, 114.3, 38.3, 104.3, 41.8, 89, 47, 100);
+    Path path1(129.9, 38.0, 114.3, 38.3, 104.3, 41.8, 93, 47, 100);
     pneumIntake(1);
     intakeVolts = (5);
-    chassis.follow(path1, false, 12, 12, lkp, lki, lkd, akp * 0.7, aki, akd, .4, 25, 3);
+    chassis.follow(path1, false, 12, 12, lkp*1.5, lki, lkd*1.4, akp * 1.0, aki, akd, .4, 25, 3);
     FWrpm = 3800;
     pneumIntake(0);
     intakeVolts = (3);
-    chassis.pid(-5, -90, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 3);
     chassis.turnToHeading(-190, false, 12, akp, aki, akd, 5);
     intakeVolts = (12);
     delay(800);
@@ -256,7 +255,7 @@ void baseMatchAuto()
     chassis.turnToHeading(-90, false, 12, akp, aki, akd, 10);
     pneumIntake(1);
     intakeVolts = (4);
-    chassis.moveTo(80, 48.3, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 4);
+    chassis.moveTo(80.5, 48.3, false, 12, 12, lkp*1.5, lki, lkd*1.5, akp * 1.3, aki, akd * 1.25, 12, 4);
     pneumIntake(0);
     delay(300);
     chassis.pid(-16, -85, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 4);
@@ -268,7 +267,7 @@ void baseMatchAuto()
     chassis.turnToHeading(90, false, 12, akp, aki, akd, 5);
 
     // grab third and forth balls and push
-    Path path2(94.4, 44.1, 89.0, 44.4, 78.3, 43.5, 79.8, 69, 100);
+    Path path2(94.4, 44.1, 89.0, 44.4, 81.3, 43.5, 83, 69, 100);
     chassis.follow(path2, true, 7, 12, lkp, lki, lkd, akp, aki, akd, 12, 9, 7);
     chassis.SwingOnLeftToHeading(-226.7, false, 12, akp * 1.6, aki, akd, 5);
     chassis.pid(-5, -226.7, false, 12, 12, lkp * 1.3, lki, lkd, akp, aki, akd, 12, 3);
@@ -281,10 +280,29 @@ void baseMatchAuto()
     delay(700);
 
     // complete awp triball
-    Path path3(84.1, 64.5, 90.7, 40.0, 103.7, 41, 118, 29, 100);
-    chassis.follow(path3, false, 8, 12, lkp * 1.0, lki, lkd, akp, aki, akd, 12, 18, 5);
+    Path path3(84.1,64.5,  90.7,40.0,  103.7,41,  121.2,24.2,  100);
+    FWrpm = matchloadRPM;
+    pneumIntake(1);
+    intakeVolts = 3;
+    chassis.follow(path3, false, 8, 12, lkp * 1.4, lki, lkd, akp, aki, akd, 12, 18, 5);
+    spaceMaker(1);
+    chassis.turnToHeading(158, false, 12, akp, aki, akd, 3);
+    delay(200);
+    intakeVolts = 12;
+    pneumIntake(0);
+    delay(800);
+    spaceMaker(0);
+    delay(200);
+    chassis.turnToHeading(-45, false, 12, akp, aki, akd, 5);
+    chassis.pid(-4, -45, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 3);
+    spaceMaker(1);
     delay(300);
-    chassis.turnToHeading(-52, false, 12, akp, aki, akd, 3);
+    chassis.pid(14, -45, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 3);
+    chassis.turnToHeading(45, false, 12, akp, aki, akd, 5);
+    delay(500);
+
+
+    stopAuto();
     spaceMaker(1);
     delay(450);
     chassis.pid(-4, -52, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .5, 0);
