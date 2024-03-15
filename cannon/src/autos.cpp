@@ -168,8 +168,7 @@ void programming_skills()
     //prep zone leave
     alignerL.set(0);
     alignerR.set(0);
-    Pose saved(131.6, 14.7, chassis.getPose().theta);
-    chassis.setPose(saved); // reset to absolute coords
+    chassis.setPose(Pose(131.6, 14.7, chassis.getPose().theta)); // reset to absolute coords
     chassis.pid(6, 135, false, 12, 12, lkp*3, lki, lkd, akp*3, aki, akd, 12, 0);
     spaceMaker(0);
     delay(800);
@@ -180,7 +179,7 @@ void programming_skills()
     chassis.follow(hangPath, true, 12, 12, lkp*4, lki, lkd, akp*2, aki, akd, 12, 15, 0);
     chassis.LineWait(hangPath.x3, hangPath.y3, 40, 5000);
     delay(5000);
-    
+
     stopAuto();
     delay(100000);
 }
@@ -211,8 +210,7 @@ void awp()
     //prep zone leave
     alignerL.set(0);
     alignerR.set(0);
-    Pose saved(131.6, 14.7, chassis.getPose().theta);
-    chassis.setPose(saved); // reset to absolute coords
+    chassis.setPose(Pose(131.6, 14.7, chassis.getPose().theta)); // reset to absolute coords
     chassis.pid(6, 135, false, 12, 12, lkp*3, lki, lkd, akp*3, aki, akd, 12, 0);
     spaceMaker(0);
     delay(800);
