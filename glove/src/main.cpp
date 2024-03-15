@@ -113,22 +113,20 @@ void autonomous()
     // safeAWP();
     // safeElim();
     // awp();
-    // programming_skills();
-    programming_skills2();
+    programming_skills();
     // ElimAwp();
 }
 
 /* runs on comp switch driver */
 void usercontrol()
 {
-    autonomous();
-
+    //autonomous();
     resetThreads();
     printf("Entered Driver\n");
     chassis.stateMachineOff();
     if (Controller.ButtonLeft.pressing())
     {
-        // vex::wait(2600, vex::msec);
+        vex::wait(2600, vex::msec);
         autonomous();
     }
 

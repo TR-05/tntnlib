@@ -44,6 +44,11 @@ void stopAuto()
   endTimer();
   printf("Time: %.2f\n", totalRunTime);
 }
+void wings(bool left, bool right)
+{
+  left_wing.set(left);
+  right_wing.set(right);
+}
 
 void touchAWP()
 {
@@ -67,55 +72,58 @@ void touchAWP()
   delay(100000);
 }
 
-void programming_skills2()
+void programming_skills()
 {
   startAuto(131, 54, 0);
   chassis.breakOutTime = 3.5;
-  Path path1(131, 59, 135.9, 111.2, 138.2, 139.1, 98, 126, 100);
-  chassis.setOffset(0, 0);
-  chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 18, 0);
-  delay(1050);
-  right_wing.set(true);
-  left_wing.set(true);
-  delay(550);
-  right_wing.set(false);
-  left_wing.set(false);
 
+  //curve around to side of goal with preload, 1 ball, and matchload ball
+  Path curveInPath(131, 59, 135.9, 111.2, 138.2, 139.1, 98, 126, 100);
+  chassis.setOffset(0, 0);
+  chassis.follow(curveInPath, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 18, 0);
+  //black magic wing timing (don't change)
+  delay(1050);
+  wings(1,1);
+  delay(550);
+  wings(0,0);
   intakeVolts = -12;
-  chassis.LineWait(path1.x3, path1.y3, 10, 3000);
-  delay(350);
-  Path path2(98.2, 131.9, 142.8, 116.6, 89.9, 90.4, 58.2, 101.4, 100);
-  chassis.follow(path2, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
-  chassis.turnToHeading(19, false, 12, akp, aki, akd, 3);
+  chassis.LineWait(curveInPath.x3, curveInPath.y3, 10, 3000);
+  delay(250);
+
+  //line up for passing play  
+  Path lineUpPath(98.2, 131.9, 142.8, 116.6, 89.9, 90.4, 58.2, 101.4, 100);
+  chassis.follow(lineUpPath, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
+  chassis.turnToHeading(19, false, 12, akp, aki, akd*1.2, 3);
   chassis.pid(10, 19, false, 8, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  right_wing.set(1);
-  left_wing.set(0);
+  wings(0, 1);
   delay(750);
   chassis.pid(4, 19, false, 2, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
+
+  //wait till left side shooting is done
   antijam = true;
   while (getRunTime() < 23)
   {
     delay(10);
   }
   antijam = false;
-  // shove
-  right_wing.set(0);
-  left_wing.set(0);
+
+  // shove sequence
+  wings(0,0);
+  //back out
   chassis.moveTo(67, 85, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.5, 12, 5);
-  right_wing.set(1);
-  left_wing.set(1);
+  wings(1,1);
+  //go in
   chassis.moveTo(71, 118, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 0);
   delay(1000);
-  right_wing.set(0);
-  left_wing.set(0);
-  chassis.moveTo(90, 80, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 3);
+  wings(0,0);
 
+  //line up for right side
+  chassis.moveTo(89, 84, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 3);
   chassis.turnToPose(84, 105, false, 12, akp, aki, akd, 3);
   chassis.moveTo(84, 105, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 7);
   chassis.turnToHeading(-19, false, 12, akp, aki, akd, 3);
   chassis.pid(10, -19, false, 4, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  right_wing.set(0);
-  left_wing.set(1);
+  wings(1,0);
   delay(750);
   chassis.pid(4, -19, false, 3, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
   antijam = true;
@@ -127,23 +135,16 @@ void programming_skills2()
 
   // double shove for funny ig
   // shove 1
-  right_wing.set(0);
-  left_wing.set(0);
+  wings(0,0);
   intakeVolts = 0;
   chassis.moveTo(67, 85, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.5, 12, 5);
-  right_wing.set(1);
-  left_wing.set(1);
-  chassis.moveTo(71, 118, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 0);
+  wings(1,1);
+  chassis.moveTo(71, 118, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.5, 12, 0);
   intakeVolts = -12;
   delay(1000);
-  right_wing.set(0);
-  left_wing.set(0);
-  // shove 2
-  chassis.moveTo(67, 85, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.5, 12, 5);
-  right_wing.set(1);
-  left_wing.set(1);
-  chassis.moveTo(71, 118, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 0);
-  delay(1000);
+  wings(0,0);
+
+  // back out
   chassis.pid(-15, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
   delay(1000);
 
@@ -174,71 +175,6 @@ void programming_skills2()
   hang.set(0);
   */
 
-  stopAuto();
-  delay(100000);
-  return;
-}
-
-void programming_skills()
-{
-  startAuto(131.75, 54 + 0, 0);
-  Path path1(131, 59, 129.6, 123.6, 132.8, 136.4, 98.2, 134.5, 100);
-  chassis.setOffset(0, 8);
-  chassis.follow(path1, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 10);
-  intakeVolts = (-12);
-  delay(300);
-  chassis.setOffset(0, 0);
-  /*
-  chassis.pid(-7, -90, false, 6, 12, lkp, lki, lkd, akp, aki, akd, .4, 2);
-  chassis.turnToHeading(98, false, 12, akp, aki, akd, 1);
-  chassis.pid(-50, 98, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  delay(500);
-  */
-  Path path2(98.2, 131.9, 142.8, 116.6, 72.3, 69.7, 55.0, 104, 100);
-  chassis.follow(path2, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
-  left_wing.set(1);
-  right_wing.set(1);
-
-  delay(500);
-  left_wing.set(0);
-  right_wing.set(0);
-  chassis.turnToHeading(15, false, 12, akp, aki, akd, 3);
-  chassis.pid(7, 15, false, 2, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  right_wing.set(1);
-  while (getRunTime() < 29.5)
-  {
-    delay(10);
-  }
-  endTimer();
-  chassis.moveTo(63, 91.6, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 5);
-  chassis.turnToPose(65, 107, false, 12, akp, aki, akd, 7);
-  left_wing.set(1);
-  right_wing.set(1);
-  chassis.moveTo(65, 110, false, 12, 12, lkp * 1.3, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 8);
-  delay(300);
-
-  chassis.moveTo(70.9, 91, true, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
-  left_wing.set(0);
-  right_wing.set(0);
-  Path path3(71.1, 90.7, 76.6, 92.4, 92.7, 94.2, 81, 106, 100);
-  chassis.follow(path3, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 12, 3);
-  intakeVolts = (-12);
-  chassis.turnToHeading(-15, false, 12, akp, aki, akd, 3);
-  chassis.pid(7, -15, false, 2, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  left_wing.set(1);
-  right_wing.set(1);
-  endTimer();
-  while (getRunTime() < 57.5)
-  {
-    delay(10);
-  }
-  left_wing.set(1);
-  right_wing.set(1);
-  chassis.pid(-4, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 2);
-  chassis.pid(9, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
-  delay(500);
-  chassis.pid(-7, 0, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 3);
-  delay(2000);
   stopAuto();
   delay(100000);
   return;
