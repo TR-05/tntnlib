@@ -47,15 +47,15 @@ vex::digital_out spaceMakerR(Brain.ThreeWirePort.D);
 /* data logger idk where to put :/ */
 int logger()
 {
-  printf("%d\n", Brain.Screen.drawImageFromFile("dumbo.png", 120, 0));
+    printf("%d\n", Brain.Screen.drawImageFromFile("dumbo.png", 120, 0));
     while (true)
     {
         Pose current(chassis.getPose(false));
         // chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0
         // printf("SX: %.2f, SR: %.2f, IMU: %.2f \n", chassis.sensors.horizontal1 != nullptr ? chassis.sensors.horizontal1->getDistance() : 0, chassis.sensors.vertical1 != nullptr ? chassis.sensors.vertical1->getDistance() : 0, chassis.sensors.gyro != nullptr ? chassis.sensors.gyro->rotation() : 0);
-        //printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f, S:%.0f,\n", current.x, current.y, current.theta, getRunTime(), totalRunTime, shotCount);
+        // printf("  X: %.2f,  Y: %.2f,  H: %.2f   T: %.2f ET:%.2f, S:%.0f,\n", current.x, current.y, current.theta, getRunTime(), totalRunTime, shotCount);
         printf("%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n", getRunTime(), flywheel.getRPM(), flywheel.getVolts(), flywheel.test, current.x, current.y, current.theta);
-        std::cout << std::flush;   
+        std::cout << std::flush;
         screenReadout();
         vex::wait(50, vex::msec);
     }
@@ -124,7 +124,7 @@ void pre_auton()
 {
     printf("Entered pre_auton\n");
     chassis.initialize(true, 0, 0, 0);
-    //flywheel.initializeVeloController(11.75, 20, 0.075, 1, 1, 0.0, 1.0);
+    // flywheel.initializeVeloController(11.75, 20, 0.075, 1, 1, 0.0, 1.0);
     flywheel.initializeVeloController(11.75, 5, 0.075, 1, 1, 0.0, 1.0);
     resetThreads();
 }
@@ -133,34 +133,39 @@ void pre_auton()
 void autonomous()
 {
     resetThreads();
-    //awp();
-    programming_skills2();
-    // elimAwp();
+     awp();
     // programming_skills();
+    // elimsAuto();
 }
 
 void singleLoadMacro(int delay)
 {
-    left_intake_piston.set(0);
+    left_intake_piston.set(0); // intake ball
     right_intake_piston.set(0);
     vex::wait(delay, vex::msec);
-    left_intake_piston.set(1);
+    left_intake_piston.set(1); // open and wait for new
     right_intake_piston.set(1);
 }
 
-void loadMacro(int times, int bigDelay, int smallDelay)
+/*
+ * @param times - how many times to run the macro
+ * @param bigDelay - how long to close intake for
+ * @param smallDelay - how long to open intake for
+ */
+void loadMacro(int times, int openTime, int closedTime)
 {
     for (int i = 0; i < times; i++)
     {
-        singleLoadMacro(smallDelay);
-        vex::wait(bigDelay, vex::msec);
+        singleLoadMacro(closedTime);
+        vex::wait(openTime, vex::msec);
     }
 }
 
 /* runs on comp switch driver */
+float matchloadRPM = 3350;
 void usercontrol()
 {
-        autonomous();
+    // autonomous();
 
     resetThreads();
     printf("Entered Driver\n");
@@ -169,7 +174,8 @@ void usercontrol()
     // User control code here, inside the loop
     if (Controller.ButtonLeft.pressing())
     {
-        //vex::wait(2400, vex::msec);
+        vex::wait(2400, vex::msec);
+        autonomous();
     }
     while (1)
     {
@@ -181,7 +187,12 @@ void usercontrol()
             alignerL.set(!alignerL);
             alignerR.set(alignerL);
         }
-            
+        if (up.newPress())
+        {
+            alignerL.set(0);
+            alignerR.set(0);
+        }
+
         if (l2.newPress())
         {
             spaceMakerL.set(!spaceMakerL);
@@ -189,16 +200,15 @@ void usercontrol()
         }
 
         if (a.state)
-            FWrpm = 3400; //3400
-            //FWrpm = 2950;
+            FWrpm = matchloadRPM; // 3350
         if (b.state)
-            FWrpm = 2750;
+            FWrpm = 3800;
         if (y.state)
-            FWrpm = 2000;
+            FWrpm = 2200;
         if (x.state)
             FWrpm = 0;
         if (up.state)
-            loadMacro(2, 440, 270);
+            loadMacro(2, 500, 270);
         intakeVolts = Controller.ButtonR1.pressing() ? 12 : Controller.ButtonR2.pressing() ? -12
                                                                                            : 0;
         chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 1, 0, 100, 3); // tank (the best drive style)
