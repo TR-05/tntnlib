@@ -9,11 +9,12 @@ vex::brain Brain;
 
 vex::thread loggerThread;
 vex::thread chassisThread;
+vex::thread intakeThread;
 
 /* tntnlib robot Config */
 MotorGroup leftMotors(vex::gearSetting::ratio6_1, 450, -7, 8, -9, -10);
 MotorGroup rightMotors(vex::gearSetting::ratio6_1, 450, 1, 2, -3, 4);
-MotorGroup intake(vex::gearSetting::ratio6_1, 600, -13);
+MotorGroup intake(vex::gearSetting::ratio6_1, 600, -13, 20);
 /* tracking wheels and gyro */
 TrackingWheel horizontal(Brain.ThreeWirePort.A, Omniwheel::NEW_275, 6.287188, 1);
 TrackingWheel vertical(Brain.ThreeWirePort.C, Omniwheel::NEW_275, -0.006111, 1);
@@ -96,6 +97,8 @@ void resetThreads()
     loggerThread = vex::thread(logger);
     chassisThread.interrupt();
     chassisThread = vex::thread(chassisLoop);
+    intakeThread.interrupt();
+    intakeThread = vex::thread(intake_loop);
 }
 
 /* runs when program first starts */
@@ -112,8 +115,8 @@ void autonomous()
     resetThreads();
     // safeAWP();
     // safeElim();
-    // awp();
-    programming_skills();
+    awp();
+    //programming_skills();
     // ElimAwp();
 }
 
@@ -132,6 +135,7 @@ void usercontrol()
 
     while (1)
     {
+        antijam = false;
         updateButtons();
         if (l1.state or a.state)
             left_wing.set(1);
@@ -147,9 +151,19 @@ void usercontrol()
             hang.set(1);
         else
             hang.set(0);
+        if (r1.state)
+        {
+            intakeVolts = 12;
+        }
+        else if (r2.state)
+        {
+            intakeVolts = -12;
+        }
+        else 
+        {
+            intakeVolts = 0;
+        }
 
-        intakeVolts = Controller.ButtonR1.pressing() ? 12 : Controller.ButtonR2.pressing() ? -12
-                                                                                           : 0;
         intake.setBrakeType(vex::brakeType::brake);
         // chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 1, 0, 100, 3); // tank
         chassis.arcade(Controller.Axis3.position(), Controller.Axis4.position(), 1, 0, 100, 3); // single stick arcade
