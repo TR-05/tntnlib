@@ -203,7 +203,7 @@ void awp()
     // matchload around 15 balls and exit with time to spare
     while (getRunTime() < 39.5)
     {
-        loadMacro(1, 900, 350);
+        loadMacro(1, 850, 300);
         shotCount += 1;
     }
 
@@ -252,10 +252,11 @@ void baseMatchAuto()
     // Grab first triball and pass it
     Path path1(129.9, 38.0, 114.3, 38.3, 104.3, 42.5, 94, 46, 100);
     pneumIntake(1);
-    intakeVolts = (5);
-    chassis.follow(path1, false, 12, 12, lkp * 1.5, lki, lkd * 1.4, akp * 1.8, aki, akd, .4, 25, 3);
-    FWrpm = 2500;
+    intakeVolts = (8);
+    chassis.follow(path1, false, 12, 12, lkp * 1.5, lki, lkd * 1.4, akp * 1.8, aki, akd, .4, 25, 4);
+    FWrpm = 1800;
     pneumIntake(0);
+    delay(300);
     intakeVolts = (3);
     chassis.pid(-2, -90, false, 12, 12, lkp * 1.5, lki, lkd, akp, aki, akd, 12, 1);
     chassis.turnToHeading(-195, false, 12, akp, aki, akd, 5);
@@ -263,7 +264,7 @@ void baseMatchAuto()
     delay(800);
 
     // grab second ball and pass it
-    FWrpm = 2500;
+    FWrpm = 1800;
     pneumIntake(1);
     chassis.turnToHeading(-98, false, 12, akp, aki, akd, 10);
     intakeVolts = (4);
@@ -319,12 +320,12 @@ void baseMatchAuto()
 
     // score the red triball
     chassis.pid(18.5, -45, false, 12, 12, lkp*1.5, lki, lkd, akp, aki, akd, .5, 4);
-    chassis.SwingOnLeftToHeading(42, false, 12, akp * 1.4, aki, akd * 1.6, 6);
-    chassis.SwingOnRightToHeading(63, false, 12, akp * 1.4, aki, akd * 1.6, 6);
+    chassis.SwingOnLeftToHeading(25, false, 12, akp * 1.4, aki, akd * 1.6, 6);
+    chassis.SwingOnRightToHeading(45, false, 12, akp * 1.4, aki, akd * 1.6, 6);
     delay(400);
     spaceMaker(0);
     delay(450);
-    Path awpBallPush(124.25,21.75,  112.6,14.4,  104.0,6.6,  95.6,10.4,  100);
+    Path awpBallPush(124.25,21.75,  109.4,19.6,  104.3,9.2,  95.6,10.4,  100);
     chassis.follow(awpBallPush, true, 12, 6, lkp * 1.4, lki, lkd, akp * 0.9, aki, akd * 1.25, .2, 14, 10);
     //chassis.moveTo(98, 12.5, true, 12, 12, lkp * 1.4, lki, lkd, akp * 1.3, aki, akd * 1.25, .2, 10);
     delay(650);

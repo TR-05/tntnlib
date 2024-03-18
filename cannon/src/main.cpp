@@ -204,7 +204,7 @@ void usercontrol()
         if (b.state)
             FWrpm = 3800;
         if (y.state)
-            FWrpm = 2200;
+            FWrpm = 1800;
         if (x.state)
             FWrpm = 0;
         if (up.state)
