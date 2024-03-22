@@ -12,39 +12,7 @@ void baseMatchAuto();
  chassis.boomerangTo(0, 20, -180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 12, 2);
  chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
 */
-float akp = chassis.angularSettings.kP;
-float aki = chassis.angularSettings.kI;
-float akd = chassis.angularSettings.kD;
-float lkp = chassis.linearSettings.kP;
-float lki = chassis.linearSettings.kI;
-float lkd = chassis.linearSettings.kD;
 
-void startAuto(float x, float y, float theta)
-{
-  printf("Entered Auto\n");
-  startTimer();
-  chassis.initialize(false, x, y, theta);
-  chassis.setOffset(0, 0);
-  chassis.stateMachineOn();
-  chassis.breakOutTime = 100000;
-  akp = chassis.angularSettings.kP;
-  aki = chassis.angularSettings.kI;
-  akd = chassis.angularSettings.kD;
-  lkp = chassis.linearSettings.kP;
-  lki = chassis.linearSettings.kI;
-  lkd = chassis.linearSettings.kD;
-}
-
-void stopAuto()
-{
-  chassis.stateMachineOff();
-  delay(20);
-  chassis.tank(0, 0, 1, 0, 100, 0);
-  intake.stop(vex::brakeType::coast);
-  intakeVolts = 0;
-  endTimer();
-  printf("Time: %.2f\n", totalRunTime);
-}
 void wings(bool left, bool right)
 {
   left_wing.set(left);
@@ -75,13 +43,14 @@ void touchAWP()
   delay(400);
   chassis.turnToHeading(30, false, 12, akp*1.5, aki, akd, 5);
   delay(500);
-  stopAuto();
+  chassis.stopAuto();
+  intakeVolts = 0;
 }
 
 void programming_skills()
 {
-  startAuto(131, 54, 0);
-  chassis.breakOutTime = 3.5;
+  chassis.startAuto(131, 54, 0);
+  chassis.breakOutTimeMs = 3500;
 
   //curve around to side of goal with preload, 1 ball, and matchload ball
   Path curveInPath(131, 59, 135.9, 111.2, 138.2, 139.1, 98, 126, 100);
@@ -181,9 +150,9 @@ void programming_skills()
   hang.set(0);
   */
 
-  stopAuto();
+  chassis.stopAuto();
+  intakeVolts = 0;
   delay(100000);
-  return;
 }
 
 void ElimAwp()
@@ -193,22 +162,21 @@ void ElimAwp()
   {
     wait(10, vex::msec);
   }
-  stopAuto();
+  chassis.stopAuto();
+  intakeVolts = 0;
   delay(100000);
-  return;
 }
 
 void awp()
 {
   baseMatchAuto();
   touchAWP();
-  return;
 }
 
 void baseMatchAuto()
 {
-  startAuto(131, 54, 0);
-  chassis.breakOutTime = 3.5;
+  chassis.startAuto(131, 54, 0);
+  chassis.breakOutTimeMs = 3500;
   Path path1(131, 59, 133.3, 104.5, 129.6, 112.0, 122, 118.3, 100);
   chassis.setOffset(0, 0);
   chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd*1.4, 12, 16, 20);
@@ -242,10 +210,10 @@ void baseMatchAuto()
   // contest ball in neutral and shove it
   chassis.setOffset(0, 8);
   intakeVolts = 12;
-  chassis.breakOutTime = 10;
+  chassis.breakOutTimeMs = 10000;
   Path path2(104.5,126.1,  148.3,133.1,  142.0,104.8,  71.4,95.9,  100);
   chassis.follow(path2, false, 12, 12, lkp * .6, lki, lkd, akp, aki, akd * 1.25, .4, 22, 6);
-  chassis.breakOutTime = 5;
+  chassis.breakOutTimeMs = 5000;
   chassis.setOffset(0, 8);
   chassis.turnToHeading(0, false, 12, akp, aki, akd, 100);
   left_wing.set(true);
@@ -284,8 +252,8 @@ void baseMatchAuto()
 void safeBaseMatchAuto()
 {
 
-  startAuto(131, 54, 0);
-  chassis.breakOutTime = 3.5;
+  chassis.startAuto(131, 54, 0);
+  chassis.breakOutTimeMs = 3500;
   Path path1(131, 59, 133.3, 104.5, 129.6, 112.0, 122, 118.3, 100);
   chassis.setOffset(0, 0);
   chassis.follow(path1, false, 12, 12, lkp * .9, lki, lkd, akp, aki, akd, 12, 16, 20);
@@ -319,7 +287,7 @@ void safeBaseMatchAuto()
   // contest ball in neutral and shove it
   chassis.setOffset(0, 8);
   intakeVolts = (12);
-  chassis.breakOutTime = 10;
+  chassis.breakOutTimeMs = 10000;
 
   Path path2(104.5, 126.1, 154.9, 128.4, 108.0, 99.9, 84.4, 106.0, 100);
   chassis.follow(path2, false, 12, 12, lkp * .6, lki, lkd, akp, aki, akd * 1.25, .4, 22, 6);
@@ -348,7 +316,8 @@ void safeElim()
   {
     wait(10, vex::msec);
   }
-  stopAuto();
+  chassis.stopAuto();
+  intakeVolts = 0;
   delay(100000);
   return;
 }

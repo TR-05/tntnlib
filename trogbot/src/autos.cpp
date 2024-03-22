@@ -2,7 +2,6 @@
 
 #include "../tntnlibrary/include/drivetrain/movements/turn.h"
 #include "vex.h"
-#include "vision.h"
 
 using namespace tntnlib;
 /* Example auto move functions
@@ -14,47 +13,11 @@ using namespace tntnlib;
   chassis.boomerangTo(0, 20, -180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .2, .5, 12, 2);
   chassis.turnToHeading(0, false, 12, akp, aki, akd, 1);
 */
-float akp = chassis.angularSettings.kP;
-float aki = chassis.angularSettings.kI;
-float akd = chassis.angularSettings.kD;
-float lkp = chassis.linearSettings.kP;
-float lki = chassis.linearSettings.kI;
-float lkd = chassis.linearSettings.kD;
-
-void startAuto(float x, float y, float theta)
-{
-    printf("Entered Auto\n");
-    startTimer();
-    chassis.initialize(false, x, y, theta);
-    chassis.setOffset(0, 0);
-    chassis.stateMachineOn();
-    akp = chassis.angularSettings.kP;
-    aki = chassis.angularSettings.kI;
-    akd = chassis.angularSettings.kD;
-    lkp = chassis.linearSettings.kP;
-    lki = chassis.linearSettings.kI;
-    lkd = chassis.linearSettings.kD;
-}
-
-bool enableVision = false;
-int vision()
-{
-    while (1)
-    {
-        if (enableVision)
-        {
-            float visionChange = visionX();
-            Pose current = chassis.getPose();
-            Turn::params(current.theta + visionChange, true, 12, false, false, true);
-        }
-    }
-    return 0;
-}
 void programming_skills()
 {
-    startAuto(118.9, 25.9, -135);
+    chassis.startAuto(118.9, 25.9, -135);
     chassis.breakOutTime = 1450;
-    Path path1(118.9,25.9,  111.5,17.9,  106.8,16.7,  91.9,15.6,  100);
+    Path path1(118.9, 25.9, 111.5, 17.9, 106.8, 16.7, 91.9, 15.6, 100);
     chassis.follow(path1, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 7, 6);
     chassis.breakOutTime = 4000;
 
@@ -62,47 +25,6 @@ void programming_skills()
     delay(1000);
     chassis.turnToHeading(-135, false, 12, akp, aki, akd, 1);
     delay(350);
-    endTimer();
 
-    return;
-    float r = 20;
-    float L = 2 * M_PI * r / 4;
-    chassis.arcPid(24, 19, 1, 10, lkp, lki, lkd * 1.2, akp, aki, akd, .2, 7);
-    delay(350);
-    chassis.SwingOnLeftToHeading(-135, 0, 12, akp * 1.6, aki, akd, 0);
-    delay(500);
-    chassis.autoTankVolts(2.5, 2.5);
-    delay(250);
-    chassis.pid(-3, -135, false, 12, 12, lkp, lki, lkd, akp, aki, akd, .4, 2);
-    delay(100);
-    chassis.autoTankPct(5, 5);
-    delay(1000);
-    chassis.autoTankVolts(-3.5, -3.5);
-    delay(300);
-    chassis.SwingOnLeftToHeading(-145, 0, 12, akp * 1.6, aki, akd, 0);
-    delay(1000);
-
-    /* matchload */
-    delay(2000);
-    vex::task visionTask(vision);
-    enableVision = true;
-
-    // chassis.autoTankVolts(-3.5, -3.5); //switch to this once we have a matchload bar
-    chassis.autoTankVolts(3.5, 3.5);
-    delay(300);
-    chassis.autoTankVolts(0, 0);
-    delay(300);
-    // chassis.setPose(18, 18, -135); //assumes the matchload bar acts as a reset
-    Path path(14.3, 14.3, 34.8, 54.9, 62.1, 43.4, 103.4, 42.0, 100);
-    chassis.follow(path, true, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 24, 4);
-
-    chassis.turnToHeading(135, false, 12, akp, aki, akd, 10);
-    // chassis.setOffset(0, 9);
-    chassis.moveTo(128, 16, false, 12, 12, lkp, lki, lkd, akp * 1.3, aki, akd * 1.25, 12, 2);
-    chassis.autoTankVolts(-3.5, -3.5);
-    delay(500);
-    chassis.SwingOnRightToHeading(145, 0, 12, akp * 1.6, aki, akd, 0);
-
-    endTimer();
-    return;
+    chassis.stopAuto();
 }

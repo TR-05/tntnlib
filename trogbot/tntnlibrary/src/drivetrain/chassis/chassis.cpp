@@ -19,6 +19,7 @@
 #include "../tntnlibrary/include/drivetrain/chassis/odom.h"
 #include <functional>
 
+float akp = 0, aki = 0, akd = 0, lkp = 0, lki = 0, lkd = 0;
 using namespace tntnlib;
 
 /**
@@ -93,6 +94,31 @@ void Chassis::setOffset(float x, float y)
     this->offsetPose.y = y;
 }
 
+void Chassis::startAuto(float x, float y, float theta)
+{
+    printf("Entered Auto\n");
+    startTimer();
+    chassis.initialize(false, x, y, theta);
+    chassis.setOffset(0, 0);
+    chassis.stateMachineOn();
+    chassis.breakOutTimeMs = 15000;
+    akp = chassis.angularSettings.kP;
+    aki = chassis.angularSettings.kI;
+    akd = chassis.angularSettings.kD;
+    lkp = chassis.linearSettings.kP;
+    lki = chassis.linearSettings.kI;
+    lkd = chassis.linearSettings.kD;
+}
+
+void Chassis::stopAuto()
+{
+  chassis.stateMachineOff();
+  delay(20);
+  chassis.tank(0, 0, 1, 0, 100, 0);
+  endTimer();
+  printf("Time: %.2f\n", totalRunTime);
+}
+
 /**
  * Wait until the robot has traveled a certain distance, or angle
  *
@@ -139,7 +165,7 @@ void Chassis::waitUntilError(float &error, float margin)
     do
     {
         Time = time(true) - initialT;
-        if (Time > this->breakOutTime)
+        if (Time > this->breakOutTimeMs)
             break;
         wait(10, vex::msec);
     } while (fabs(error) > margin && margin != 0);

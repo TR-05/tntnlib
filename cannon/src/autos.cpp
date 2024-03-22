@@ -1,12 +1,11 @@
 #include "autos.h"
 
 #include "vex.h"
-// #include "vision.h"
 using namespace tntnlib;
 
 void baseMatchAuto();
 /* Example auto move functions
-  startAuto(0,0,0);
+  chassis.startAuto(0,0,0);
   chassis.tuneOffsets(3600, akp, aki, akd, 6, 2); //Tunes odom + imu constants:
   DISABLE TERMINAL PRINT then jig bot to a tile, run auto, once bot stops moving
   tap and hold brain screen return;
@@ -20,46 +19,9 @@ void baseMatchAuto();
   akp, aki, akd, .2, .5, 12, 2); chassis.turnToHeading(0, false, 12, akp, aki,
   akd, 1);
 */
-float akp = chassis.angularSettings.kP;
-float aki = chassis.angularSettings.kI;
-float akd = chassis.angularSettings.kD;
-float lkp = chassis.linearSettings.kP;
-float lki = chassis.linearSettings.kI;
-float lkd = chassis.linearSettings.kD;
 
-void printTime()
-{
-    endTimer();
-    printf("Time: %.2f\n", totalRunTime);
-}
-
-void startAuto(float x, float y, float theta)
-{
-    printf("Entered Auto\n");
-    startTimer();
-    chassis.initialize(false, x, y, theta);
-    chassis.setOffset(0, 0);
-    chassis.stateMachineOn();
-    chassis.breakOutTime = 100000;
-    akp = chassis.angularSettings.kP;
-    aki = chassis.angularSettings.kI;
-    akd = chassis.angularSettings.kD;
-    lkp = chassis.linearSettings.kP;
-    lki = chassis.linearSettings.kI;
-    lkd = chassis.linearSettings.kD;
-}
 float shotCount = 0;
-void stopAuto()
-{
-    printTime();
-    chassis.stateMachineOff();
-    delay(20);
-    chassis.tank(0, 0, 1, 0, 100, 0);
-    flywheel.stop(vex::brakeType::coast);
-    intakeVolts = 0;
-    FWrpm = 0;
-    delay(100000);
-}
+
 void spaceMaker(bool state)
 {
     spaceMakerL.set(state);
@@ -73,8 +35,8 @@ void pneumIntake(bool state)
 
 void programming_skills()
 {
-    chassis.breakOutTime = 10;
-    startAuto(34.6, 13.2, -90);
+    chassis.breakOutTimeMs = 10000;
+    chassis.startAuto(34.6, 13.2, -90);
     FWrpm = matchloadRPM;
     intakeVolts = 0;
     // Score Preload
@@ -180,7 +142,9 @@ void programming_skills()
     chassis.LineWait(hangPath.x3, hangPath.y3, 40, 5000);
     delay(5000);
 
-    stopAuto();
+    chassis.stopAuto();
+    intakeVolts = 0;
+    FWrpm = 0;
     delay(100000);
 }
 
@@ -193,7 +157,9 @@ void elimsAuto()
         shotCount += 1;
     }
     pneumIntake(1);
-    stopAuto();
+    chassis.stopAuto();
+    intakeVolts = 0;
+    FWrpm = 0;
     return;
 }
 
@@ -223,29 +189,19 @@ void awp()
     chassis.moveTo(107, 57, true, 12, 12, lkp * 1.3, lki, lkd, akp * 1.5, aki, akd * 1.25, 12, 5);
     chassis.turnToHeading(-85, false, 12, akp, aki, akd, 10);
     chassis.moveTo(112, 59, true, 12, 12, lkp * 1.3, lki, lkd, akp * 1.5, aki, akd * 1.25, 12, 6);
-    stopAuto();
-
-
-
-
     spaceMaker(1);
     delay(300);
     chassis.turnToHeading(-120, false, 8, akp, aki, akd, 0);
     delay(1000);
-    stopAuto();
-
-
-    // touch bar
-    spaceMaker(1);
-    delay(10);
-    stopAuto();
-    return;
+    chassis.stopAuto();
+    intakeVolts = 0;
+    FWrpm = 0;
 }
 
 void baseMatchAuto()
 {
-    chassis.breakOutTime = 10;
-    startAuto(129.9, 38.0, -90);
+    chassis.breakOutTimeMs = 10000;
+    chassis.startAuto(129.9, 38.0, -90);
     antijam = true;
     FWrpm = 0;
     intakeVolts = 0;

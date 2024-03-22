@@ -102,6 +102,10 @@ namespace tntnlib
 
         Pose getOffsetPose();
         void setOffset(float x, float y);
+
+
+        void startAuto(float x, float y, float theta);
+        void stopAuto();
         /**
          * @brief Wait until the robot has traveled a certain distance, or angle, along the path
          *
@@ -297,7 +301,7 @@ namespace tntnlib
         ControllerSettings angularSettings;
         Drivetrain drivetrain;
         OdomSensors sensors;
-        float breakOutTime = 5;
+        float breakOutTimeMs = 5000;
 
     private:
         /**
@@ -309,8 +313,7 @@ namespace tntnlib
         Pose offsetPose = Pose(0, 0, 0);
         float prevDist = 0; // the previous distance travelled by the movement
         Odometry odom;
-        // std::unique_ptr<Movement> movement;
-        std::unique_ptr<vex::task> task;
     };
 } // namespace tntnlib
 extern tntnlib::Chassis chassis;
+extern float akp, akd, aki, lkp, lki, lkd;
