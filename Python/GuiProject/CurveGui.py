@@ -11,7 +11,7 @@ def resize_image(event):
 
 
 colors = ["cyan", "orange", "yellow", "green", "blue", "purple", "red", "magenta"]
-curves = [curveClass.Curve("c0", 124.25,21.75,  112.6,14.4,  104.0,6.6,  95.6,10.4, 30, colors[0]) for i in range(1)]
+curves = [curveClass.Curve("c0", 124, 26.5, 148.3, 133.1, 142.0, 104.8, 138.7, 74, 30, colors[0]) for i in range(1)]
 #curves[0] = curveClass.Curve("c0", 12, 12, 49, 65, 95, 65, 132, 12, 30, colors[0])
 i = 1;
 
@@ -25,7 +25,7 @@ def newCurveButton():
     print("new")
     name = StringVar()
     name = "c" + str(i)
-    curves.append(curveClass.Curve(name, 118.6,23,  90.7,40.0,  103.7,41,  98,12.2, 12, newy, colors[i]))
+    curves.append(curveClass.Curve(name, 118.6,23,  90.7,40.0,  103.7,41,  98,12.2, newy, colors[i]))
     i += 1
 
 CurveButton = Button(text="new", command=newCurveButton)

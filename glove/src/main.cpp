@@ -113,10 +113,11 @@ void pre_auton()
 void autonomous()
 {
     resetThreads();
-    // safeAWP();
+    //saferAWP();
+    //safeAWP();
     // safeElim();
-    awp();
-    //programming_skills();
+    //awp();
+    programming_skills();
     // ElimAwp();
 }
 

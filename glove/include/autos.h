@@ -9,4 +9,6 @@ void programming_skills();
 void awp();
 void ElimAwp();
 void safeAWP();
+void evenSaferBaseAuto();
 void safeElim();
+void saferAWP();

@@ -133,8 +133,8 @@ void pre_auton()
 void autonomous()
 {
     resetThreads();
-     awp();
-    // programming_skills();
+     //awp();
+    programming_skills();
     // elimsAuto();
 }
 
