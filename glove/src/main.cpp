@@ -115,19 +115,19 @@ void autonomous()
     resetThreads();
 
     awp();
-    //safeAWP();
-    //saferAWP();
-    //elim();
-    //safeElim();
-    //saferElim();
+    // safeAWP();
+    // saferAWP();
+    // elim();
+    // safeElim();
+    // saferElim();
 
-    //programming_skills();
+    // programming_skills();
 }
 
 /* runs on comp switch driver */
 void usercontrol()
 {
-    //autonomous();
+    // autonomous();
     resetThreads();
     printf("Entered Driver\n");
     chassis.stateMachineOff();
@@ -163,7 +163,7 @@ void usercontrol()
         {
             intakeVolts = -12;
         }
-        else 
+        else
         {
             intakeVolts = 0;
         }

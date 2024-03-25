@@ -133,9 +133,9 @@ void pre_auton()
 void autonomous()
 {
     resetThreads();
-     //awp();
-    programming_skills();
-    // elimsAuto();
+    awp();
+    //elim();
+    //programming_skills();
 }
 
 void singleLoadMacro(int delay)
