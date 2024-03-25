@@ -173,12 +173,6 @@ void ElimShootMacro()
   delay(100000);
 }
 
-void awp()
-{
-  baseMatchAuto();
-  poleTouchMacro();
-}
-
 void baseMatchAuto()
 {
   chassis.startAuto(131, 54, 0);
@@ -293,14 +287,14 @@ void evenSaferBaseAuto()
   intakeVolts = 0;
   chassis.breakOutTimeMs = 10000;
   chassis.autoTankVolts(0, 0);
-  Path curvePath2(104.5,126.1,  123.6,126.4,  133.1,107.1,  93.9,89.9,  100);
+  Path curvePath2(104.5, 126.1, 123.6, 126.4, 133.1, 107.1, 93.9, 89.9, 100);
   intakeVolts = 12;
   chassis.follow(curvePath2, false, 12, 12, lkp * .6, lki, lkd, akp, aki, akd * 1.25, .4, 22, 3);
   chassis.breakOutTimeMs = 5000;
 
   // turn around and score in goal
   // chassis.pid(-15, 180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 5);
-  chassis.moveTo(83, 114, false, 6, 12, lkp*.8, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 17); // go into goal
+  chassis.moveTo(83, 114, false, 6, 12, lkp * .8, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 17); // go into goal
   intakeVolts = -12;
   delay(500);
 
@@ -356,8 +350,8 @@ void safeBaseMatchAuto()
   chassis.breakOutTimeMs = 10000;
   chassis.autoTankVolts(0, 0);
   delay(5000);
-  Path sillyCurve1(104.5,126.1,  131.6,114.6,  136.8,105.7,  106.3,100.5,  100);
-  Path sillyCurve2(105.4,100.8,  103.1,95.6,  100.5,92.2,  99.4,64.8,  100);
+  Path sillyCurve1(104.5, 126.1, 131.6, 114.6, 136.8, 105.7, 106.3, 100.5, 100);
+  Path sillyCurve2(105.4, 100.8, 103.1, 95.6, 100.5, 92.2, 99.4, 64.8, 100);
   Path sillyCurve = sillyCurve1 + sillyCurve2;
   intakeVolts = 12;
   chassis.follow(sillyCurve, false, 12, 12, lkp * .6, lki, lkd, akp, aki, akd * 1.25, .4, 22, 30);
@@ -366,7 +360,7 @@ void safeBaseMatchAuto()
 
   // turn around and score in goal
   // chassis.pid(-15, 180, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 5);
-  chassis.moveTo(81.5, 116, false, 6, 12, lkp*.8, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 18); // go into goal
+  chassis.moveTo(81.5, 116, false, 6, 12, lkp * .8, lki, lkd, akp * 1.0, aki, akd * 1.8, 12, 18); // go into goal
   intakeVolts = -12;
   delay(500);
 
@@ -382,6 +376,12 @@ void safeBaseMatchAuto()
   endTimer();
 }
 
+void awp()
+{
+  baseMatchAuto();
+  poleTouchMacro();
+}
+
 void safeAWP()
 {
   safeBaseMatchAuto();
@@ -394,15 +394,20 @@ void saferAWP()
   poleTouchMacro();
 }
 
+void elim()
+{
+  baseMatchAuto();
+  ElimShootMacro();
+}
+
 void safeElim()
 {
   safeBaseMatchAuto();
-  while (getRunTime() < 45.5)
-  {
-    wait(10, vex::msec);
-  }
-  chassis.stopAuto();
-  intakeVolts = 0;
-  delay(100000);
-  return;
+  ElimShootMacro();
+}
+
+void saferElim()
+{
+  evenSaferBaseAuto();
+  ElimShootMacro();
 }

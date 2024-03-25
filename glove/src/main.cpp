@@ -113,12 +113,15 @@ void pre_auton()
 void autonomous()
 {
     resetThreads();
-    //saferAWP();
+
+    awp();
     //safeAWP();
-    // safeElim();
-    //awp();
-    programming_skills();
-    // ElimAwp();
+    //saferAWP();
+    //elim();
+    //safeElim();
+    //saferElim();
+
+    //programming_skills();
 }
 
 /* runs on comp switch driver */

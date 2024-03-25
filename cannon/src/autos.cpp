@@ -168,7 +168,6 @@ void elimsAuto()
     chassis.stopAuto();
     intakeVolts = 0;
     FWrpm = 0;
-    return;
 }
 
 void awp()
