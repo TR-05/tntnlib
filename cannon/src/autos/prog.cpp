@@ -15,22 +15,18 @@ void programming_skills()
 
     // Go to matchload
     chassis.moveTo(21.5, 19, false, 12, 12, lkp * 1.3, lki, lkd, akp * 1.5, aki, akd * 1.25, 12, 5);
-    alignerL.set(1);
-    alignerR.set(0);
+
     chassis.turnToHeading(-133, false, 12, akp, aki, akd, 12);
-
-
-    if (lowerToShoot) spaceMaker(1);
-
-
     intakeVolts = (7);
     left_intake_piston.set(1);
     right_intake_piston.set(1);
+    alignerL.set(1);
+    alignerR.set(0);
     chassis.pid(100, -133, false, 12, 12, lkp, lki, lkd, akp, aki, akd, 12, 0);
     delay(1000);
     chassis.autoTankVolts(-1.5, -1.5);
     delay(250);
-    alignerL.set(1);
+    if (lowerToShoot) spaceMaker(1);
     intakeVolts = (0);
     chassis.turnToHeading(-153, false, 12, akp, aki, akd, 0);
     // matchload 23 balls
@@ -91,8 +87,8 @@ void programming_skills()
     chassis.autoTankVolts(-1.5, -1.5);
     delay(250);
     intakeVolts = (2);
-    chassis.turnToHeading(160, false, 12, akp * 1.5, aki, akd, 0);
     if (lowerToShoot) spaceMaker(1);
+    chassis.turnToHeading(160, false, 12, akp * 1.5, aki, akd, 0);
     // matchload 23 balls
     delay(900);
     antijam = true;

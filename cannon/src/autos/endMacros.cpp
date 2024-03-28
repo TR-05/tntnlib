@@ -36,7 +36,7 @@ void awpShootAndTouchMacro()
     chassis.setPose(Pose(131.6, 14.7, chassis.getPose().theta)); // reset to absolute coords
     chassis.pid(6, 135, false, 12, 12, lkp * 3, lki, lkd, akp * 3, aki, akd, 12, 0);
     spaceMaker(0);
-    delay(800);
+    delay(500);
 
     // escape zone
     chassis.pid(-30, 135, false, 12, 12, lkp * 1.5, lki, lkd, akp, aki, akd, 12, 9);

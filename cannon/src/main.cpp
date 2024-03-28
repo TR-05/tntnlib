@@ -165,7 +165,7 @@ void loadMacro(int times, int openTime, int closedTime)
 float matchloadRPM = 3350;
 void usercontrol()
 {
-    // autonomous();
+    //autonomous();
 
     resetThreads();
     printf("Entered Driver\n");
@@ -202,13 +202,13 @@ void usercontrol()
         if (a.state)
             FWrpm = matchloadRPM; // 3350
         if (b.state)
-            FWrpm = 3800;
+            FWrpm = 2300;
         if (y.state)
             FWrpm = 1800;
         if (x.state)
             FWrpm = 0;
         if (up.state)
-            loadMacro(2, 500, 270);
+            loadMacro(1, 450, 250);
         intakeVolts = Controller.ButtonR1.pressing() ? 12 : Controller.ButtonR2.pressing() ? -12
                                                                                            : 0;
         chassis.tank(Controller.Axis3.position(), Controller.Axis2.position(), 1, 0, 100, 3); // tank (the best drive style)
